@@ -1,6 +1,6 @@
-# {{project_name}}
+# Factors-associated-with-COVID-19-vaccination
 
-This is the code and configuration for {{project_name}}
+This is the code and configuration for a "Factors associated with 1st dose of any vaccination in those over 80" paper
 
 * The paper is [here]()
 * Raw model outputs, including charts, crosstabs, etc, are in `released_outputs/`
