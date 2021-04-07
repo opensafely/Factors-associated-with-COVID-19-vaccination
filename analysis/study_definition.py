@@ -42,8 +42,10 @@ study = StudyDefinition(
   index_date = start_date,
   
   # Define the study population
-  population=patients.satisfying(
+  population = patients.satisfying(
     """
+        NOT has_died
+        AND
         registered
         AND
         age >= 80
@@ -58,15 +60,21 @@ study = StudyDefinition(
         AND
         region
         AND
+        rural_urban
+        AND
         ethnicity_16 > 0
         AND
         stp
         """,
         
+    has_died = patients.died_from_any_cause(
+      on_or_before="index_date",
+      returning="binary_flag",
+    ),
+    
     registered = patients.satisfying(
-      "registered_when_died OR registered_at_end",
-      registered_when_died = patients.registered_as_of("death_date - 1 day"),
-      registered_at_end = patients.registered_as_of(end_date),
+      "registered_at_start",
+      registered_at_start = patients.registered_as_of(start_date),
     ),
     
     has_follow_up_previous_year = patients.registered_with_one_practice_between(
@@ -108,7 +116,7 @@ study = StudyDefinition(
     find_first_match_in_period = True,returning = "date",
     date_format = "YYYY-MM-DD",
     return_expectations = {"date": {"earliest": "2020-12-08",  # first vaccine administered on the 8/12
-      "latest": "2021-02-01",}
+      "latest": end_date,}
     },
   ),
   
@@ -126,7 +134,7 @@ study = StudyDefinition(
   ### De-registration
   dereg_date = patients.date_deregistered_from_all_supported_practices(
     on_or_after = "index_date + 1 day",
-    date_format = "YYYY-MM",
+    date_format = "YYYY-MM-DD",
   ),
   
   
