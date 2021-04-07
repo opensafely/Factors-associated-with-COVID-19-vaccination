@@ -545,7 +545,7 @@ study = StudyDefinition(
     ),
     returning = "date",
     date_format = "YYYY-MM-DD",
-    on_or_before = "index_date + 1 day",
+    on_or_before = "index_date",
     find_first_match_in_period = True,
     return_expectations = {"rate": "exponential_increase"},
   ),
