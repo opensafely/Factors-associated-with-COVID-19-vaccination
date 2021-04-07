@@ -353,7 +353,7 @@ study = StudyDefinition(
   ),
   
   ### Chronic neurological disease (including Significant Learning Disorder)
-  chronic_neuro_dis_inc_sig_learn_dis_codes = patients.with_these_clinical_events(
+  chronic_neuro_dis_inc_sig_learn_dis = patients.with_these_clinical_events(
     chronic_neuro_dis_inc_sig_learn_dis_codes,
     returning = "date",
     find_first_match_in_period = True,
