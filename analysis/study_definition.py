@@ -23,7 +23,7 @@ from codelists import *
   
   
 # --- DEFINE STUDY POPULATION ---
-
+  
 ## Define study start and end variables explicitly
 start_date = "2020-12-07"
 end_date = "2021-04-01"
@@ -60,7 +60,7 @@ study = StudyDefinition(
         AND
         region
         AND
-        rural_urban
+        rural_urban > 0
         AND
         (ethnicity OR ethnicity_other OR ethnicity_not_given OR ethnicity_not_stated OR ethnicity_no_record)
         AND
@@ -499,7 +499,16 @@ study = StudyDefinition(
     returning = "rural_urban_classification",
     return_expectations = {
       "rate": "universal",
-      "category": {"ratios": {"rural": 0.1, "urban": 0.9}},
+      "category": {"ratios": {
+        1: 0.125, 
+        2: 0.125, 
+        3: 0.125, 
+        4: 0.125, 
+        5: 0.125, 
+        6: 0.125, 
+        7: 0.125, 
+        8: 0.125}
+      },
     },
   ),
   
@@ -509,31 +518,30 @@ study = StudyDefinition(
   ### Flu Vaccine: Last 5 years prior to march 31st 2020
   flu_vaccine = patients.satisfying(
     """
-          flu_vaccine_tpp_table > 0 OR
-          flu_vaccine_med > 0 OR
-          flu_vaccine_clinical > 0
-          """,
+        flu_vaccine_tpp_table>0 OR
+        flu_vaccine_med>0 OR
+        flu_vaccine_clinical>0
+        """,
     
     flu_vaccine_tpp_table = patients.with_tpp_vaccination_record(
       target_disease_matches = "INFLUENZA",
-      between = ["index_date - 5 years", "index_date"],  # current flu season
+      between = ["2015-04-01", "2020-03-31"], 
       returning = "binary_flag",
     ),
     
     flu_vaccine_med = patients.with_these_medications(
       flu_med_codes,
-      between = ["index_date - 5 years", "index_date"],  # current flu season
-      returning="binary_flag",
+      between = ["2015-04-01", "2020-03-31"], 
+      returning = "binary_flag",
     ),
-    
     flu_vaccine_clinical = patients.with_these_clinical_events(
       flu_clinical_given_codes,
-      ignore_days_where_these_codes_occur=flu_clinical_not_given_codes,
-      between = ["index_date - 5 years", "index_date"],  # current flu season
+      ignore_days_where_these_codes_occur = flu_clinical_not_given_codes,
+      between = ["2015-04-01", "2020-03-31"], 
       returning = "binary_flag",
     ),
     
-    return_expectations={"incidence": 0.5, },
+    return_expectations = {"incidence": 0.5, },
   ),
   
   ### History of covid

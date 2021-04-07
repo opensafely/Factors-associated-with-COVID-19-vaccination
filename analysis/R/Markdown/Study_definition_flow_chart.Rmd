@@ -39,7 +39,7 @@ data_flow_chart <- read_csv(
     imd = col_character(),
     region = col_character(),
     stp = col_character(),
-    rural_urban = col_character(),
+    rural_urban = col_integer(),
     ethnicity = col_character(),
     ethnicity_other = col_date(format="%Y-%m-%d"),
     ethnicity_not_given = col_date(format="%Y-%m-%d"),
@@ -227,7 +227,7 @@ criteria_9 <- data_flow_chart %>%
          imd > 0,
          region != "",
          stp != "",
-         rural_urban != "") 
+         rural_urban > 0) 
 ```
 
 Excluded = `r nrow(criteria_8) - nrow(criteria_9)`
@@ -287,7 +287,7 @@ exclude3 <- boxGrob(glue("Missing data (n = {tot})",
                          imd = txtInt(nrow(criteria_4 %>% filter(imd == 0))),
                          region = txtInt(nrow(criteria_4 %>% filter(region == ""))),
                          stp = txtInt(nrow(criteria_4 %>% filter(stp == ""))),
-                         urban = txtInt(nrow(criteria_4 %>% filter(rural_urban == ""))),
+                         urban = txtInt(nrow(criteria_4 %>% filter(rural_urban > 0))),
                          .sep = "\n"),
                     txt_gp = gpar(fontsize = 9),
                     just = "left")

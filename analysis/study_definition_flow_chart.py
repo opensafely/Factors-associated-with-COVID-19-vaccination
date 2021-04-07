@@ -59,7 +59,7 @@ study = StudyDefinition(
     #     AND
     #     region
     #     AND
-    #     rural_urban
+    #     rural_urban > 0
     #     AND
     #     (ethnicity OR ethnicity_other OR ethnicity_not_given OR ethnicity_not_stated OR ethnicity_no_record)
     #     AND
@@ -202,7 +202,16 @@ study = StudyDefinition(
     returning = "rural_urban_classification",
     return_expectations = {
       "rate": "universal",
-      "category": {"ratios": {"rural": 0.1, "urban": 0.9}},
+      "category": {"ratios": {
+        1: 0.125, 
+        2: 0.125, 
+        3: 0.125, 
+        4: 0.125, 
+        5: 0.125, 
+        6: 0.125, 
+        7: 0.125, 
+        8: 0.125}
+      },
     },
   ),
   
