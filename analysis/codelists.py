@@ -16,11 +16,39 @@ from cohortextractor import (codelist, codelist_from_csv, combine_codelists)
 # --- CODELISTS ---
 
 ## Ethnicity
-ethnicity_codes_16 = codelist_from_csv(
-  "codelists/opensafely-ethnicity.csv",
-  system = "ctv3",
-  column = "Code",
-  category_column = "Grouping_16",
+ethnicity_codes = codelist_from_csv(
+    "codelists/primis-covid19-vacc-uptake-eth2001.csv",
+    system="snomed",
+    column="code",
+    category_column="grouping_16_id",
+)
+
+## Any other ethnicity code
+ethnicity_other_codes = codelist_from_csv(
+    "codelists/primis-covid19-vacc-uptake-non_eth2001.csv",
+    system = "snomed",
+    column = "code",
+)
+
+## Ethnicity not given - patient refused
+ethnicity_not_given_codes = codelist_from_csv(
+    "codelists/primis-covid19-vacc-uptake-eth_notgiptref.csv",
+    system = "snomed",
+    column = "code",
+)
+
+## Ethnicity not stated
+ethnicity_not_stated_codes = codelist_from_csv(
+    "codelists/primis-covid19-vacc-uptake-eth_notstated.csv",
+    system = "snomed",
+    column = "code",
+)
+
+# Ethnicity no record
+ethnicity_no_record_codes = codelist_from_csv(
+    "codelists/primis-covid19-vacc-uptake-eth_norecord.csv",
+    system = "snomed",
+    column = "code",
 )
 
 ## Smoking status

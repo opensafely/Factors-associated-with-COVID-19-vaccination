@@ -40,10 +40,28 @@ data_flow_chart <- read_csv(
     region = col_character(),
     stp = col_character(),
     rural_urban = col_character(),
-    ethnicity_16 = col_character()
+    ethnicity = col_character(),
+    ethnicity_other = col_date(format="%Y-%m-%d"),
+    ethnicity_not_given = col_date(format="%Y-%m-%d"),
+    ethnicity_not_stated = col_date(format="%Y-%m-%d"),
+    ethnicity_no_record = col_date(format="%Y-%m-%d")
   ),
   na = character() # more stable to convert to missing later
 )
+
+## Combine ethnicity columns
+data_flow_chart <- data_flow_chart %>%
+  mutate(ethnicity_main = ethnicity,
+         ethnicity_other = ifelse(is.na(ethnicity_other), NA, 17),
+         ethnicity_not_given = ifelse(is.na(ethnicity_not_given), NA, 18),
+         ethnicity_not_stated = ifelse(is.na(ethnicity_not_stated), NA, 19),
+         ethnicity_no_record = ifelse(is.na(ethnicity_no_record), NA, 20),
+         ethnicity = ifelse(ethnicity_main == "", ethnicity_other, ethnicity),
+         ethnicity = ifelse(ethnicity_main == "", ethnicity_not_given, ethnicity),
+         ethnicity = ifelse(ethnicity_main == "", ethnicity_not_stated, ethnicity),
+         ethnicity = ifelse(ethnicity_main == "", ethnicity_no_record, ethnicity)) %>%
+  select(-ethnicity_main, -ethnicity_other, -ethnicity_not_given, -ethnicity_not_stated,
+         -ethnicity_no_record)
 
 ```
 
@@ -121,7 +139,7 @@ criteria_5 <- data_flow_chart %>%
          has_follow_up_previous_year == TRUE,
          care_home_type == "",
          sex %in% c("F", "M"),
-         ethnicity_16 != ""
+         ethnicity != ""
          ) 
 ```
 
@@ -141,7 +159,7 @@ criteria_6 <- data_flow_chart %>%
          has_follow_up_previous_year == TRUE,
          care_home_type == "",
          sex %in% c("F", "M"),
-         ethnicity_16 != "",
+         ethnicity != "",
          imd > 0) 
 ```
 
@@ -161,7 +179,7 @@ criteria_7 <- data_flow_chart %>%
          has_follow_up_previous_year == TRUE,
          care_home_type == "",
          sex %in% c("F", "M"),
-         ethnicity_16 != "",
+         ethnicity != "",
          imd > 0,
          region != ""
          ) 
@@ -183,7 +201,7 @@ criteria_8 <- data_flow_chart %>%
          has_follow_up_previous_year == TRUE,
          care_home_type == "",
          sex %in% c("F", "M"),
-         ethnicity_16 != "",
+         ethnicity != "",
          imd > 0,
          region != "",
          stp != "") 
@@ -205,7 +223,7 @@ criteria_9 <- data_flow_chart %>%
          has_follow_up_previous_year == TRUE,
          care_home_type == "",
          sex %in% c("F", "M"),
-         ethnicity_16 != "",
+         ethnicity != "",
          imd > 0,
          region != "",
          stp != "",
@@ -265,7 +283,7 @@ exclude3 <- boxGrob(glue("Missing data (n = {tot})",
                          " - Urban/rural: {urban}",
                          tot = txtInt(nrow(criteria_4) - nrow(criteria_8)),
                          sex = txtInt(nrow(criteria_4 %>% filter(!(sex %in% c("F", "M"))))),
-                         eth = txtInt(nrow(criteria_4 %>% filter(ethnicity_16 == ""))),
+                         eth = txtInt(nrow(criteria_4 %>% filter(ethnicity == ""))),
                          imd = txtInt(nrow(criteria_4 %>% filter(imd == 0))),
                          region = txtInt(nrow(criteria_4 %>% filter(region == ""))),
                          stp = txtInt(nrow(criteria_4 %>% filter(stp == ""))),

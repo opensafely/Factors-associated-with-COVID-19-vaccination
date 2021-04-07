@@ -23,7 +23,7 @@ from codelists import *
   
   
 # --- DEFINE STUDY POPULATION ---
-  
+
 ## Define study start and end variables explicitly
 start_date = "2020-12-07"
 end_date = "2021-04-01"
@@ -62,11 +62,11 @@ study = StudyDefinition(
         AND
         rural_urban
         AND
-        ethnicity_16 > 0
+        (ethnicity OR ethnicity_other OR ethnicity_not_given OR ethnicity_not_stated OR ethnicity_no_record)
         AND
         stp
         """,
-        
+    
     has_died = patients.died_from_any_cause(
       on_or_before="index_date",
       returning="binary_flag",
@@ -108,7 +108,7 @@ study = StudyDefinition(
   
   
   ## OUTCOMES
-
+  
   ### Any COVID vaccination (first dose)
   covid_vax_1_date = patients.with_tpp_vaccination_record(
     target_disease_matches = "SARS-2 CORONAVIRUS",
@@ -158,12 +158,12 @@ study = StudyDefinition(
     }
   ),
   
-  ### Ethnicity (16 categories)
-  ethnicity_16 = patients.with_these_clinical_events(
-    ethnicity_codes_16,
+  ### Ethnicity
+  ethnicity = patients.with_these_clinical_events(
+    ethnicity_codes,
     returning = "category",
     find_last_match_in_period = True,
-    include_date_of_match = False,
+    on_or_before = "index_date",
     return_expectations = {
       "category": {
         "ratios": {
@@ -185,9 +185,45 @@ study = StudyDefinition(
           "16": 0.0625,
         }
       },
-      "incidence": 0.75,
+      "rate": "universal",
     },
   ),
+  
+  ### Any other ethnicity code
+  ethnicity_other = patients.with_these_clinical_events(
+    ethnicity_other_codes,
+    returning = "date",
+    find_last_match_in_period = True,
+    on_or_before = "index_date",
+    date_format = "YYYY-MM-DD",
+  ),
+  
+  ### Ethnicity not given - patient refused
+  ethnicity_not_given = patients.with_these_clinical_events(
+    ethnicity_not_given_codes,
+    returning = "date",
+    find_last_match_in_period = True,
+    on_or_before = "index_date",
+    date_format = "YYYY-MM-DD",
+  ),
+  
+  ### Ethnicity not stated
+  ethnicity_not_stated = patients.with_these_clinical_events(
+    ethnicity_not_stated_codes,
+    returning = "date",
+    find_last_match_in_period = True,
+    on_or_before = "index_date",
+    date_format = "YYYY-MM-DD",
+  ),
+  
+  ### Ethnicity no record
+  ethnicity_no_record = patients.with_these_clinical_events(
+    ethnicity_no_record_codes,
+    returning = "date",
+    find_last_match_in_period = True,
+    on_or_before = "index_date",
+    date_format = "YYYY-MM-DD",
+  ),  
   
   
   ## CLINICAL MEASUREMENTS & COMORBIDITIES CONSIDERED AS POTENTIAL RISK FACTORS
