@@ -514,20 +514,6 @@ study = StudyDefinition(
     return_expectations = {"rate": "exponential_increase"},
   ),
   
-  ### Prior covid related hospital admission
-  prior_covidadmitted_date = patients.admitted_to_hospital(
-    returning = "date_admitted",
-    with_these_diagnoses = covid_codes,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-    find_first_match_in_period = True,
-    return_expectations = {
-      "date": {"earliest": "2020-02-01"},
-      "rate": "exponential_increase",
-      "incidence": 0.01,
-    },
-  ),
-  
   ### Shielding
   shielding_date = patients.with_these_clinical_events(
     shielding_codes,
