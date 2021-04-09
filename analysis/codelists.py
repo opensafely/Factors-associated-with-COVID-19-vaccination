@@ -15,6 +15,13 @@ from cohortextractor import (codelist, codelist_from_csv, combine_codelists)
 
 # --- CODELISTS ---
 
+## First COVID vaccination administration in EMIS
+covid_vaccine_EMIS_codes = codelist_from_csv(
+    "codelists/primis-covid19-vacc-uptake-covadm1.csv",
+    system = "snomed",
+    column = "code",
+)
+
 ## Patients in long-stay nursing and residential care
 nursing_residential_care_codes = codelist_from_csv(
     "codelists/primis-covid19-vacc-uptake-longres.csv",

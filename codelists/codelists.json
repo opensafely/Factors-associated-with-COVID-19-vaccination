@@ -1,5 +1,11 @@
 {
   "files": {
+    "primis-covid19-vacc-uptake-covadm1.csv": {
+      "id": "primis-covid19-vacc-uptake/covadm1/v1",
+      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/covadm1/v1/",
+      "downloaded_at": "2021-04-09 09:16:21.094117Z",
+      "sha": "e069d81bfbe6c5a1d2f762cbf585333946bd5d72"
+    },
     "primis-covid19-vacc-uptake-longres.csv": {
       "id": "primis-covid19-vacc-uptake/longres/v1",
       "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/longres/v1/",
