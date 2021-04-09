@@ -47,8 +47,9 @@ actions:
     run: r:latest analysis/R/Scripts/02_Models.R
     needs: [generate_study_population, data_process_all]
     outputs:
-      moderately_sensitive:
+      highly_sensitive :
         models: output/models/mod*.rds
+      moderately_sensitive:
         tables: output/models/tab*.html
         data: output/models/tab*.csv
         plots: output/models/plot*.svg
