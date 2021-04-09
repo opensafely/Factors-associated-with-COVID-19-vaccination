@@ -56,8 +56,6 @@ study = StudyDefinition(
         AND
         (sex = "M" OR sex = "F")
         AND
-        (smoking_status = "E" OR smoking_status = "E" OR smoking_status = "N")
-        AND
         imd > 0
         AND
         region
@@ -84,10 +82,10 @@ study = StudyDefinition(
     ),
     
     nursing_residential_care = patients.with_these_clinical_events(
-        nursing_residential_care_codes,
-        returning = "binary_flag",
-        find_last_match_in_period = True,
-        on_or_before = "index_date",
+      nursing_residential_care_codes,
+      returning = "binary_flag",
+      find_last_match_in_period = True,
+      on_or_before = "index_date",
     ),
   ),
   
@@ -103,8 +101,8 @@ study = StudyDefinition(
     on_or_after = "index_date + 1 day",
     date_format = "YYYY-MM-DD",
     return_expectations = {"date": 
-      {"earliest": "2020-12-08",  # first vaccine administered on the 8/12
-      "latest": end_date,}
+        {"earliest": "2020-12-08",  # first vaccine administered on the 8/12
+          "latest": end_date,}
     },
   ),
   
@@ -512,22 +510,73 @@ study = StudyDefinition(
     return_expectations = {"rate": "exponential_increase"},
   ),
   
-  ### Shielding
-  shielding_date = patients.with_these_clinical_events(
-    shielding_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
+  ### PRIMIS overall flag for shielded group
+  shielded = patients.satisfying(
+    """ severely_clinically_vulnerable
+            AND NOT less_vulnerable""", 
+    return_expectations = {
+      "incidence": 0.01,
+    },
+    
+    ### SHIELDED GROUP - first flag all patients with "high risk" codes
+    severely_clinically_vulnerable = patients.with_these_clinical_events(
+      high_risk_codes, # note no date limits set
+      find_last_match_in_period = True,
+      return_expectations = {"incidence": 0.02,},
+    ),
+    
+    # find date at which the high risk code was added
+    date_severely_clinically_vulnerable = patients.date_of(
+      "severely_clinically_vulnerable", 
+      date_format = "YYYY-MM-DD",   
+    ),
+    
+    ### NOT SHIELDED GROUP (medium and low risk) - only flag if later than 'shielded'
+    less_vulnerable = patients.with_these_clinical_events(
+      not_high_risk_codes, 
+      on_or_after = "date_severely_clinically_vulnerable",
+      return_expectations = {"incidence": 0.01,},
+    ),
   ),
   
-  ### Lower Risk from COVID-19 codes
-  nonshield_dat = patients.with_these_clinical_events(
-    nonshield_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
+  ### Newly expanded shielding group as of 15 feb (should be a subset of the previous flag)
+  shielded_since_feb_15 = patients.satisfying(
+    """severely_clinically_vulnerable_since_feb_15
+                AND NOT new_shielding_status_reduced
+                AND NOT previous_flag
+            """,
+    return_expectations = {
+      "incidence": 0.01,
+    },
+    
+    ### SHIELDED GROUP - first flag all patients with "high risk" codes
+    severely_clinically_vulnerable_since_feb_15 = patients.with_these_clinical_events(
+      high_risk_codes, 
+      on_or_after =  "2021-02-15",
+      find_last_match_in_period = False,
+      return_expectations={"incidence": 0.02,},
+    ),
+    
+    # find date at which the high risk code was added
+    date_vulnerable_since_feb_15 = patients.date_of(
+      "severely_clinically_vulnerable_since_feb_15", 
+      date_format = "YYYY-MM-DD",   
+    ),
+    
+    ### check that patient's shielding status has not since been reduced to a lower risk level 
+    # e.g. due to improved clinical condition of patient
+    new_shielding_status_reduced = patients.with_these_clinical_events(
+      not_high_risk_codes,
+      on_or_after = "date_vulnerable_since_feb_15",
+      return_expectations = {"incidence": 0.01,},
+    ),
+    
+    # anyone with a previous flag of any risk level will not be added to the new shielding group
+    previous_flag = patients.with_these_clinical_events(
+      combine_codelists(high_risk_codes, not_high_risk_codes),
+      on_or_before = "2021-02-14",
+      return_expectations = {"incidence": 0.01,},
+    ),
   ),
   
   ### To represent household contact of shielding individual
@@ -538,7 +587,6 @@ study = StudyDefinition(
     on_or_before = "index_date",
     date_format = "YYYY-MM-DD",
   ),
-  
   
 )
 
