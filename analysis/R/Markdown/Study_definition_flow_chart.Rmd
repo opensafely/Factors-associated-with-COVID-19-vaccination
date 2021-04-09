@@ -1,0 +1,338 @@
+<!-- This rmd imports the population flow chart data (`input_flow_chart.csv`) then sequentially drops each of the variables that appears in the population definition logic and counts the remaining population to provide numbers for a flowchart to show inclusion/exclusion of patients in the study. -->
+  
+---
+title: "Study definition flow chart" 
+output: 
+  html_document
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_knit$set(echo = FALSE)
+```
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+# Preliminaries ----
+
+## Import libraries ----
+library(tidyverse)
+library(magrittr)
+library(Gmisc)
+library(glue)
+library(crayon)
+library(grid)
+
+## Import data ----
+data_flow_chart <- read_csv(
+  here::here("output", "input_flow_chart.csv"),
+  col_types = cols(
+    
+    # Identifiers
+    patient_id = col_integer(),
+    
+    # Study criteria
+    registered = col_logical(),
+    has_died = col_logical(),
+    age = col_integer(),
+    has_follow_up_previous_year = col_logical(),
+    care_home_type = col_character(),
+    sex = col_character(),
+    imd = col_character(),
+    region = col_character(),
+    stp = col_character(),
+    rural_urban = col_integer(),
+    ethnicity = col_character(),
+    ethnicity_other = col_date(format="%Y-%m-%d"),
+    ethnicity_not_given = col_date(format="%Y-%m-%d"),
+    ethnicity_not_stated = col_date(format="%Y-%m-%d"),
+    ethnicity_no_record = col_date(format="%Y-%m-%d")
+  ),
+  na = character() # more stable to convert to missing later
+)
+
+## Combine ethnicity columns
+data_flow_chart <- data_flow_chart %>%
+  mutate(ethnicity_main = ethnicity,
+         ethnicity_other = ifelse(is.na(ethnicity_other), NA, 17),
+         ethnicity_not_given = ifelse(is.na(ethnicity_not_given), NA, 18),
+         ethnicity_not_stated = ifelse(is.na(ethnicity_not_stated), NA, 19),
+         ethnicity_no_record = ifelse(is.na(ethnicity_no_record), NA, 20),
+         ethnicity = ifelse(ethnicity_main == "", ethnicity_other, ethnicity),
+         ethnicity = ifelse(ethnicity_main == "", ethnicity_not_given, ethnicity),
+         ethnicity = ifelse(ethnicity_main == "", ethnicity_not_stated, ethnicity),
+         ethnicity = ifelse(ethnicity_main == "", ethnicity_no_record, ethnicity)) %>%
+  select(-ethnicity_main, -ethnicity_other, -ethnicity_not_given, -ethnicity_not_stated,
+         -ethnicity_no_record)
+
+```
+
+
+### Inclusion/exclusion numbers
+
+#### Population aged over 80 years, alive and registered with a general practice using TPP software on 7th December 2020
+```{r, echo = FALSE}
+criteria_1 <- data_flow_chart %>%
+  filter(age >= 80,
+         registered == TRUE,
+         has_died == FALSE)
+criteria_1 %>%
+  nrow()
+```
+
+#### At least 1 year of follow-up prior to 7th December 2020
+```{r, echo = FALSE}
+criteria_2 <- data_flow_chart %>%
+  filter(age >= 80,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE) 
+```
+
+Excluded = `r nrow(criteria_1) - nrow(criteria_2)`
+
+```{r, echo = FALSE}
+criteria_2 %>%
+  nrow()
+```
+
+#### Non care home
+```{r, echo = FALSE}
+criteria_3 <- data_flow_chart %>%
+  filter(age >= 80,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         care_home_type == "") 
+```
+
+Excluded = `r nrow(criteria_2) - nrow(criteria_3)`
+
+```{r, echo = FALSE}
+criteria_3 %>%
+  nrow()
+```
+
+#### Patients with non-missing sex
+```{r, echo = FALSE}
+criteria_4 <- data_flow_chart %>%
+  filter(age >= 80,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         care_home_type == "",
+         sex %in% c("F", "M")
+         ) 
+```
+
+Excluded = `r nrow(criteria_3) - nrow(criteria_4)`
+
+```{r, echo = FALSE}
+criteria_4 %>%
+  nrow()
+```
+
+#### Patients with non-missing ethnicity
+```{r, echo = FALSE}
+criteria_5 <- data_flow_chart %>%
+  filter(age >= 80,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         care_home_type == "",
+         sex %in% c("F", "M"),
+         ethnicity != ""
+         ) 
+```
+
+Excluded = `r nrow(criteria_4) - nrow(criteria_5)`
+
+```{r, echo = FALSE}
+criteria_5 %>%
+  nrow()
+```
+
+#### Patients with non-missing IMD
+```{r, echo = FALSE}
+criteria_6 <- data_flow_chart %>%
+  filter(age >= 80,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         care_home_type == "",
+         sex %in% c("F", "M"),
+         ethnicity != "",
+         imd > 0) 
+```
+
+Excluded = `r nrow(criteria_5) - nrow(criteria_6)`
+
+```{r, echo = FALSE}
+criteria_6 %>%
+  nrow()
+```
+
+#### Patients with non-missing region
+```{r, echo = FALSE}
+criteria_7 <- data_flow_chart %>%
+  filter(age >= 80,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         care_home_type == "",
+         sex %in% c("F", "M"),
+         ethnicity != "",
+         imd > 0,
+         region != ""
+         ) 
+```
+
+Excluded = `r nrow(criteria_6) - nrow(criteria_7)`
+
+```{r, echo = FALSE}
+criteria_7 %>%
+  nrow()
+```
+
+#### Patients with non-missing stp
+```{r, echo = FALSE}
+criteria_8 <- data_flow_chart %>%
+  filter(age >= 80,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         care_home_type == "",
+         sex %in% c("F", "M"),
+         ethnicity != "",
+         imd > 0,
+         region != "",
+         stp != "") 
+```
+
+Excluded = `r nrow(criteria_7) - nrow(criteria_8)`
+
+```{r, echo = FALSE}
+criteria_8 %>%
+  nrow()
+```
+
+#### Patients with non-missing rural/urban
+```{r, echo = FALSE}
+criteria_9 <- data_flow_chart %>%
+  filter(age >= 80,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         care_home_type == "",
+         sex %in% c("F", "M"),
+         ethnicity != "",
+         imd > 0,
+         region != "",
+         stp != "",
+         rural_urban > 0) 
+```
+
+Excluded = `r nrow(criteria_8) - nrow(criteria_9)`
+
+```{r, echo = FALSE}
+criteria_9 %>%
+  nrow()
+```
+
+
+
+### Inclusion/exclusion chart
+``` {r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 8, fig.height = 10}
+# The key boxes that we want to plot
+
+## Population alive and registered with a general practice using TPP software on 7th December 2020
+criteria1 <- boxGrob(glue_col("All patients aged 80 years and older \n who were alive and registered with a general \n practice using TPP software \n on 7 December 2020",
+                              "N = {pop}",
+                              pop = txtInt(nrow(criteria_1)),
+                              .sep = "\n"))
+
+## At least 1 year of follow-up prior to 7th December 2020
+exclude1 <- boxGrob(glue_col("<1 year of prior follow-up",
+                             "n = {pop}",
+                             pop = txtInt(nrow(criteria_1) - nrow(criteria_2)),
+                             .sep = "\n"),
+                    txt_gp = gpar(fontsize = 9))
+
+criteria2 <- boxGrob(glue("At least 1 year of follow-up \n prior to 7 December 2020",
+                          "N = {pop}",
+                          pop = txtInt(nrow(criteria_2)),
+                          .sep = "\n"))
+
+## Non-care home residents
+exclude2 <- boxGrob(glue_col("Care home residents",
+                             "n = {pop}",
+                             pop = txtInt(nrow(criteria_2) - nrow(criteria_3)),
+                             .sep = "\n"),
+                    txt_gp = gpar(fontsize = 9))
+
+criteria3 <- boxGrob(glue("Non-care home residents",
+                          "N = {pop}",
+                          pop = txtInt(nrow(criteria_3)),
+                          .sep = "\n"))
+
+## Patients with non-missing sex, ethnicity, IMD, region, stp and urban/rural
+exclude3 <- boxGrob(glue("Missing data (n = {tot})",
+                         " - Sex: {sex}",
+                         " - Ethnicity: {eth}",
+                         " - IMD: {imd}",
+                         " - Region: {region}",
+                         " - STP: {stp}",
+                         " - Urban/rural: {urban}",
+                         tot = txtInt(nrow(criteria_4) - nrow(criteria_8)),
+                         sex = txtInt(nrow(criteria_4 %>% filter(!(sex %in% c("F", "M"))))),
+                         eth = txtInt(nrow(criteria_4 %>% filter(ethnicity == ""))),
+                         imd = txtInt(nrow(criteria_4 %>% filter(imd == 0))),
+                         region = txtInt(nrow(criteria_4 %>% filter(region == ""))),
+                         stp = txtInt(nrow(criteria_4 %>% filter(stp == ""))),
+                         urban = txtInt(nrow(criteria_4 %>% filter(rural_urban > 0))),
+                         .sep = "\n"),
+                    txt_gp = gpar(fontsize = 9),
+                    just = "left")
+
+# Final study population
+final <- boxGrob(glue("Individuals included in study population",
+                      "N = {pop}",
+                      pop = txtInt(nrow(criteria_9)),
+                      .sep = "\n"))
+
+# Move boxes to where we want them
+vert <- spreadVertical(criteria1 = criteria1,
+                       criteria2 = criteria2,
+                       criteria3 = criteria3,
+                       final = final)
+
+exclude1 <- moveBox(exclude1,
+                    x = 0.85,
+                    y = coords(vert$criteria2)$top +
+                      distance(vert$criteria1, vert$criteria2, half = TRUE, center = FALSE))
+
+exclude2 <- moveBox(exclude2,
+                    x = 0.85,
+                    y = coords(vert$criteria3)$top +
+                      distance(vert$criteria2, vert$criteria3, half = TRUE, center = FALSE))
+
+exclude3 <- moveBox(exclude3,
+                    x = 0.85,
+                    y = coords(vert$final)$top +
+                      distance(vert$criteria3, vert$final, half = TRUE, center = FALSE))
+
+# Connect vertical arrows, skip last box
+for (i in 1:(length(vert) - 1)) {
+  connectGrob(vert[[i]], vert[[i + 1]], type = "vert") %>%
+    print
+}
+
+# Add a connection to the exclusions
+connectGrob(vert$criteria1, exclude1, type = "L")
+connectGrob(vert$criteria2, exclude2, type = "L")
+connectGrob(vert$criteria3, exclude3, type = "L")
+
+# Print boxes
+vert
+exclude1
+exclude2
+exclude3
+```
