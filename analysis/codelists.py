@@ -237,18 +237,12 @@ covid_primary_care_sequalae = codelist_from_csv(
 )
 
 ## Shielding
-shielding_codes = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-shield.csv",
-    system = "snomed",
-    column = "code",
-)
+high_risk_codes = codelist(
+    ['1300561000000107'], system="snomed")
 
 ## Lower Risk from COVID-19 codes
-nonshield_codes = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-nonshield.csv",
-    system = "snomed",
-    column = "code",
-)
+not_high_risk_codes = codelist(
+    ['1300591000000101', '1300571000000100'], system="snomed")
 
 ## To represent household contact of shielding individual
 hhld_imdef_codes = codelist_from_csv(
