@@ -64,8 +64,6 @@ study = StudyDefinition(
         AND
         rural_urban > 0
         AND
-        (ethnicity OR ethnicity_other OR ethnicity_not_given OR ethnicity_not_stated OR ethnicity_no_record)
-        AND
         stp
         """,
     
