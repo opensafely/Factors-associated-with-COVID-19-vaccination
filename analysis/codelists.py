@@ -15,6 +15,13 @@ from cohortextractor import (codelist, codelist_from_csv, combine_codelists)
 
 # --- CODELISTS ---
 
+## Patients in long-stay nursing and residential care
+nursing_residential_care_codes = codelist_from_csv(
+    "codelists/primis-covid19-vacc-uptake-longres.csv",
+    system = "snomed",
+    column = "code",
+)
+
 ## Ethnicity
 ethnicity_codes = codelist_from_csv(
     "codelists/primis-covid19-vacc-uptake-eth2001.csv",

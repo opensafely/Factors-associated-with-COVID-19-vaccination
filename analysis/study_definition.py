@@ -52,9 +52,11 @@ study = StudyDefinition(
         AND
         has_follow_up_previous_year
         AND
-        NOT care_home_type
+        NOT nursing_residential_care
         AND
         (sex = "M" OR sex = "F")
+        AND
+        (smoking_status = "E" OR smoking_status = "E" OR smoking_status = "N")
         AND
         imd > 0
         AND
@@ -83,26 +85,12 @@ study = StudyDefinition(
       return_expectations = {"incidence": 0.95},
     ),
     
-    care_home_type = patients.care_home_status_as_of(
-      "index_date",
-      categorised_as = {
-        "Carehome": """
-              IsPotentialCareHome
-              AND LocationDoesNotRequireNursing='Y'
-              AND LocationRequiresNursing='N'
-            """,
-        "Nursinghome": """
-              IsPotentialCareHome
-              AND LocationDoesNotRequireNursing='N'
-              AND LocationRequiresNursing='Y'
-            """,
-        "Mixed": "IsPotentialCareHome",
-        "": "DEFAULT",  # use empty string
-      },
-      return_expectations = {
-        "category": {"ratios": {"Carehome": 0.05, "Nursinghome": 0.05, "Mixed": 0.05, "": 0.85, }, },
-        "incidence": 1,
-      },
+    nursing_residential_care = patients.with_these_clinical_events(
+        nursing_residential_care_codes,
+        returning = "date",
+        find_last_match_in_period = True,
+        on_or_before = "index_date",
+        date_format = "YYYY-MM-DD",
     ),
   ),
   
@@ -242,7 +230,8 @@ study = StudyDefinition(
       "M": "DEFAULT",
     },
     
-    return_expectations = {"category": {"ratios": {"S": 0.6, "E": 0.1, "N": 0.2, "M": 0.1}}},
+    return_expectations = {"category": {"ratios": {"S": 0.6, "E": 0.1, "N": 0.2, "M": 0.1}},
+    "incidence" : 1},
     
     most_recent_smoking_code = patients.with_these_clinical_events(
       clear_smoking_codes,
@@ -291,6 +280,7 @@ study = StudyDefinition(
     find_last_match_in_period = True,
     on_or_after = "bmi_stage_date",
     on_or_before = "index_date",
+    date_format = "YYYY-MM-DD",
   ),
   
   ### Chronic heart disease
