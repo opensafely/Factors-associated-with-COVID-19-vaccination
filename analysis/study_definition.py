@@ -87,10 +87,9 @@ study = StudyDefinition(
     
     nursing_residential_care = patients.with_these_clinical_events(
         nursing_residential_care_codes,
-        returning = "date",
+        returning = "binary_flag",
         find_last_match_in_period = True,
         on_or_before = "index_date",
-        date_format = "YYYY-MM-DD",
     ),
   ),
   
