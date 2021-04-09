@@ -217,41 +217,6 @@ study = StudyDefinition(
   
   ## CLINICAL MEASUREMENTS & COMORBIDITIES CONSIDERED AS POTENTIAL RISK FACTORS
   
-  ### Smoking status
-  smoking_status = patients.categorised_as(
-    { "S": "most_recent_smoking_code = 'S' OR smoked_last_18_months",
-      "E": """ 
-               (most_recent_smoking_code = 'E' 
-               OR 
-               (most_recent_smoking_code = 'N' AND ever_smoked)) 
-               AND 
-               NOT smoked_last_18_months
-               """,
-      "N": "most_recent_smoking_code = 'N' AND NOT ever_smoked",
-      "M": "DEFAULT",
-    },
-    
-    return_expectations = {"category": {"ratios": {"S": 0.6, "E": 0.1, "N": 0.2, "M": 0.1}},
-    "incidence" : 1},
-    
-    most_recent_smoking_code = patients.with_these_clinical_events(
-      clear_smoking_codes,
-      find_last_match_in_period = True,
-      on_or_before = "index_date",
-      returning = "category",
-    ),
-    
-    ever_smoked = patients.with_these_clinical_events(
-      filter_codes_by_category(clear_smoking_codes, include = ["S", "E"]),
-      on_or_before = "index_date",
-    ),
-    
-    smoked_last_18_months = patients.with_these_clinical_events(
-      filter_codes_by_category(clear_smoking_codes, include = ["S"]),
-      between = ["index_date - 18 months", "index_date"],
-    ),
-  ),
-  
   ### BMI
   bmi = patients.with_these_clinical_events(
     bmi_codes,
