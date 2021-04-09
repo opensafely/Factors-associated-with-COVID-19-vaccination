@@ -26,7 +26,7 @@ from codelists import *
   
 ## Define study start and end variables explicitly
 start_date = "2020-12-07"
-end_date = "2021-04-01"
+end_date = "2021-03-17"
 
 ## Define study population and variables
 study = StudyDefinition(
