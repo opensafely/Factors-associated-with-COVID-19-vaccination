@@ -65,8 +65,12 @@ actions:
     outputs:
       highly_sensitive :
         models: output/models/mod*.rds
+        
+  # Models summaries
+  cox_models_summaries:
+    run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Model_comparisons.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
+    needs: [generate_study_population, data_process_all, cox_models]
+    outputs:
       moderately_sensitive:
-        tables: output/models/tab*.html
-        data: output/models/tab*.csv
-        plots: output/models/plot*.svg
+        html: output/Model_comparisons.html
 
