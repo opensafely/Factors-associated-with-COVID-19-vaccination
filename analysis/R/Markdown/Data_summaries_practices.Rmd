@@ -1,0 +1,128 @@
+---
+title: "Practice registration"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+# Preliminaries ----
+
+## Import libraries
+library(tidyverse)
+library(lubridate)
+library(DT)
+
+# Process data ----
+
+## Read in data (don't rely on defaults)
+data_extract0 <- read_csv(
+  here::here("output", "input.csv"),
+  col_types = cols_only(
+    
+    # Identifier
+    patient_id = col_integer(),
+    
+    # Outcome
+    covid_vax_1_date = col_date(format="%Y-%m-%d"),
+    
+    # Censoring
+    death_date = col_date(format="%Y-%m-%d"),
+    dereg_date = col_date(format="%Y-%m-%d"),
+    
+    # Demographic
+    age = col_integer(),
+    sex = col_character(),
+    ethnicity = col_character(),
+    ethnicity_other = col_date(format="%Y-%m-%d"),
+    ethnicity_not_given = col_date(format="%Y-%m-%d"),
+    ethnicity_not_stated = col_date(format="%Y-%m-%d"),
+    ethnicity_no_record = col_date(format="%Y-%m-%d"),
+    
+    # Clinical measurements and comorbidities
+    bmi = col_double(),
+    bmi_stage_date = col_date(format="%Y-%m-%d"),
+    sev_obesity = col_date(format="%Y-%m-%d"),
+    chronic_heart_disease = col_logical(),
+    diabetes = col_logical(),
+    chronic_kidney_disease_diagnostic = col_logical(),
+    chronic_kidney_disease_all_stages = col_logical(),
+    chronic_kidney_disease_all_stages_1_5 = col_logical(),
+    sev_mental_ill = col_date(format="%Y-%m-%d"),
+    learning_disability = col_date(format="%Y-%m-%d"),
+    chronic_neuro_dis_inc_sig_learn_dis = col_date(format="%Y-%m-%d"),
+    stroke = col_logical(),
+    asplenia = col_logical(),
+    chronic_liver_disease = col_logical(),
+    chronis_respiratory_disease = col_date(format="%Y-%m-%d"),
+    immunosuppression_diagnosis = col_date(format="%Y-%m-%d"),
+    immunosuppression_medication = col_date(format="%Y-%m-%d"),
+    
+    # Geographical
+    practice_id = col_integer(),
+    practice_id_at_end = col_integer(),
+    practice_id_at_death = col_integer(),
+    imd = col_character(),
+    region = col_character(),
+    stp = col_character(),
+    rural_urban = col_character(),
+    
+    # Other
+    flu_vaccine = col_logical(),
+    shielded = col_logical(),
+    shielded_since_feb_15 = col_logical(),
+    hhld_imdef_dat = col_date(format="%Y-%m-%d")
+  ),
+  na = character() # more stable to convert to missing later
+)
+
+## Parse NAs
+data_extract <- data_extract0 %>%
+  mutate(across(
+    .cols = where(is.character),
+    .fns = ~na_if(.x, "")
+  )) %>%
+  mutate(across(
+    .cols = c(where(is.numeric), -ends_with("_id")), #convert numeric+integer but not id variables
+    .fns = ~na_if(.x, 0)
+  )) %>%
+  arrange(patient_id) %>%
+  select(all_of((names(data_extract0))))
+
+
+
+## Format columns (i.e, set factor levels)
+data_processed <- data_extract %>%
+  mutate(practice_id_at_end_or_at_death = ifelse(!is.na(death_date) & 
+                                                   death_date < as.Date("2021-03-17", format = "%Y-%m-%d"), 
+                                                                 practice_id_at_death, practice_id_at_end)) %>%
+  select(patient_id, practice_id, practice_id_at_end_or_at_death)
+```
+
+
+## Number of people moving practices
+`r data_processed %>% filter(practice_id != practice_id_at_end_or_at_death) %>% nrow()` (`r round(data_processed %>% filter(practice_id != practice_id_at_end_or_at_death) %>% nrow() / (data_processed %>% nrow())*100, digits = 2)`%) of the study population have a different practice id at the end of the study (or when they die) to their practice ID at the start of the study.
+
+## Counts per practice
+
+```{r, warning= FALSE, echo = FALSE}
+practice_counts <- data_processed %>% 
+  group_by(practice_id) %>%
+  summarise(`Number_of_registered_patients` = n())
+
+summary(practice_counts$`Number_of_registered_patients`)
+```
+
+* `r practice_counts %>% filter(Number_of_registered_patients < 100) %>% nrow() ` practices have less than 100 hundred registered (study population/eligible) patients 
+* `r practice_counts %>% filter(Number_of_registered_patients < 500) %>% nrow() ` practices have less than 500 hundred registered (study population/eligible) patients 
+* `r practice_counts %>% filter(Number_of_registered_patients < 1000) %>% nrow() ` practices have less than 1000 hundred registered (study population/eligible) patients 
+
+```{r, warning= FALSE, echo = FALSE}
+practice_counts %>% 
+  datatable()
+```
+
+
+

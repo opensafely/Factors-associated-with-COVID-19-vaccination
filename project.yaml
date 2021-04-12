@@ -41,6 +41,14 @@ actions:
     outputs:
       highly_sensitive:
         data1: output/data/data_all.rds
+  
+  # Practice ID summaries
+  practice_id:
+    run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Data_summaries_practices.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
+    needs: [generate_study_population]
+    outputs:
+      moderately_sensitive:
+        html: output/Data_summaries_practices.html
         
   # Models
   cox_models:
