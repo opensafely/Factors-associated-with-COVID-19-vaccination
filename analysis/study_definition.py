@@ -372,7 +372,7 @@ study = StudyDefinition(
     "index_date",  # day before vaccine campaign start
     returning = "pseudo_id",
     return_expectations = {
-      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
+      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
       "incidence": 1,
     },
   ),
@@ -382,7 +382,7 @@ study = StudyDefinition(
     end_date,
     returning = "pseudo_id",
     return_expectations = {
-      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
+      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
       "incidence": 1,
     },
   ),
@@ -392,7 +392,7 @@ study = StudyDefinition(
     "death_date",
     returning = "pseudo_id",
     return_expectations = {
-      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
+      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
       "incidence": 1,
     },
   ),
