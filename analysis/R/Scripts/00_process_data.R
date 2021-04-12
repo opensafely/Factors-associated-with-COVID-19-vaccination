@@ -256,21 +256,31 @@ data_processed <- data_extract %>%
     
     # Household contact of shielding individual
     hhld_imdef_dat = ifelse(is.na(hhld_imdef_dat), FALSE, TRUE)
-    
   ) %>%
-  select(patient_id, covid_vax, follow_up_time, practice_id, stp, age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease,
-         diabetes, chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_1_5,
-         sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, stroke, asplenia, chronic_liver_disease, 
-         chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
-         flu_vaccine, shielded, shielded_since_feb_15) %>%
   filter(age >= 80,
          sex %in% c("Male", "Female"),
          !is.na(imd),
          !is.na(ethnicity),
          !is.na(region),
-         !is.na(rural_urban)
-         )
+         !is.na(rural_urban),
+         practice_id == practice_id_at_end_or_at_death
+  ) %>%
+  select(patient_id, covid_vax, follow_up_time, practice_id, stp, age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease,
+         diabetes, chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_1_5,
+         sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, stroke, asplenia, chronic_liver_disease, 
+         chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
+         flu_vaccine, shielded, shielded_since_feb_15) 
 
+## Exclude practices with less than 100 registered patients
+
+### Registerd patients counts
+practice_counts <- data_processed %>% 
+  group_by(practice_id) %>%
+  summarise(`Number_of_registered_patients` = n())
+
+## Exclude 
+data_processed_filtered <- data_processed %>%
+  filter(practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id)
 
 # Save dataset as .rds files ----
-write_rds(data_processed, here::here("output", "data", "data_all.rds"), compress="gz")
+write_rds(data_processed_filtered, here::here("output", "data", "data_all.rds"), compress="gz")
