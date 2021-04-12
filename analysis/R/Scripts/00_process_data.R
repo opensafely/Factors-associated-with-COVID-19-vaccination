@@ -96,6 +96,8 @@ data_extract0 <- read_csv(
     
     # Geographical
     practice_id = col_integer(),
+    practice_id_at_end = col_integer(),
+    practice_id_at_death = col_integer(),
     imd = col_character(),
     region = col_character(),
     stp = col_character(),
@@ -209,7 +211,7 @@ data_processed <- data_extract %>%
     # CND inc LD
     chronic_neuro_dis_inc_sig_learn_dis = ifelse(is.na(chronic_neuro_dis_inc_sig_learn_dis), FALSE, TRUE),
     
-    #CRD
+    # CRD
     chronis_respiratory_disease = ifelse(is.na(chronis_respiratory_disease), FALSE, TRUE),
     
     # Immunosuppression
@@ -228,6 +230,10 @@ data_processed <- data_extract %>%
       TRUE ~ NA_character_
     ),
     
+    # Practice id at end or at death
+    practice_id_at_end_or_at_death = ifelse(!is.na(death_date) & death_date < as.Date("2021-03-17", format = "%Y-%m-%d"), 
+                                                                 practice_id_at_death, practice_id_at_end),
+
     # Region
     region = factor(region,
                     levels = c(

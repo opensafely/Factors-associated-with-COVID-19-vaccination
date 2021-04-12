@@ -41,7 +41,15 @@ actions:
     outputs:
       highly_sensitive:
         data1: output/data/data_all.rds
-  
+        
+  # Summarise data
+  data_properties_all:
+    run: r:latest analysis/R/Scripts/01_data_properties.R output/data/data_all.rds output/data_properties
+    needs: [data_process_all]
+    outputs:
+      moderately_sensitive:
+        datasummary: output/data_properties/data_all*.txt
+        
   # Practice ID summaries
   practice_id:
     run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Data_summaries_practices.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
