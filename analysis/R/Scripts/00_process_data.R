@@ -189,9 +189,8 @@ data_processed <- data_extract %>%
       ethnicity == "15" ~ "Other ethnic groups - Chinese",
       ethnicity == "16" ~ "Other ethnic groups - Any other ethnic group",
       ethnicity == "17" ~ "Patients with any other ethnicity code",
-      ethnicity == "18" ~ "Ethnicity not given - patient refused",
-      ethnicity == "19" ~ "Ethnicity not stated",
-      ethnicity == "20" ~ "Ethnicity not recorded",
+      ethnicity == "18" ~ "Ethnicity not stated",
+      ethnicity == "19" ~ "Ethnicity not recorded",
       #TRUE ~ "Unknown",
       TRUE ~ NA_character_
     ),
@@ -235,18 +234,18 @@ data_processed <- data_extract %>%
                                                                  practice_id_at_death, practice_id_at_end),
 
     # Region
-    region = factor(region,
-                    levels = c(
-                      "East",
-                      "East Midlands",
-                      "London",
-                      "North East",
-                      "North West",
-                      "South East",
-                      "South West",
-                      "West Midlands",
-                      "Yorkshire and The Humber"
-                    )
+    region = fct_case_when(
+      region == "London" ~ "London",
+      region == "East" ~ "East",
+      region == "East Midlands" ~ "East Midlands",
+      region == "North East" ~ "North East",
+      region == "North West" ~ "5 North West",
+      region == "South East" ~ "South East",
+      region == "South West" ~ "South West",
+      region == "West Midlands" ~ "West Midlands",
+      region == "Yorkshire and The Humber" ~ "Yorkshire and The Humber",
+      #TRUE ~ "Unknown",
+      TRUE ~ NA_character_
     ),
     
     # stp
