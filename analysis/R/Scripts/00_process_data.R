@@ -164,12 +164,11 @@ data_processed <- data_extract %>%
     
     # Ethnicity
     ethnicity =  ifelse(is.na(ethnicity) & !is.na(ethnicity_other), 17, 
-                        ifelse(is.na(ethnicity) & !is.na(ethnicity_not_given), 18,
-                               ifelse(is.na(ethnicity) & !is.na(ethnicity_not_stated), 19,
-                                      ifelse(is.na(ethnicity) & !is.na(ethnicity_no_record), 20,
-                                             ethnicity)))),
+                               ifelse(is.na(ethnicity) & !is.na(ethnicity_not_stated), 18,
+                                      ifelse(is.na(ethnicity) & !is.na(ethnicity_no_record), 19,
+                                             ethnicity))),
     
-    ethnicity = ifelse(is.na(ethnicity), 20, ethnicity),
+    ethnicity = ifelse(is.na(ethnicity), 19, ethnicity),
     
     ethnicity = fct_case_when(
       ethnicity == "1" ~ "White - British",
@@ -273,7 +272,7 @@ data_processed <- data_extract %>%
 
 ## Exclude practices with less than 100 registered patients
 
-### Registerd patients counts
+### Registered patients counts
 practice_counts <- data_processed %>% 
   group_by(practice_id) %>%
   summarise(`Number_of_registered_patients` = n())
