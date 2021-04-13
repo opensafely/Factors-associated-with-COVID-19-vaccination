@@ -164,11 +164,12 @@ data_processed <- data_extract %>%
     
     # Ethnicity
     ethnicity =  ifelse(is.na(ethnicity) & !is.na(ethnicity_other), 17, 
-                               ifelse(is.na(ethnicity) & !is.na(ethnicity_not_stated), 18,
-                                      ifelse(is.na(ethnicity) & !is.na(ethnicity_no_record), 19,
-                                             ethnicity))),
+                        ifelse(is.na(ethnicity) & !is.na(ethnicity_not_given), 18,
+                               ifelse(is.na(ethnicity) & !is.na(ethnicity_not_stated), 19,
+                                      ifelse(is.na(ethnicity) & !is.na(ethnicity_no_record), 20,
+                                             ethnicity)))),
     
-    ethnicity = ifelse(is.na(ethnicity), 19, ethnicity),
+    ethnicity = ifelse(is.na(ethnicity), 20, ethnicity),
     
     ethnicity = fct_case_when(
       ethnicity == "1" ~ "White - British",
@@ -188,8 +189,9 @@ data_processed <- data_extract %>%
       ethnicity == "15" ~ "Other ethnic groups - Chinese",
       ethnicity == "16" ~ "Other ethnic groups - Any other ethnic group",
       ethnicity == "17" ~ "Patients with any other ethnicity code",
-      ethnicity == "18" ~ "Ethnicity not stated",
-      ethnicity == "19" ~ "Ethnicity not recorded",
+      ethnicity == "18" ~ "Ethnicity not given - patient refused",
+      ethnicity == "19" ~ "Ethnicity not stated",
+      ethnicity == "20" ~ "Ethnicity not recorded",
       #TRUE ~ "Unknown",
       TRUE ~ NA_character_
     ),
