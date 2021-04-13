@@ -43,6 +43,7 @@ data_flow_chart <- read_csv(
     practice_id = col_integer(),
     practice_id_at_end = col_integer(),
     practice_id_at_death = col_integer(),
+    practice_id_same = col_integer(),
     death_date = col_date(format="%Y-%m-%d")
 
   ),
@@ -54,7 +55,15 @@ data_flow_chart <- read_csv(
 
 
 ### Inclusion/exclusion numbers
+```{r, echo = FALSE}
+data_flow_chart %>%
+  filter(practice_id_same == 1) %>%
+  nrow()
 
+data_flow_chart %>%
+  filter(practice_id == practice_id_at_end_or_at_death) %>%
+  nrow()
+```
 #### Population aged over 80 years, alive and registered with a general practice using TPP software on 7th December 2020
 ```{r, echo = FALSE}
 criteria_1 <- data_flow_chart %>%

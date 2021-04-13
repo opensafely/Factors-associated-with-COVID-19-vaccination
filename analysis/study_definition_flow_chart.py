@@ -179,6 +179,13 @@ study = StudyDefinition(
     },
   ),
   
+  ### Same practice
+  practice_id_same = patients.registered_with_one_practice_between(
+      start_date = "index_date",
+      end_date = end_date,
+      return_expectations = {"incidence": 0.95},
+    ),
+  
   ## Region - NHS England 9 regions
   region = patients.registered_practice_as_of(
     "index_date",
