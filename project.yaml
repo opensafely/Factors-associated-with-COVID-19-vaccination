@@ -73,4 +73,18 @@ actions:
     outputs:
       moderately_sensitive:
         html: output/Model_comparisons.html
+        
+  # Models
+  cox_model_final:
+    run: r:latest analysis/R/Scripts/03_Final_model.R
+    needs: [generate_study_population, data_process_all]
+    outputs:
+      highly_sensitive :
+        models: output/models/mod_final*.rds
+      moderately_sensitive:
+        tables: output/models/tab*.html
+        data: output/models/tab*.csv
+        plots: output/models/plot*.svg
+
+
 

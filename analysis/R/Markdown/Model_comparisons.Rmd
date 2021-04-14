@@ -34,8 +34,8 @@ data_cox <- data_tte %>%
 
 ## Import models data
 coxmod1 <- read_rds(here::here("output", "models", "mod_coxph_adj.rds"))
-coxmod1b <- read_rds(here::here("output", "models", "mod_coxph_adjb.rds"))
-coxmod2 <- read_rds(here::here("output", "models", "mod_coxme_adj.rds"))
+#coxmod1b <- read_rds(here::here("output", "models", "mod_coxph_adjb.rds"))
+#coxmod2 <- read_rds(here::here("output", "models", "mod_coxme_adj.rds"))
 
 ## Function to test random effects
 TestRanef <- function(coxphModel,coxmeModel) {
@@ -78,24 +78,24 @@ test.ph <- cox.zph(coxmod1)
 test.ph
 ```
 
-### Adjusted cox ph model
-```{r, echo = FALSE, warning= FALSE, message= FALSE}
-test.ph <- cox.zph(coxmod1b)
-test.ph
-```
+<!-- ### Adjusted cox ph model -->
+<!-- ```{r, echo = FALSE, warning= FALSE, message= FALSE} -->
+<!-- test.ph <- cox.zph(coxmod1b) -->
+<!-- test.ph -->
+<!-- ``` -->
 
-### Adjusted cox me model
-```{r, echo = FALSE, warning= FALSE, message= FALSE}
-test.ph <- cox.zph(coxmod2)
-test.ph
-```
+<!-- ### Adjusted cox me model -->
+<!-- ```{r, echo = FALSE, warning= FALSE, message= FALSE} -->
+<!-- test.ph <- cox.zph(coxmod2) -->
+<!-- test.ph -->
+<!-- ``` -->
 
 
-## Testing for random effects (using integrated log likelihook)
-```{r, echo = FALSE, warning= FALSE, message= FALSE}
-anova(coxmod1, coxmod1b)
-anova(coxmod1, coxmod2)
-anova(coxmod1, coxmod1b)
+<!-- ## Testing for random effects (using integrated log likelihook) -->
+<!-- ```{r, echo = FALSE, warning= FALSE, message= FALSE} -->
+<!-- anova(coxmod1, coxmod1b) -->
+<!-- anova(coxmod1, coxmod2) -->
+<!-- anova(coxmod1, coxmod1b) -->
 
-TestRanef(coxmod1, coxmod2)
-```
+<!-- TestRanef(coxmod1, coxmod2) -->
+<!-- ``` -->
