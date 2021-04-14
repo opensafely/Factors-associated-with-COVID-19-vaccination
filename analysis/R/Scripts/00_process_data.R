@@ -252,7 +252,18 @@ data_processed <- data_extract %>%
     stp = as.factor(stp),
     
     # Rural/urban
-    rural_urban = as.factor(rural_urban),
+    rural_urban = fct_case_when(
+      rural_urban == 1 ~ "Urban - major conurbation",
+      rural_urban == 2 ~ "Urban - minor conurbation",
+      rural_urban == 3 ~ "Urban - city and town",
+      rural_urban == 4 ~ "Urban - city and town in a sparse setting",
+      rural_urban == 5 ~ "Rural - town and fringe",
+      rural_urban == 6 ~ "Rural - town and fringe in a sparse setting",
+      rural_urban == 7 ~ "Rural village and dispersed",
+      rural_urban == 8 ~ "Rural village and dispersed in a sparse setting",
+      #TRUE ~ "Unknown",
+      TRUE ~ NA_character_
+    ),
     
     # Household contact of shielding individual
     hhld_imdef_dat = ifelse(is.na(hhld_imdef_dat), FALSE, TRUE)
