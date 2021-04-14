@@ -40,7 +40,7 @@ data_cox <- data_tte %>%
 ## Cox PH model - unadjusted
 mod.coxph.unadj <- coxph(Surv(follow_up_time, covid_vax) ~ 1, data = data_cox)
 
-write_rds(mod.coxph.unadj, here::here("output", "models", "mod_coxph_unadj.rds"), compress="gz")
+write_rds(mod.coxph.unadj, here::here("output", "models", "mod_final_coxph_unadj.rds"), compress="gz")
 
 ## Cox PH model - adjusted; baseline demographics, comorbs, geographical, other 
 mod.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~ 
@@ -52,7 +52,7 @@ mod.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                          shielded_since_feb_15,
                        data = data_cox)
 
-write_rds(mod.coxph.adj, here::here("output", "models", "mod_coxph_adj.rds"), compress="gz")
+write_rds(mod.coxph.adj, here::here("output", "models", "mod_final_coxph_adj.rds"), compress="gz")
 
 # # Mixed effects Cox model - adjusted; baseline demographics, comorbs, geographical, other, stp as random effect
 # mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
