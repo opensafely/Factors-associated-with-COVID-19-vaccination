@@ -61,7 +61,7 @@ mod.coxph.adjb <- coxph(Surv(follow_up_time, covid_vax) ~
                          chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                          immunosuppression_medication + imd + region + rural_urban + flu_vaccine + shielded +
-                         shielded_since_feb_15 + as.factor(practice_id),
+                         shielded_since_feb_15 + strata(practice_id),
                        data = data_cox)
 
 write_rds(mod.coxph.adjb, here::here("output", "models", "mod_coxph_adjb.rds"), compress="gz")
