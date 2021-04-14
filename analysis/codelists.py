@@ -65,13 +65,7 @@ ethnicity_no_record_codes = codelist_from_csv(
     column = "code",
 )
 
-## Smoking status
-clear_smoking_codes = codelist_from_csv(
-  "codelists/opensafely-smoking-clear.csv",
-  system = "ctv3",
-  column = "CTV3Code",
-  category_column = "Category",
-)
+
 
 ## BMI
 bmi_codes = codelist_from_csv(
