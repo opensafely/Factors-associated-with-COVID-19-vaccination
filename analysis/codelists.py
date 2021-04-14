@@ -65,13 +65,7 @@ ethnicity_no_record_codes = codelist_from_csv(
     column = "code",
 )
 
-## Smoking status
-clear_smoking_codes = codelist_from_csv(
-  "codelists/opensafely-smoking-clear.csv",
-  system = "ctv3",
-  column = "CTV3Code",
-  category_column = "Category",
-)
+
 
 ## BMI
 bmi_codes = codelist_from_csv(
@@ -150,12 +144,6 @@ chronic_neuro_dis_inc_sig_learn_dis_codes = codelist_from_csv(
   column = "code",
 )
 
-## Stroke
-stroke_codes = codelist_from_csv(
-    "codelists/opensafely-stroke-updated.csv", 
-    system = "ctv3", 
-    column = "CTV3ID"
-)
 
 ## Asplenia or Dysfunction of the Spleen codes
 asplenia_codes = codelist_from_csv(

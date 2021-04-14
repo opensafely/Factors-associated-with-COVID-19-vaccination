@@ -312,13 +312,7 @@ study = StudyDefinition(
     date_format = "YYYY-MM-DD",
   ),
   
-  ### Stroke
-  stroke = patients.with_these_clinical_events(
-    stroke_codes,
-    on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.01, },
-  ),
+
   
   ### Asplenia or Dysfunction of the Spleen codes
   asplenia = patients.with_these_clinical_events(
