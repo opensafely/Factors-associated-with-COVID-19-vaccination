@@ -87,7 +87,6 @@ data_extract0 <- read_csv(
     sev_mental_ill = col_date(format="%Y-%m-%d"),
     learning_disability = col_date(format="%Y-%m-%d"),
     chronic_neuro_dis_inc_sig_learn_dis = col_date(format="%Y-%m-%d"),
-    stroke = col_logical(),
     asplenia = col_logical(),
     chronic_liver_disease = col_logical(),
     chronis_respiratory_disease = col_date(format="%Y-%m-%d"),
@@ -268,7 +267,7 @@ data_processed <- data_extract %>%
   ) %>%
   select(patient_id, covid_vax, follow_up_time, practice_id, stp, age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease,
          diabetes, chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_1_5,
-         sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, stroke, asplenia, chronic_liver_disease, 
+         sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
          chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
          flu_vaccine, shielded, shielded_since_feb_15) 
 
