@@ -236,14 +236,14 @@ data_processed <- data_extract %>%
     # Region
     region = fct_case_when(
       region == "London" ~ "London",
-      region == "East" ~ "East",
+      region == "East of England" ~ "East of England",
       region == "East Midlands" ~ "East Midlands",
       region == "North East" ~ "North East",
-      region == "North West" ~ "5 North West",
+      region == "North West" ~ "North West",
       region == "South East" ~ "South East",
       region == "South West" ~ "South West",
       region == "West Midlands" ~ "West Midlands",
-      region == "Yorkshire and The Humber" ~ "Yorkshire and The Humber",
+      region == "Yorkshire and the Humber" ~ "Yorkshire and the Humber",
       #TRUE ~ "Unknown",
       TRUE ~ NA_character_
     ),
