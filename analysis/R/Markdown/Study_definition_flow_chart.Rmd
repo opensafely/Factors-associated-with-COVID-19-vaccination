@@ -331,7 +331,7 @@ criteria5 <- boxGrob(glue("Patients registered at same practice throughout study
                           .sep = "\n"))
 
 ## Patients in practices with less than 100 "study population" registered patients
-exclude5 <- boxGrob(glue("Patients excluded (n = {tot})",
+exclude5 <- boxGrob(glue("Patients in practices with <100 registered patients (n = {tot})",
                          " - Practices excluded: {prac}",
                          tot = txtInt(nrow(criteria_9) - nrow(criteria_10)),
                          prac = txtInt(length(subset(practice_counts, Number_of_registered_patients < 100)$practice_id)),
