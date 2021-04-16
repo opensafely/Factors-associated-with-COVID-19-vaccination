@@ -34,7 +34,7 @@ data_cox <- data_tte %>%
 
 ## Import models data
 coxmod1 <- read_rds(here::here("output", "models", "mod_coxph_adj.rds"))
-#coxmod1b <- read_rds(here::here("output", "models", "mod_coxph_adjb.rds"))
+coxmod1b <- read_rds(here::here("output", "models", "mod_coxph_adjb.rds"))
 #coxmod2 <- read_rds(here::here("output", "models", "mod_coxme_adj.rds"))
 
 ## Function to test random effects

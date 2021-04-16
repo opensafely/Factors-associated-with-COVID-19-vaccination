@@ -236,14 +236,14 @@ data_processed <- data_extract %>%
     # Region
     region = fct_case_when(
       region == "London" ~ "London",
-      region == "East of England" ~ "East of England",
+      region == "East" ~ "East of England",
       region == "East Midlands" ~ "East Midlands",
       region == "North East" ~ "North East",
       region == "North West" ~ "North West",
       region == "South East" ~ "South East",
       region == "South West" ~ "South West",
       region == "West Midlands" ~ "West Midlands",
-      region == "Yorkshire and the Humber" ~ "Yorkshire and the Humber",
+      region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
       #TRUE ~ "Unknown",
       TRUE ~ NA_character_
     ),
@@ -282,16 +282,5 @@ data_processed <- data_extract %>%
          chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
          flu_vaccine, shielded, shielded_since_feb_15) 
 
-## Exclude practices with less than 100 registered patients
-
-### Registered patients counts
-practice_counts <- data_processed %>% 
-  group_by(practice_id) %>%
-  summarise(`Number_of_registered_patients` = n())
-
-## Exclude 
-data_processed_filtered <- data_processed %>%
-  filter(practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id)
-
 # Save dataset as .rds files ----
-write_rds(data_processed_filtered, here::here("output", "data", "data_all.rds"), compress="gz")
+write_rds(data_processed, here::here("output", "data", "data_all.rds"), compress="gz")

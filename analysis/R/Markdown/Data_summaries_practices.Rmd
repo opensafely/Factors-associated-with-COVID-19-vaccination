@@ -112,6 +112,8 @@ practice_counts <- data_processed %>%
   group_by(practice_id) %>%
   summarise(`Number_of_registered_patients` = n())
 
+length(unique(practice_counts$practice_id))
+
 summary(practice_counts$`Number_of_registered_patients`)
 ```
 
