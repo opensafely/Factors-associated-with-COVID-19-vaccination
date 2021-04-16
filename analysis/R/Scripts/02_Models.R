@@ -74,6 +74,7 @@ mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
                           asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                           immunosuppression_medication + imd + region + rural_urban + flu_vaccine + shielded +
                           shielded_since_feb_15 + (1 | practice_id),
-                        data = data_cox)
+                       sparse=c(50,.03),
+                       data = data_cox)
 
 write_rds(mod.coxme.adj, here::here("output", "models", "mod_coxme_adj.rds"), compress="gz")
