@@ -124,5 +124,9 @@ practice_counts %>%
   datatable()
 ```
 
+```{r, warning= FALSE, echo = FALSE}
+table(data_extract$region)
+```
+
 
 
