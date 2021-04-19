@@ -165,7 +165,7 @@ data_cox_stratification <- data_cox %>%
 # MODELS ----
 
 ## Cox PH model - unadjusted
-mod.coxph.unadj <- coxph(Surv(follow_up_time, covid_vax) ~ 1, data = data_cox)
+mod.coxph.unadj <- coxph(Surv(follow_up_time, covid_vax) ~ 1, data = data_cox_stratification)
 
 write_rds(mod.coxph.unadj, here::here("output", "models", "mod_coxph_unadj.rds"), compress="gz")
 
@@ -177,7 +177,7 @@ mod.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                          immunosuppression_medication + imd + stp + region + rural_urban + flu_vaccine + shielded +
                          shielded_since_feb_15,
-                       data = data_cox)
+                       data = data_cox_stratification)
 
 write_rds(mod.coxph.adj, here::here("output", "models", "mod_coxph_adj.rds"), compress="gz")
 
@@ -201,7 +201,7 @@ mod.coxph.adjc <- coxph(Surv(follow_up_time, covid_vax) ~
                           asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                           immunosuppression_medication + imd + region + rural_urban + flu_vaccine + shielded +
                           shielded_since_feb_15 + frailty(practice_id),
-                        data = data_cox)
+                        data = data_cox_stratification)
 
 write_rds(mod.coxph.adjc, here::here("output", "models", "mod_coxph_adjc.rds"), compress="gz")
 
