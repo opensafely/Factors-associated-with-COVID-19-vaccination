@@ -165,38 +165,46 @@ data_cox_stratification <- data_cox %>%
 # MODELS ----
 
 ## Cox PH model - unadjusted
-mod.coxph.unadj <- coxph(Surv(follow_up_time, covid_vax) ~ 1, data = data_cox_stratification)
+mod.coxph.unadj <- coxph(Surv(follow_up_time, covid_vax) ~ 1, data = data_cox)
 
-write_rds(mod.coxph.unadj, here::here("output", "models", "mod_final_coxph_unadj.rds"), compress="gz")
+write_rds(mod.coxph.unadj, here::here("output", "models", "mod_coxph_unadj.rds"), compress="gz")
 
-## Cox PH model - adjusted; baseline demographics, comorbs, geographical, other 
+## Cox PH model - adjusted; baseline demographics, comorbs, geographical, flu and shielding 
 mod.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~ 
                          ageband + sex + ethnicity + morbid_obesity +
                          chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                          chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                          immunosuppression_medication + imd + stp + region + rural_urban + flu_vaccine + shielded +
-                         shielded_since_feb_15 + strata(practice_id),
-                       data = data_cox_stratification)
+                         shielded_since_feb_15,
+                       data = data_cox)
 
-write_rds(mod.coxph.adj, here::here("output", "models", "mod_final_coxph_adj.rds"), compress="gz")
+write_rds(mod.coxph.adj, here::here("output", "models", "mod_coxph_adj.rds"), compress="gz")
 
-## Coxme model - unadjusted
-mod.coxme.unadj <- coxph(Surv(follow_up_time, covid_vax) ~ 1, data = data_cox)
+# Cox model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & practice id
+mod.coxph.adjb <- coxph(Surv(follow_up_time, covid_vax) ~
+                          ageband + sex + ethnicity + morbid_obesity +
+                          chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                          chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
+                          immunosuppression_medication + imd + region + rural_urban + flu_vaccine + shielded +
+                          shielded_since_feb_15 + strata(practice_id),
+                        data = data_cox_stratification)
 
-write_rds(mod.coxme.unadj, here::here("output", "models", "mod_final_coxme_unadj.rds"), compress="gz")
+write_rds(mod.coxph.adjb, here::here("output", "models", "mod_coxph_adjb.rds"), compress="gz")
 
-# # Mixed effects Cox model - adjusted; baseline demographics, comorbs, geographical, other, stp as random effect
-# mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
-#                          ageband + sex + ethnicity + morbid_obesity +
-#                          chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-#                          chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
-#                          stroke + asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-#                          immunosuppression_medication + imd + region + rural_urban + flu_vaccine + shielded +
-#                          shielded_since_feb_15 + (1 | practice_id),
-#                        data = data_cox)
-# 
-# write_rds(mod.coxme.adj, here::here("output", "models", "mod_coxme_adj.rds"), compress="gz")
+# Cox model with RE for practice - adjusted; baseline demographics, comorbs, geographical, flu, shielding & practice id
+mod.coxph.adjc <- coxph(Surv(follow_up_time, covid_vax) ~
+                          ageband + sex + ethnicity + morbid_obesity +
+                          chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                          chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
+                          immunosuppression_medication + imd + region + rural_urban + flu_vaccine + shielded +
+                          shielded_since_feb_15 + frailty(practice_id),
+                        data = data_cox)
+
+write_rds(mod.coxph.adjc, here::here("output", "models", "mod_coxph_adjc.rds"), compress="gz")
+
 
 
 # Output model coefficients ----
@@ -208,6 +216,16 @@ tab_mod1 <- gtsummary::tbl_regression(mod.coxph.adj)
 gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "tab_coxph.html"))
 write_csv(tab_mod1$table_body, here::here("output",  "models", "tab_coxph.csv"))
 
+### Stratified Cox PH model - adjusted
+tab_mod2 <- gtsummary::tbl_regression(mod.coxph.adjb)
+gtsave(tab_mod2 %>% as_gt(), here::here("output", "models", "tab_coxphb.html"))
+write_csv(tab_mod2$table_body, here::here("output",  "models", "tab_coxphb.csv"))
+
+### Cox PH model with REs- adjusted
+tab_mod3 <- gtsummary::tbl_regression(mod.coxph.adjc)
+gtsave(tab_mod3 %>% as_gt(), here::here("output", "models", "tab_coxphc.html"))
+write_csv(tab_mod3$table_body, here::here("output",  "models", "tab_coxphc.csv"))
+
 
 # ## Mixed effects Cox model - adjusted
 # tab_mod2 <- gtsummary::tbl_regression(mod.coxme.adj)
@@ -217,12 +235,28 @@ write_csv(tab_mod1$table_body, here::here("output",  "models", "tab_coxph.csv"))
 ## Forest plots
 
 ### Cox PH model - adjusted
-plot_coxph <- ggforest2(mod.coxph.adj, data = data_cox_stratification)
+plot_coxph <- ggforest(mod.coxph.adj, data = data_cox_stratification)
 ggsave(
   here::here("output", "models", "plot_coxph.svg"),
   plot_coxph,
-  units = "cm", width = 45, height = 45
+  units = "cm", width = 20, height = 30
 )
+
+### Stratified Cox PH model - adjusted
+plot_coxph <- ggforest2(mod.coxph.adjb, data = data_cox_stratification)
+ggsave(
+  here::here("output", "models", "plot_coxphb.svg"),
+  plot_coxph,
+  units = "cm", width = 20, height = 30
+)
+
+### Cox PH model with REs - adjusted
+# plot_coxph <- ggforest2(mod.coxph.adjc, data = data_cox)
+# ggsave(
+#   here::here("output", "models", "plot_coxphc.svg"),
+#   plot_coxph,
+#   units = "cm", width = 20, height = 30
+# )
 
 ### Mixed effects Cox model - adjusted
 # plot_coxme <- survminer::ggforest(mod.coxme.adj, data = data_cox)
