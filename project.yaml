@@ -64,7 +64,7 @@ actions:
     needs: [generate_study_population, data_process_all]
     outputs:
       highly_sensitive :
-        models: output/models/mod*.rds
+        models: output/models/testing/mod*.rds
         
   # Models summaries
   cox_models_summaries:

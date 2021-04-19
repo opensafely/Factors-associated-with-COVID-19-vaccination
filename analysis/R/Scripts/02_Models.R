@@ -20,7 +20,7 @@ library('gt')
 #library('ehahelper')
 
 ## Create output directory
-dir.create(here::here("output", "models"), showWarnings = FALSE, recursive=TRUE)
+dir.create(here::here("output", "models", "testing"), showWarnings = FALSE, recursive=TRUE)
 
 ## Import processed data
 data_tte <- read_rds(here::here("output", "data", "data_all.rds"))
@@ -78,8 +78,21 @@ mod.coxph.adjb <- coxph(Surv(follow_up_time, covid_vax) ~
 
 write_rds(mod.coxph.adjb, here::here("output", "models", "mod_coxph_adjb.rds"), compress="gz")
 
+# Cox model with RE for practice - adjusted; baseline demographics, comorbs, geographical, flu, shielding & practice id
+mod.coxph.adjc <- coxph(Surv(follow_up_time, covid_vax) ~
+                          ageband + sex + ethnicity + morbid_obesity +
+                          chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                          chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
+                          immunosuppression_medication + imd + region + rural_urban + flu_vaccine + shielded +
+                          shielded_since_feb_15 + frailty(practice_id),
+                        data = data_cox)
+
+write_rds(mod.coxph.adjc, here::here("output", "models", "mod_coxph_adjc.rds"), compress="gz")
+
+
 # Mixed effects Cox model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & pracice as random effect
-mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
+oxph(Surv(time, status) ~ age + frailty(inst, df=4), lung)mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
                           ageband + (1 | practice_id),
                        data = data_cox)
 
