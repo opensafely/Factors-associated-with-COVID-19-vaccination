@@ -66,6 +66,14 @@ actions:
       highly_sensitive :
         models: output/models/testing/mod*.rds
         
+  cox_models_sub:
+    run: r:latest analysis/R/Scripts/02_Models_sub_test.R
+    needs: [generate_study_population, data_process_all]
+    outputs:
+      highly_sensitive :
+        models: output/models/testing/mod_test*.rds
+        
+
   # Models summaries
   # cox_models_summaries:
   #   run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Model_comparisons.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
