@@ -92,7 +92,7 @@ write_rds(mod.coxph.adjc, here::here("output", "models", "mod_coxph_adjc.rds"), 
 
 
 # Mixed effects Cox model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & pracice as random effect
-oxph(Surv(time, status) ~ age + frailty(inst, df=4), lung)mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
+mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
                           ageband + (1 | practice_id),
                        data = data_cox)
 
