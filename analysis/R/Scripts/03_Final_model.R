@@ -212,23 +212,23 @@ write_rds(mod.coxph.adjc, here::here("output", "models", "mod_coxph_adjc.rds"), 
 ## Summary tables
 
 ### Cox PH model - adjusted
-tab_mod1 <- gtsummary::tbl_regression(mod.coxph.adj)
+tab_mod1 <- gtsummary::tbl_regression(mod.coxph.adj, exp = TRUE)
 gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "tab_coxph.html"))
 write_csv(tab_mod1$table_body, here::here("output",  "models", "tab_coxph.csv"))
 
 ### Stratified Cox PH model - adjusted
-tab_mod2 <- gtsummary::tbl_regression(mod.coxph.adjb)
+tab_mod2 <- gtsummary::tbl_regression(mod.coxph.adjb, exp = TRUE)
 gtsave(tab_mod2 %>% as_gt(), here::here("output", "models", "tab_coxphb.html"))
 write_csv(tab_mod2$table_body, here::here("output",  "models", "tab_coxphb.csv"))
 
 ### Cox PH model with REs- adjusted
-tab_mod3 <- gtsummary::tbl_regression(mod.coxph.adjc)
+tab_mod3 <- gtsummary::tbl_regression(mod.coxph.adjc, exp = TRUE)
 gtsave(tab_mod3 %>% as_gt(), here::here("output", "models", "tab_coxphc.html"))
 write_csv(tab_mod3$table_body, here::here("output",  "models", "tab_coxphc.csv"))
 
 
 # ## Mixed effects Cox model - adjusted
-# tab_mod2 <- gtsummary::tbl_regression(mod.coxme.adj)
+# tab_mod2 <- gtsummary::tbl_regression(mod.coxme.adj, exp = TRUE)
 # gtsave(tab_mod2 %>% as_gt(), here::here("output", "models", "tab_coxme.html"))
 # write_csv(tab_mod2$table_body, here::here("output",  "models", "tab_coxme.csv"))
 
