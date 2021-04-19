@@ -59,4 +59,4 @@ mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
                          shielded_since_feb_15 + (1 | practice_id),
                        data = data_cox_stratification)
 
-write_rds(mod.coxme.adj, here::here("output", "models", "testing", "mod_coxme_adj_sub.rds"), compress="gz")
+write_rds(mod.coxme.adj, here::here("output", "models", "testing", "mod_test_coxme_adj.rds"), compress="gz")
