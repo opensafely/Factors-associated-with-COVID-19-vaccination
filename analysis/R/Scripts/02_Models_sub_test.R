@@ -52,6 +52,7 @@ print(length(unique(data_cox_stratification$practice_id)))
 # Mixed effects Cox model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & pracice as random effect
 mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
                          ageband + + sex + morbid_obesity +
+                         chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                          (1 | practice_id),
                        data = data_cox_stratification)
 
