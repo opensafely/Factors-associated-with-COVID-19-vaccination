@@ -44,7 +44,7 @@ practice_counts <- data_cox %>%
 ## Exclude 
 data_cox_stratification <- data_cox %>%
   filter(practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id,
-         practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id[1:50])
+         practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id[1:90])
 
 # MODELS ----
 
