@@ -44,7 +44,7 @@ practice_counts <- data_cox %>%
 ## Exclude 
 data_cox_stratification <- data_cox %>%
   filter(practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id,
-         practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id[1:10])
+         practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id[1:100])
 
 # MODELS ----
 
@@ -55,7 +55,6 @@ mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
                          chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                          immunosuppression_medication + imd + flu_vaccine + shielded + shielded_since_feb_15 + region + 
-                         ethnicity +
                          (1 | practice_id),
                        data = data_cox_stratification)
 
