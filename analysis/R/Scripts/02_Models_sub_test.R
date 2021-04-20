@@ -51,7 +51,8 @@ print(length(unique(data_cox_stratification$practice_id)))
 
 # Mixed effects Cox model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & pracice as random effect
 mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
-                         ageband + (1 | practice_id),
+                         ageband + + sex + morbid_obesity +
+                         (1 | practice_id),
                        data = data_cox_stratification)
 
 write_rds(mod.coxme.adj, here::here("output", "models", "testing", "mod_test_coxme_adj.rds"), compress="gz")
