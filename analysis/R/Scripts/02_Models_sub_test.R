@@ -44,7 +44,7 @@ practice_counts <- data_cox %>%
 ## Exclude 
 data_cox_stratification <- data_cox %>%
   filter(practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id,
-         practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id[1:10])
+         practice_id %in% subset(practice_counts, Number_of_registered_patients >= 100)$practice_id[1:100])
 
 table(data_cox_stratification$rural_urban)
 
