@@ -394,7 +394,7 @@ study = StudyDefinition(
   
   
   ### Practice id at dereg
-  practice_id_at_death = patients.registered_practice_as_of(
+  practice_id_at_dereg = patients.registered_practice_as_of(
     "dereg_date",
     returning = "pseudo_id",
     return_expectations = {
