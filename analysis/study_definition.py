@@ -48,7 +48,7 @@ study = StudyDefinition(
         AND
         registered
         AND
-        age >= 80
+        age >= 70
         AND
         has_follow_up_previous_year
         AND
@@ -189,6 +189,7 @@ study = StudyDefinition(
     find_last_match_in_period = True,
     on_or_before = "index_date",
     date_format = "YYYY-MM-DD",
+    return_expectations = {"incidence": 0.00000001},
   ),
   
   ### Ethnicity not stated
@@ -363,7 +364,7 @@ study = StudyDefinition(
   
   ### Practice id
   practice_id = patients.registered_practice_as_of(
-    "index_date",  # day before vaccine campaign start
+    "index_date", 
     returning = "pseudo_id",
     return_expectations = {
       "int": {"distribution": "normal", "mean": 10, "stddev": 1},

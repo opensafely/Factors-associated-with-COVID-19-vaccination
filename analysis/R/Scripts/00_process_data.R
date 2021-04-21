@@ -147,8 +147,8 @@ data_processed <- data_extract %>%
     # Age
     ageband = cut(
       age,
-      breaks = c(-Inf, 85, 90, 95, Inf),
-      labels = c("80-84", "85-89", "90-94", "95+"),
+      breaks = c(-Inf, 75, 80, 85, 90, 95, Inf),
+      labels = c("70-74", "75-79", "80-84", "85-89", "90-94", "95+"),
       right = FALSE
     ),
     
@@ -268,7 +268,7 @@ data_processed <- data_extract %>%
     # Household contact of shielding individual
     hhld_imdef_dat = ifelse(is.na(hhld_imdef_dat), FALSE, TRUE)
   ) %>%
-  filter(age >= 80,
+  filter(age >= 70,
          sex %in% c("Male", "Female"),
          !is.na(imd),
          !is.na(ethnicity),
@@ -280,7 +280,8 @@ data_processed <- data_extract %>%
          diabetes, chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_1_5,
          sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
          chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
-         flu_vaccine, shielded, shielded_since_feb_15) 
+         flu_vaccine, shielded, shielded_since_feb_15) %>%
+  droplevels()
 
 # Save dataset as .rds files ----
 write_rds(data_processed, here::here("output", "data", "data_all.rds"), compress="gz")
