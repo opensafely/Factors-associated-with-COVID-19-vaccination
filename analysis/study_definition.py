@@ -313,7 +313,7 @@ study = StudyDefinition(
     date_format = "YYYY-MM-DD",
   ),
   
-
+  
   
   ### Asplenia or Dysfunction of the Spleen codes
   asplenia = patients.with_these_clinical_events(
@@ -363,8 +363,8 @@ study = StudyDefinition(
   ## GEOGRAPHICAL/DEPRIVATION
   
   ### Practice id
-  practice_id = patients.registered_practice_as_of(
-    "index_date", 
+  practice_id_latest_build_date = patients.registered_practice_as_of(
+    "latest_build_date", 
     returning = "pseudo_id",
     return_expectations = {
       "int": {"distribution": "normal", "mean": 10, "stddev": 1},
@@ -372,7 +372,7 @@ study = StudyDefinition(
     },
   ),
   
-  ### Practice id at end (to check people moving practices during study)
+  ### Practice id at end
   practice_id_at_end = patients.registered_practice_as_of(
     end_date,
     returning = "pseudo_id",
@@ -382,7 +382,7 @@ study = StudyDefinition(
     },
   ),
   
-  ### Practice id at death (to check people moving practices during study)
+  ### Practice id at death
   practice_id_at_death = patients.registered_practice_as_of(
     "death_date",
     returning = "pseudo_id",
@@ -391,217 +391,228 @@ study = StudyDefinition(
       "incidence": 1,
     },
   ),
-
-### Index of multiple deprivation
-imd = patients.categorised_as(
-  {"0": "DEFAULT",
-    "1": """index_of_multiple_deprivation >=1 AND index_of_multiple_deprivation < 32844*1/5""",
-    "2": """index_of_multiple_deprivation >= 32844*1/5 AND index_of_multiple_deprivation < 32844*2/5""",
-    "3": """index_of_multiple_deprivation >= 32844*2/5 AND index_of_multiple_deprivation < 32844*3/5""",
-    "4": """index_of_multiple_deprivation >= 32844*3/5 AND index_of_multiple_deprivation < 32844*4/5""",
-    "5": """index_of_multiple_deprivation >= 32844*4/5 """,
-  },
-  index_of_multiple_deprivation = patients.address_as_of(
-    "index_date",
-    returning = "index_of_multiple_deprivation",
-    round_to_nearest = 100,
-  ),
-  return_expectations = {
-    "rate": "universal",
-    "category": {
-      "ratios": {
-        "0": 0.01,
-        "1": 0.20,
-        "2": 0.20,
-        "3": 0.20,
-        "4": 0.20,
-        "5": 0.19,
-      }},
-  },
-),
-
-### Region - NHS England 9 regions
-region = patients.registered_practice_as_of(
-  "index_date",
-  returning = "nuts1_region_name",
-  return_expectations = {
-    "rate": "universal",
-    "category": {
-      "ratios": {
-        "North East": 0.1,
-        "North West": 0.1,
-        "Yorkshire and The Humber": 0.1,
-        "East Midlands": 0.1,
-        "West Midlands": 0.1,
-        "East": 0.1,
-        "London": 0.2,
-        "South West": 0.1,
-        "South East": 0.1,},},
-  },
-),
-
-### STP (regional grouping of practices)
-stp = patients.registered_practice_as_of("index_date",
-                                         returning = "stp_code",
-                                         return_expectations = {
-                                           "rate": "universal",
-                                           "category": {
-                                             "ratios": {
-                                               "STP1": 0.1,
-                                               "STP2": 0.1,
-                                               "STP3": 0.1,
-                                               "STP4": 0.1,
-                                               "STP5": 0.1,
-                                               "STP6": 0.1,
-                                               "STP7": 0.1,
-                                               "STP8": 0.1,
-                                               "STP9": 0.1,
-                                               "STP10": 0.1,}},
-                                         },
-),
-
-### Urban vs rural
-rural_urban = patients.address_as_of(
-  "index_date",
-  returning = "rural_urban_classification",
-  return_expectations = {
-    "rate": "universal",
-    "category": {"ratios": {
-      1: 0.125, 
-      2: 0.125, 
-      3: 0.125, 
-      4: 0.125, 
-      5: 0.125, 
-      6: 0.125, 
-      7: 0.125, 
-      8: 0.125}
+  
+  
+  ### Practice id at dereg
+  practice_id_at_death = patients.registered_practice_as_of(
+    "dereg_date",
+    returning = "pseudo_id",
+    return_expectations = {
+      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
+      "incidence": 1,
     },
-  },
-),
-
-
-## OTHER FACTORS
-
-### Flu Vaccine: Last 5 years prior to march 31st 2020
-flu_vaccine = patients.satisfying(
-  """
+  ),
+  
+  ### Index of multiple deprivation
+  imd = patients.categorised_as(
+    {"0": "DEFAULT",
+      "1": """index_of_multiple_deprivation >=1 AND index_of_multiple_deprivation < 32844*1/5""",
+      "2": """index_of_multiple_deprivation >= 32844*1/5 AND index_of_multiple_deprivation < 32844*2/5""",
+      "3": """index_of_multiple_deprivation >= 32844*2/5 AND index_of_multiple_deprivation < 32844*3/5""",
+      "4": """index_of_multiple_deprivation >= 32844*3/5 AND index_of_multiple_deprivation < 32844*4/5""",
+      "5": """index_of_multiple_deprivation >= 32844*4/5 """,
+    },
+    index_of_multiple_deprivation = patients.address_as_of(
+      "index_date",
+      returning = "index_of_multiple_deprivation",
+      round_to_nearest = 100,
+    ),
+    return_expectations = {
+      "rate": "universal",
+      "category": {
+        "ratios": {
+          "0": 0.01,
+          "1": 0.20,
+          "2": 0.20,
+          "3": 0.20,
+          "4": 0.20,
+          "5": 0.19,
+        }},
+    },
+  ),
+  
+  ### Region - NHS England 9 regions
+  region = patients.registered_practice_as_of(
+    "index_date",
+    returning = "nuts1_region_name",
+    return_expectations = {
+      "rate": "universal",
+      "category": {
+        "ratios": {
+          "North East": 0.1,
+          "North West": 0.1,
+          "Yorkshire and The Humber": 0.1,
+          "East Midlands": 0.1,
+          "West Midlands": 0.1,
+          "East": 0.1,
+          "London": 0.2,
+          "South West": 0.1,
+          "South East": 0.1,},},
+    },
+  ),
+  
+  ### STP (regional grouping of practices)
+  stp = patients.registered_practice_as_of("index_date",
+                                           returning = "stp_code",
+                                           return_expectations = {
+                                             "rate": "universal",
+                                             "category": {
+                                               "ratios": {
+                                                 "STP1": 0.1,
+                                                 "STP2": 0.1,
+                                                 "STP3": 0.1,
+                                                 "STP4": 0.1,
+                                                 "STP5": 0.1,
+                                                 "STP6": 0.1,
+                                                 "STP7": 0.1,
+                                                 "STP8": 0.1,
+                                                 "STP9": 0.1,
+                                                 "STP10": 0.1,}},
+                                           },
+  ),
+  
+  ### Urban vs rural
+  rural_urban = patients.address_as_of(
+    "index_date",
+    returning = "rural_urban_classification",
+    return_expectations = {
+      "rate": "universal",
+      "category": {"ratios": {
+        1: 0.125, 
+        2: 0.125, 
+        3: 0.125, 
+        4: 0.125, 
+        5: 0.125, 
+        6: 0.125, 
+        7: 0.125, 
+        8: 0.125}
+      },
+    },
+  ),
+  
+  
+  ## OTHER FACTORS
+  
+  ### Flu Vaccine: Last 5 years prior to march 31st 2020
+  flu_vaccine = patients.satisfying(
+    """
         flu_vaccine_tpp_table>0 OR
         flu_vaccine_med>0 OR
         flu_vaccine_clinical>0
         """,
-  
-  flu_vaccine_tpp_table = patients.with_tpp_vaccination_record(
-    target_disease_matches = "INFLUENZA",
-    between = ["2015-04-01", "2020-03-31"], 
-    returning = "binary_flag",
+    
+    flu_vaccine_tpp_table = patients.with_tpp_vaccination_record(
+      target_disease_matches = "INFLUENZA",
+      between = ["2015-04-01", "2020-03-31"], 
+      returning = "binary_flag",
+    ),
+    
+    flu_vaccine_med = patients.with_these_medications(
+      flu_med_codes,
+      between = ["2015-04-01", "2020-03-31"], 
+      returning = "binary_flag",
+    ),
+    flu_vaccine_clinical = patients.with_these_clinical_events(
+      flu_clinical_given_codes,
+      ignore_days_where_these_codes_occur = flu_clinical_not_given_codes,
+      between = ["2015-04-01", "2020-03-31"], 
+      returning = "binary_flag",
+    ),
+    
+    return_expectations = {"incidence": 0.5, },
   ),
   
-  flu_vaccine_med = patients.with_these_medications(
-    flu_med_codes,
-    between = ["2015-04-01", "2020-03-31"], 
-    returning = "binary_flag",
-  ),
-  flu_vaccine_clinical = patients.with_these_clinical_events(
-    flu_clinical_given_codes,
-    ignore_days_where_these_codes_occur = flu_clinical_not_given_codes,
-    between = ["2015-04-01", "2020-03-31"], 
-    returning = "binary_flag",
+  ### History of covid
+  prior_covid_date = patients.with_these_clinical_events(
+    combine_codelists(
+      covid_primary_care_code,
+      covid_primary_care_positive_test,
+      covid_primary_care_sequalae,
+    ),
+    returning = "date",
+    date_format = "YYYY-MM-DD",
+    on_or_before = "index_date",
+    find_first_match_in_period = True,
+    return_expectations = {"rate": "exponential_increase"},
   ),
   
-  return_expectations = {"incidence": 0.5, },
-),
-
-### History of covid
-prior_covid_date = patients.with_these_clinical_events(
-  combine_codelists(
-    covid_primary_care_code,
-    covid_primary_care_positive_test,
-    covid_primary_care_sequalae,
-  ),
-  returning = "date",
-  date_format = "YYYY-MM-DD",
-  on_or_before = "index_date",
-  find_first_match_in_period = True,
-  return_expectations = {"rate": "exponential_increase"},
-),
-
-### PRIMIS overall flag for shielded group
-shielded = patients.satisfying(
-  """ severely_clinically_vulnerable
+  ### PRIMIS overall flag for shielded group
+  shielded = patients.satisfying(
+    """ severely_clinically_vulnerable
             AND NOT less_vulnerable""", 
-  return_expectations = {
-    "incidence": 0.01,
-  },
-  
-  ### SHIELDED GROUP - first flag all patients with "high risk" codes
-  severely_clinically_vulnerable = patients.with_these_clinical_events(
-    high_risk_codes, # note no date limits set
-    find_last_match_in_period = True,
-    return_expectations = {"incidence": 0.02,},
+    return_expectations = {
+      "incidence": 0.01,
+    },
+    
+    ### SHIELDED GROUP - first flag all patients with "high risk" codes
+    severely_clinically_vulnerable = patients.with_these_clinical_events(
+      high_risk_codes, # note no date limits set
+      find_last_match_in_period = True,
+      return_expectations = {"incidence": 0.02,},
+    ),
+    
+    # find date at which the high risk code was added
+    date_severely_clinically_vulnerable = patients.date_of(
+      "severely_clinically_vulnerable", 
+      date_format = "YYYY-MM-DD",   
+    ),
+    
+    ### NOT SHIELDED GROUP (medium and low risk) - only flag if later than 'shielded'
+    less_vulnerable = patients.with_these_clinical_events(
+      not_high_risk_codes, 
+      on_or_after = "date_severely_clinically_vulnerable",
+      return_expectations = {"incidence": 0.01,},
+    ),
   ),
   
-  # find date at which the high risk code was added
-  date_severely_clinically_vulnerable = patients.date_of(
-    "severely_clinically_vulnerable", 
-    date_format = "YYYY-MM-DD",   
-  ),
-  
-  ### NOT SHIELDED GROUP (medium and low risk) - only flag if later than 'shielded'
-  less_vulnerable = patients.with_these_clinical_events(
-    not_high_risk_codes, 
-    on_or_after = "date_severely_clinically_vulnerable",
-    return_expectations = {"incidence": 0.01,},
-  ),
-),
-
-### Newly expanded shielding group as of 15 feb (should be a subset of the previous flag)
-shielded_since_feb_15 = patients.satisfying(
-  """severely_clinically_vulnerable_since_feb_15
+  ### Newly expanded shielding group as of 15 feb (should be a subset of the previous flag)
+  shielded_since_feb_15 = patients.satisfying(
+    """severely_clinically_vulnerable_since_feb_15
                 AND NOT new_shielding_status_reduced
                 AND NOT previous_flag
             """,
-  return_expectations = {
-    "incidence": 0.01,
-  },
-  
-  ### SHIELDED GROUP - first flag all patients with "high risk" codes
-  severely_clinically_vulnerable_since_feb_15 = patients.with_these_clinical_events(
-    high_risk_codes, 
-    on_or_after =  "2021-02-15",
-    find_last_match_in_period = False,
-    return_expectations={"incidence": 0.02,},
+    return_expectations = {
+      "incidence": 0.01,
+    },
+    
+    ### SHIELDED GROUP - first flag all patients with "high risk" codes
+    severely_clinically_vulnerable_since_feb_15 = patients.with_these_clinical_events(
+      high_risk_codes, 
+      on_or_after =  "2021-02-15",
+      find_last_match_in_period = False,
+      return_expectations={"incidence": 0.02,},
+    ),
+    
+    # find date at which the high risk code was added
+    date_vulnerable_since_feb_15 = patients.date_of(
+      "severely_clinically_vulnerable_since_feb_15", 
+      date_format = "YYYY-MM-DD",   
+    ),
+    
+    ### check that patient's shielding status has not since been reduced to a lower risk level 
+    # e.g. due to improved clinical condition of patient
+    new_shielding_status_reduced = patients.with_these_clinical_events(
+      not_high_risk_codes,
+      on_or_after = "date_vulnerable_since_feb_15",
+      return_expectations = {"incidence": 0.01,},
+    ),
+    
+    # anyone with a previous flag of any risk level will not be added to the new shielding group
+    previous_flag = patients.with_these_clinical_events(
+      combine_codelists(high_risk_codes, not_high_risk_codes),
+      on_or_before = "2021-02-14",
+      return_expectations = {"incidence": 0.01,},
+    ),
   ),
   
-  # find date at which the high risk code was added
-  date_vulnerable_since_feb_15 = patients.date_of(
-    "severely_clinically_vulnerable_since_feb_15", 
-    date_format = "YYYY-MM-DD",   
+  ### To represent household contact of shielding individual
+  hhld_imdef_dat = patients.with_these_clinical_events(
+    hhld_imdef_codes,
+    returning = "date",
+    find_last_match_in_period = True,
+    on_or_before = "index_date",
+    date_format = "YYYY-MM-DD",
   ),
   
-  ### check that patient's shielding status has not since been reduced to a lower risk level 
-  # e.g. due to improved clinical condition of patient
-  new_shielding_status_reduced = patients.with_these_clinical_events(
-    not_high_risk_codes,
-    on_or_after = "date_vulnerable_since_feb_15",
-    return_expectations = {"incidence": 0.01,},
-  ),
-  
-  # anyone with a previous flag of any risk level will not be added to the new shielding group
-  previous_flag = patients.with_these_clinical_events(
-    combine_codelists(high_risk_codes, not_high_risk_codes),
-    on_or_before = "2021-02-14",
-    return_expectations = {"incidence": 0.01,},
-  ),
-),
-
-### To represent household contact of shielding individual
-hhld_imdef_dat = patients.with_these_clinical_events(
-  hhld_imdef_codes,
-  returning = "date",
-  find_last_match_in_period = True,
-  on_or_before = "index_date",
-  date_format = "YYYY-MM-DD",
-),
-
 )
 
