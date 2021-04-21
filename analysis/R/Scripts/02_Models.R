@@ -87,7 +87,7 @@ mod.coxph.adjc <- coxph(Surv(follow_up_time, covid_vax) ~
                           shielded_since_feb_15 + strata(practice_id_latest_active_registration),
                         data = data_cox)
 
-write_rds(mod.coxph.adjc, here::here("output", "models", "testing", "mod_coxph_adjb.rds"), compress="gz")
+write_rds(mod.coxph.adjc, here::here("output", "models", "testing", "mod_coxph_adjc.rds"), compress="gz")
 
 # Mixed effects Cox model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & pracice as random effect
 # mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
