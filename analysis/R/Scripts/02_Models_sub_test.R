@@ -47,7 +47,7 @@ data_cox_reduced <- data_cox %>%
   filter(#practice_id_latest_active_registration %in% 
          #  subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration,
          practice_id_latest_active_registration %in% 
-           subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration[1:10]) %>%
+           subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration[1:100]) %>%
   droplevels()
 
 
