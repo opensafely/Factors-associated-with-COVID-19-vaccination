@@ -392,7 +392,6 @@ study = StudyDefinition(
     },
   ),
   
-  
   ### Practice id at dereg
   practice_id_at_dereg = patients.registered_practice_as_of(
     "dereg_date",
