@@ -1,0 +1,70 @@
+---
+title: "Practice registration"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+# Preliminaries ----
+
+## Import libraries
+library(tidyverse)
+library(lubridate)
+library(DT)
+
+## Import data
+data_processed <- read_rds(here::here("output", "data", "data_all.rds"))
+```
+
+
+## Number of people moving practices
+`r data_processed %>% filter(practice_id_at_start != practice_id_latest_active_registration) %>% nrow()` (`r round(data_processed %>% filter(practice_id_at_start != practice_id_latest_active_registration) %>% nrow() / (data_processed %>% nrow())*100, digits = 2)`%) of the study population have a different practice id at the end of the study (or when they die/dereg) to their practice ID at the start of the study.
+
+## Total number of practices
+```{r, warning= FALSE, echo = FALSE}
+practice_counts <- data_processed %>% 
+  group_by(practice_id_latest_active_registration) %>%
+  summarise(`Number_of_registered_patients` = n())
+
+length(unique(practice_counts$practice_id_latest_active_registration))
+```
+
+## Counts per practice
+
+```{r, warning= FALSE, echo = FALSE}
+summary(practice_counts$`Number_of_registered_patients`)
+```
+
+* `r practice_counts %>% filter(Number_of_registered_patients < 100) %>% nrow() ` practices have less than 100 hundred registered (study population/eligible) patients 
+* `r practice_counts %>% filter(Number_of_registered_patients < 500) %>% nrow() ` practices have less than 500 hundred registered (study population/eligible) patients 
+* `r practice_counts %>% filter(Number_of_registered_patients < 1000) %>% nrow() ` practices have less than 1000 hundred registered (study population/eligible) patients 
+
+```{r, warning= FALSE, echo = FALSE}
+practice_counts %>% 
+  datatable()
+```
+
+## Events per practice
+
+```{r, warning= FALSE, echo = FALSE}
+practice_events <- data_processed %>% 
+  group_by(practice_id_latest_active_registration, covid_vax) %>%
+  tally() %>%
+  ungroup() %>%
+  pivot_wider(id_cols = practice_id_latest_active_registration, names_from = covid_vax, values_from = n) %>%
+  rename(Unvacc = `0`, Vacc = `1`) %>%
+  replace_na(list(Unvacc = 0, Vacc = 0)) %>%
+  mutate(Number_of_registered_patients = Unvacc + Vacc,
+         Prop_event = round(Vacc/Number_of_registered_patients*100, digits = 2))
+
+summary(practice_events$Prop_event)
+```
+
+* `r practice_events %>% filter(Prop_event == 0) %>% nrow()` practices have not vaccinated any patients
+  * Number of registered patients in these practices: `r practice_events %>% filter(Prop_event == 0) %>% ungroup() %>% select(Number_of_registered_patients) %>% summary()`
+* `r practice_events %>% filter(Prop_event == 100) %>% nrow()` practices  have vaccinated all patients
+  * Number of registered patients in these practices: `r practice_events %>% filter(Prop_event == 100) %>% ungroup() %>% select(Number_of_registered_patients) %>% summary()`
+

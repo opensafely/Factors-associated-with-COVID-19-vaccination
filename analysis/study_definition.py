@@ -362,12 +362,12 @@ study = StudyDefinition(
   
   ## GEOGRAPHICAL/DEPRIVATION
   
-  ### Practice id
-  practice_id_latest_build_date = patients.registered_practice_as_of(
-    "latest_build_date", 
+  ### Practice id at start
+  practice_id_at_start = patients.registered_practice_as_of(
+    start_date,
     returning = "pseudo_id",
     return_expectations = {
-      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
+      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
       "incidence": 1,
     },
   ),
@@ -377,7 +377,7 @@ study = StudyDefinition(
     end_date,
     returning = "pseudo_id",
     return_expectations = {
-      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
+      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
       "incidence": 1,
     },
   ),
@@ -387,7 +387,7 @@ study = StudyDefinition(
     "death_date",
     returning = "pseudo_id",
     return_expectations = {
-      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
+      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
       "incidence": 1,
     },
   ),
@@ -397,7 +397,7 @@ study = StudyDefinition(
     "dereg_date",
     returning = "pseudo_id",
     return_expectations = {
-      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
+      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
       "incidence": 1,
     },
   ),

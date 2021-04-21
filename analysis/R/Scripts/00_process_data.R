@@ -94,9 +94,10 @@ data_extract0 <- read_csv(
     immunosuppression_medication = col_date(format="%Y-%m-%d"),
     
     # Geographical
-    practice_id = col_integer(),
+    practice_id_at_start = col_integer(),
     practice_id_at_end = col_integer(),
     practice_id_at_death = col_integer(),
+    practice_id_at_dereg = col_integer(),
     imd = col_character(),
     region = col_character(),
     stp = col_character(),
@@ -130,6 +131,12 @@ data_extract <- data_extract0 %>%
 data_processed <- data_extract %>%
   mutate(
     
+    # Start date
+    start_date = as.Date("2020-12-07", format = "%Y-%m-%d"),
+    
+    # End date
+    end_date = as.Date("2021-03-17", format = "%Y-%m-%d"),
+    
     # COVID vaccination
     covid_vax = as.integer(ifelse(is.na(covid_vax_1_date), 0, 1)),
     
@@ -140,7 +147,7 @@ data_processed <- data_extract %>%
                        na.rm=TRUE),
     
     # Follow-up time
-    follow_up_time = tte(as.Date("2020-12-07", format = "%Y-%m-%d"),
+    follow_up_time = tte(start_date,
                          covid_vax_1_date,
                          censor_date),
     
@@ -229,10 +236,12 @@ data_processed <- data_extract %>%
       TRUE ~ NA_character_
     ),
     
-    # Practice id at end or at death
-    practice_id_at_end_or_at_death = ifelse(!is.na(death_date) & death_date < as.Date("2021-03-17", format = "%Y-%m-%d"), 
-                                                                 practice_id_at_death, practice_id_at_end),
-
+    # Practice id at death, dereg or end
+    practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death, 
+                                                    ifelse(!is.na(dereg_date) & dereg_date < end_date,
+                                                           practice_id_at_dereg, practice_id_at_end)),
+    
+    
     # Region
     region = fct_case_when(
       region == "London" ~ "London",
@@ -274,14 +283,20 @@ data_processed <- data_extract %>%
          !is.na(ethnicity),
          !is.na(region),
          !is.na(rural_urban),
-         practice_id == practice_id_at_end_or_at_death
   ) %>%
-  select(patient_id, covid_vax, follow_up_time, practice_id, stp, age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease,
-         diabetes, chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_1_5,
+  select(patient_id, covid_vax, follow_up_time, practice_id_at_start, practice_id_latest_active_registration, stp, 
+         age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease, diabetes, 
+         chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_1_5,
          sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
          chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
-         flu_vaccine, shielded, shielded_since_feb_15) %>%
+         flu_vaccine, shielded, shielded_since_feb_15)
+
+# Data for modelling
+data_processed_modelling <- data_processed %>%
+  select(-practice_id_at_start) %>%
+  mutate(practice_id_latest_active_registration = as.factor(practice_id_latest_active_registration)) %>%
   droplevels()
 
 # Save dataset as .rds files ----
 write_rds(data_processed, here::here("output", "data", "data_all.rds"), compress="gz")
+write_rds(data_processed_modelling, here::here("output", "data", "data_modelling.rds"), compress="gz")
