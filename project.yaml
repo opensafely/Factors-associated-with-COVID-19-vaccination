@@ -54,7 +54,7 @@ actions:
   # More data summaries
   data_summaries:
     run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Data_summaries.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
-    needs: [generate_study_population]
+    needs: [generate_study_population, data_process]
     outputs:
       moderately_sensitive:
         html: output/Data_summaries.html
