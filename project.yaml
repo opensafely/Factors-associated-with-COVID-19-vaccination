@@ -67,12 +67,12 @@ actions:
       highly_sensitive :
         models: output/models/testing/mod*.rds
         
-  # cox_models_sub:
-  #   run: r:latest analysis/R/Scripts/02_Models_sub_test.R
-  #   needs: [generate_study_population, data_process]
-  #   outputs:
-  #     highly_sensitive :
-  #       models: output/models/testing/mod_test*.rds
+  cox_models_sub:
+    run: r:latest analysis/R/Scripts/02_Models_sub_test.R
+    needs: [generate_study_population, data_process]
+    outputs:
+      highly_sensitive :
+        models: output/models/testing/mod_test*.rds
         
 
   # Models summaries
