@@ -179,12 +179,6 @@
       "url": "https://codelists.opensafely.org/codelist/opensafely/covid-identification-in-primary-care-probable-covid-sequelae/2020-07-16/",
       "downloaded_at": "2021-04-06 14:40:29.428812Z",
       "sha": "38dc0c0a34e2b8b376ba72819923f442c30b4946"
-    },
-    "primis-covid19-vacc-uptake-hhld_imdef.csv": {
-      "id": "primis-covid19-vacc-uptake/hhld_imdef/v1",
-      "url": "https://codelists.opensafely.org/codelist/primis-covid19-vacc-uptake/hhld_imdef/v1/",
-      "downloaded_at": "2021-04-06 14:40:29.955424Z",
-      "sha": "a2c6445f6de7fb8670cd73e0c641e6e00f6b808b"
     }
   }
 }
