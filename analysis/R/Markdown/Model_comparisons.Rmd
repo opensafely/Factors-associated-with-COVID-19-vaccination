@@ -238,6 +238,7 @@ data_cox_reduced <- data_cox %>%
   droplevels()
 
 length(unique(data_cox_reduced$patient_id))
+length(unique(data_cox$patient_id))/length(unique(data_cox_reduced$patient_id))*100
 length(unique(data_cox_reduced$practice_id_latest_active_registration))
 ```
 
