@@ -1,0 +1,196 @@
+---
+title: "Factors associated with COVID-19 vaccination"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+# Preliminaries ----
+
+## Import libraries
+library('tidyverse')
+library('lubridate')
+library('survival')
+library('coxme')
+library('gtsummary')
+library('gt')
+library("survminer")
+library('kableExtra')
+
+## Function to plot stratified cox model
+ggforest2 <-  function (model, data = NULL, main = "Hazard ratio", cpositions = c(0.02, 
+                                                                                  0.22, 0.4), fontsize = 0.7, refLabel = "reference", noDigits = 2) 
+{
+  conf.high <- conf.low <- estimate <- NULL
+  data <- survminer:::.get_data(model, data = data)
+  terms <- attr(model$terms, "dataClasses")[-1]
+  coef <- as.data.frame(broom::tidy(model, conf.int = TRUE))
+  gmodel <- broom::glance(model)
+  allTerms <- lapply(seq_along(terms), function(i) {
+    var <- names(terms)[i]
+    if(var %in% colnames(data)) {
+      if (terms[i] %in% c("factor", "character")) {
+        adf <- as.data.frame(table(data[, var]))
+        cbind(var = var, adf, pos = 1:nrow(adf))
+      }
+      else if (terms[i] == "numeric") {
+        data.frame(var = var, Var1 = "", Freq = nrow(data), 
+                   pos = 1)
+      }
+      else {
+        vars = grep(paste0("^", var, "*."), coef$term, 
+                    value = TRUE)
+        data.frame(var = vars, Var1 = "", Freq = nrow(data), 
+                   pos = seq_along(vars))
+      }
+    } else {
+      message(var, "is not found in data columns, and will be skipped.")
+    }    
+  })
+  allTermsDF <- do.call(rbind, allTerms)
+  colnames(allTermsDF) <- c("var", "level", "N", "pos")
+  inds <- apply(allTermsDF[, 1:2], 1, paste0, collapse = "")
+  rownames(coef) <- gsub(coef$term, pattern = "`", replacement = "")
+  toShow <- cbind(allTermsDF, coef[inds, ])[, c("var", "level", 
+                                                "N", "p.value", "estimate", "conf.low", "conf.high", 
+                                                "pos")]
+  toShowExp <- toShow[, 5:7]
+  toShowExp[is.na(toShowExp)] <- 0
+  toShowExp <- format(exp(toShowExp), digits = noDigits)
+  toShowExpClean <- data.frame(toShow, pvalue = signif(toShow[, 
+                                                              4], noDigits + 1), toShowExp)
+  toShowExpClean$stars <- paste0(round(toShowExpClean$p.value, 
+                                       noDigits + 1), " ", ifelse(toShowExpClean$p.value < 0.05, 
+                                                                  "*", ""), ifelse(toShowExpClean$p.value < 0.01, "*", 
+                                                                                   ""), ifelse(toShowExpClean$p.value < 0.001, "*", ""))
+  toShowExpClean$ci <- paste0("(", toShowExpClean[, "conf.low.1"], 
+                              " - ", toShowExpClean[, "conf.high.1"], ")")
+  toShowExpClean$estimate.1[is.na(toShowExpClean$estimate)] = refLabel
+  toShowExpClean$stars[which(toShowExpClean$p.value < 0.001)] = "<0.001 ***"
+  toShowExpClean$stars[is.na(toShowExpClean$estimate)] = ""
+  toShowExpClean$ci[is.na(toShowExpClean$estimate)] = ""
+  toShowExpClean$estimate[is.na(toShowExpClean$estimate)] = 0
+  toShowExpClean$var = as.character(toShowExpClean$var)
+  toShowExpClean$var[duplicated(toShowExpClean$var)] = ""
+  toShowExpClean$N <- paste0("(N=", toShowExpClean$N, ")")
+  toShowExpClean <- toShowExpClean[nrow(toShowExpClean):1, 
+  ]
+  rangeb <- range(toShowExpClean$conf.low, toShowExpClean$conf.high, 
+                  na.rm = TRUE)
+  breaks <- axisTicks(rangeb/2, log = TRUE, nint = 7)
+  rangeplot <- rangeb
+  rangeplot[1] <- rangeplot[1] - diff(rangeb)
+  rangeplot[2] <- rangeplot[2] + 0.15 * diff(rangeb)
+  width <- diff(rangeplot)
+  y_variable <- rangeplot[1] + cpositions[1] * width
+  y_nlevel <- rangeplot[1] + cpositions[2] * width
+  y_cistring <- rangeplot[1] + cpositions[3] * width
+  y_stars <- rangeb[2]
+  x_annotate <- seq_len(nrow(toShowExpClean))
+  annot_size_mm <- fontsize * as.numeric(grid::convertX(unit(theme_get()$text$size, 
+                                                             "pt"), "mm"))
+  p <- ggplot(toShowExpClean, aes(seq_along(var), exp(estimate))) + 
+    geom_rect(aes(xmin = seq_along(var) - 0.5, xmax = seq_along(var) + 
+                    0.5, ymin = exp(rangeplot[1]), ymax = exp(rangeplot[2]), 
+                  fill = ordered(seq_along(var)%%2 + 1))) + scale_fill_manual(values = c("#FFFFFF33", 
+                                                                                         "#00000033"), guide = "none") + geom_point(pch = 15, 
+                                                                                                                                    size = 4) + geom_errorbar(aes(ymin = exp(conf.low), ymax = exp(conf.high)), 
+                                                                                                                                                              width = 0.15) + geom_hline(yintercept = 1, linetype = 3) + 
+    coord_flip(ylim = exp(rangeplot)) + ggtitle(main) + scale_y_log10(name = "", 
+                                                                      labels = sprintf("%g", breaks), expand = c(0.02, 0.02), 
+                                                                      breaks = breaks) + theme_light() + theme(panel.grid.minor.y = element_blank(), 
+                                                                                                               panel.grid.minor.x = element_blank(), panel.grid.major.y = element_blank(), 
+                                                                                                               legend.position = "none", panel.border = element_blank(), 
+                                                                                                               axis.title.y = element_blank(), axis.text.y = element_blank(), 
+                                                                                                               axis.ticks.y = element_blank(), plot.title = element_text(hjust = 0.5)) + 
+    xlab("") + annotate(geom = "text", x = x_annotate, y = exp(y_variable), 
+                        label = toShowExpClean$var, fontface = "bold", hjust = 0, 
+                        size = annot_size_mm) + annotate(geom = "text", x = x_annotate, 
+                                                         y = exp(y_nlevel), hjust = 0, label = toShowExpClean$level, 
+                                                         vjust = -0.1, size = annot_size_mm) + annotate(geom = "text", 
+                                                                                                        x = x_annotate, y = exp(y_nlevel), label = toShowExpClean$N, 
+                                                                                                        fontface = "italic", hjust = 0, vjust = ifelse(toShowExpClean$level == 
+                                                                                                                                                         "", 0.5, 1.1), size = annot_size_mm) + annotate(geom = "text", 
+                                                                                                                                                                                                         x = x_annotate, y = exp(y_cistring), label = toShowExpClean$estimate.1, 
+                                                                                                                                                                                                         size = annot_size_mm, vjust = ifelse(toShowExpClean$estimate.1 == 
+                                                                                                                                                                                                                                                "reference", 0.5, -0.1)) + annotate(geom = "text", 
+                                                                                                                                                                                                                                                                                    x = x_annotate, y = exp(y_cistring), label = toShowExpClean$ci, 
+                                                                                                                                                                                                                                                                                    size = annot_size_mm, vjust = 1.1, fontface = "italic") + 
+    annotate(geom = "text", x = x_annotate, y = exp(y_stars), 
+             label = toShowExpClean$stars, size = annot_size_mm, 
+             hjust = -0.2, fontface = "italic") + annotate(geom = "text", 
+                                                           x = 0.5, y = exp(y_variable), label = paste0("# Events: ", 
+                                                                                                        gmodel$nevent, "; Global p-value (Log-Rank): ", format.pval(gmodel$p.value.log, 
+                                                                                                                                                                    eps = ".001"), " \nAIC: ", round(gmodel$AIC, 
+                                                                                                                                                                                                     2), "; Concordance Index: ", round(gmodel$concordance, 
+                                                                                                                                                                                                                                        2)), size = annot_size_mm, hjust = 0, vjust = 1.2, 
+                                                           fontface = "italic")
+  gt <- ggplot_gtable(ggplot_build(p))
+  gt$layout$clip[gt$layout$name == "panel"] <- "off"
+  ggpubr::as_ggplot(gt)
+}
+
+## Import processed data
+data_tte <- read_rds(here::here("output", "data", "data_all.rds"))
+
+## Converts logical to integer so that model coefficients print nicely in gtsummary methods
+data_cox <- data_tte %>%
+  mutate(
+    across(
+      where(is.logical),
+      ~.x*1L
+    )
+  )
+
+## Import models data
+coxmod <- read_rds(here::here("output", "models", "final", "mod_strat_coxph_adj.rds"))
+```
+
+## Purpose
+
+(Taken from https://docs.google.com/document/d/1PZgllPNU8zi2xVPrPDHoBxzQGti7F3C7R9AyqGkKAJU/edit)
+
+Firstly, and obviously, we are not trying to directly estimate the causal effect of any one putative cause on vaccination propensity/timing/uptake. This requires statistical models tailored to each specific causal effect of interest, which we are not doing here. Essentially, we are not providing answers to “what if” questions.
+
+Secondly, it is not feasible to use this model to make predictions about vaccination uptake in the future. The vaccination programme is far too dynamic over time; target populations for vaccination quickly shift from one priority group to the next, vaccine availability will change over time, new policies are introduced in response to emerging evidence about effectiveness, safely, covid risk, inequalities, etc. It is also susceptible to the Prediction Paradox, i.e., predictions influencing policies or behaviors which then invalidates the predictions. This means predictive performance shouldn’t be considered important, and we shouldn’t be providing individualised risk scores.
+
+What is possible, and informative, is to use the model to describe observed differences in vaccine uptake across different patient groups, strictly over the studied period. In particular, this can help to probe apparent inequalities. Not to prove or disprove -- that would require a causal investigation -- but to identify systematic variation in uptake which isn’t sufficiently accounted for by other modelled factors. 
+
+
+## Results
+
+Associations between patient-level factors and covid vaccination are shown in the Figure 1 below (also shown in table format at end of document).
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 16, fig.cap="Figure 1: Estimated Hazard Ratios for each potential factor from a stratified Cox model"}
+ggforest2(coxmod, data = data_cox)
+```
+
+
+General overview:
+
+* Increasing age was strongly associated with being vaccinated, with those in the 95+ years age group being over twice as likely to be vaccinated compared with those aged 70-74 years
+
+* Males vs females
+
+* All non-white ethnic groups had higher risk than those with white ethnicity: HRs (adjusted for all included risk factors) ranged from 1.83-2.17 for Black, Asian/Asian British and mixed ethnicities compared to white
+
+* Increasing risks were seen with increasing levels of deprivation
+
+* Most comorbidities were associated with higher risk , including diabetes, asthma (with a greater HR for those with recent use of an oral corticosteroid), respiratory disease, chronic heart disease, liver disease, stroke/dementia, other neurological diseases, reduced kidney function, autoimmune diseases (rheumatoid arthritis, lupus or psoriasis) and other immunosuppressive conditions, as per Table 2. 
+
+
+
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+gtsummary::tbl_regression(coxmod, exp = TRUE)  %>% 
+  as_gt() %>%
+  gt::tab_header("Table 1. Hazard Ratios (HRs) and 95% confidence intervals (CI) for COVID-19 vaccination")
+```
+
+
