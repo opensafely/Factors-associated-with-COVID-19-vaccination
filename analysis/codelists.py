@@ -65,13 +65,7 @@ ethnicity_no_record_codes = codelist_from_csv(
     column = "code",
 )
 
-## Smoking status
-clear_smoking_codes = codelist_from_csv(
-  "codelists/opensafely-smoking-clear.csv",
-  system = "ctv3",
-  column = "CTV3Code",
-  category_column = "Category",
-)
+
 
 ## BMI
 bmi_codes = codelist_from_csv(
@@ -150,12 +144,6 @@ chronic_neuro_dis_inc_sig_learn_dis_codes = codelist_from_csv(
   column = "code",
 )
 
-## Stroke
-stroke_codes = codelist_from_csv(
-    "codelists/opensafely-stroke-updated.csv", 
-    system = "ctv3", 
-    column = "CTV3ID"
-)
 
 ## Asplenia or Dysfunction of the Spleen codes
 asplenia_codes = codelist_from_csv(
@@ -243,10 +231,3 @@ high_risk_codes = codelist(
 ## Lower Risk from COVID-19 codes
 not_high_risk_codes = codelist(
     ['1300591000000101', '1300571000000100'], system="snomed")
-
-## To represent household contact of shielding individual
-hhld_imdef_codes = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-hhld_imdef.csv",
-    system = "snomed",
-    column = "code",
-)

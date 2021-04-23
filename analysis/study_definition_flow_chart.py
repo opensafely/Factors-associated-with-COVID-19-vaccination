@@ -51,7 +51,7 @@ study = StudyDefinition(
     #     AND
     #     has_follow_up_previous_year
     #     AND
-    #     NOT care_home_type
+    #     NOT nursing_residential_care
     #     AND
     #     (sex = "M" OR sex = "F")
     #     AND
@@ -99,26 +99,11 @@ study = StudyDefinition(
   ),
   
   ## Care home
-  care_home_type = patients.care_home_status_as_of(
-    "index_date",
-    categorised_as = {
-      "Carehome": """
-              IsPotentialCareHome
-              AND LocationDoesNotRequireNursing='Y'
-              AND LocationRequiresNursing='N'
-            """,
-      "Nursinghome": """
-              IsPotentialCareHome
-              AND LocationDoesNotRequireNursing='N'
-              AND LocationRequiresNursing='Y'
-            """,
-      "Mixed": "IsPotentialCareHome",
-      "": "DEFAULT",  # use empty string
-    },
-    return_expectations = {
-      "category": {"ratios": {"Carehome": 0.05, "Nursinghome": 0.05, "Mixed": 0.05, "": 0.85, }, },
-      "incidence": 1,
-    },
+  nursing_residential_care = patients.with_these_clinical_events(
+      nursing_residential_care_codes,
+      returning = "binary_flag",
+      find_last_match_in_period = True,
+      on_or_before = "index_date",
   ),
   
   ### Sex
@@ -156,6 +141,50 @@ study = StudyDefinition(
         }},
     },
   ),
+  
+  ### Death
+  death_date = patients.died_from_any_cause(
+    on_or_after = "index_date + 1 day",
+    returning = "date_of_death",
+    date_format = "YYYY-MM-DD",
+  ),
+  
+  ### Practice id
+  practice_id = patients.registered_practice_as_of(
+    "index_date",  # day before vaccine campaign start
+    returning = "pseudo_id",
+    return_expectations = {
+      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
+      "incidence": 1,
+    },
+  ),
+  
+  ### Practice id at end (to check people moving practices during study)
+  practice_id_at_end = patients.registered_practice_as_of(
+    end_date,
+    returning = "pseudo_id",
+    return_expectations = {
+      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
+      "incidence": 1,
+    },
+  ),
+  
+  ### Practice id at death (to check people moving practices during study)
+  practice_id_at_death = patients.registered_practice_as_of(
+    "death_date",
+    returning = "pseudo_id",
+    return_expectations = {
+      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
+      "incidence": 1,
+    },
+  ),
+  
+  ### Same practice
+  practice_id_same = patients.registered_with_one_practice_between(
+      start_date = "index_date",
+      end_date = end_date,
+      return_expectations = {"incidence": 0.95},
+    ),
   
   ## Region - NHS England 9 regions
   region = patients.registered_practice_as_of(
@@ -214,73 +243,6 @@ study = StudyDefinition(
       },
     },
   ),
-  
-  ### Ethnicity
-  ethnicity = patients.with_these_clinical_events(
-    ethnicity_codes,
-    returning = "category",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    return_expectations = {
-      "category": {
-        "ratios": {
-          "1": 0.0625,
-          "2": 0.0625,
-          "3": 0.0625,
-          "4": 0.0625,
-          "5": 0.0625,
-          "6": 0.0625,
-          "7": 0.0625,
-          "8": 0.0625,
-          "9": 0.0625,
-          "10": 0.0625,
-          "11": 0.0625,
-          "12": 0.0625,
-          "13": 0.0625,
-          "14": 0.0625,
-          "15": 0.0625,
-          "16": 0.0625,
-        }
-      },
-      "rate": "universal",
-    },
-  ),
-  
-  ### Any other ethnicity code
-  ethnicity_other = patients.with_these_clinical_events(
-    ethnicity_other_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ),
-  
-  ### Ethnicity not given - patient refused
-  ethnicity_not_given = patients.with_these_clinical_events(
-    ethnicity_not_given_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ),
-  
-  ### Ethnicity not stated
-  ethnicity_not_stated = patients.with_these_clinical_events(
-    ethnicity_not_stated_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ),
-  
-  ### Ethnicity no record
-  ethnicity_no_record = patients.with_these_clinical_events(
-    ethnicity_no_record_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
-  ), 
   
 )
 

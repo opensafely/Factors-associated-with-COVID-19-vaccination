@@ -1,13 +1,11 @@
 ######################################
 
 # This script:
-# imports data extracted by the cohort extractor
-# fills in unknown ethnicity from GP records with ethnicity from SUS (secondary care)
-# tidies missing values
-# re-orders date variables so no negative time differences (only actually does anything for dummy data)
-# standardises some variables (eg convert to factor) and derives some new ones
-# saves processed one-row-per-patient dataset
-# saves one-row-per-patient dataset for vaccines and for hospital admissions
+# - imports data extracted by the cohort extractor
+# - combines ethnicity columns
+# - calculates survival time
+# - standardises some variables (eg convert to factor) and derives some new ones
+# - saves processed one-row-per-patient dataset
 
 ######################################
 
@@ -18,159 +16,102 @@
 library('tidyverse')
 library('lubridate')
 
-## Import custom user functions from lib
-source(here::here("lib", "utility_functions.R"))
+## Custom functions
+### tte
+tte <- function(origin_date, event_date, censor_date, na.censor=FALSE){
+  # returns time-to-event date or time to censor date, which is earlier
+  
+  if (na.censor)
+    time <- event_date-origin_date
+  else
+    time <- pmin(event_date-origin_date, censor_date-origin_date, na.rm=TRUE)
+  as.numeric(time)
+}
 
-# Import globally defined repo variables from
-gbl_vars <- jsonlite::fromJSON(
-  txt="./analysis/global-variables.json"
-)
-gbl_vars$run_date =date(file.info(here::here("metadata","extract_all.log"))$ctime)
-#list2env(gbl_vars, globalenv())
+### Factorise
+fct_case_when <- function(...) {
+  # uses dplyr::case_when but converts the output to a factor,
+  # with factors ordered as they appear in the case_when's  ... argument
+  args <- as.list(match.call())
+  levels <- sapply(args[-1], function(f) f[[3]])  # extract RHS of formula
+  levels <- levels[!is.na(levels)]
+  factor(dplyr::case_when(...), levels=levels)
+}
 
 ## Output processed data to rds
 dir.create(here::here("output", "data"), showWarnings = FALSE, recursive=TRUE)
 
 
-# Process ----
+# Process data ----
 
 ## Print variable names
-read_csv(
-  here::here("output", "input_all.csv"),
-  n_max=0,
-  col_types = cols()
-) %>%
-names() %>%
-print()
+read_csv(here::here("output", "input.csv"),
+         n_max = 0,
+         col_types = cols()) %>%
+  names() %>%
+  print()
 
-## Format columns (don't rely on defaults)
+## Read in data (don't rely on defaults)
 data_extract0 <- read_csv(
-  here::here("output", "input_all.csv"),
+  here::here("output", "input.csv"),
   col_types = cols_only(
-
-    # identifiers
+    
+    # Identifier
     patient_id = col_integer(),
-    practice_id = col_integer(),
-
-    # demographic / administrative
-    stp = col_character(),
-    region = col_character(),
-    imd = col_character(),
-    care_home_type = col_character(),
-    care_home = col_logical(),
-
-    registered_at_latest = col_logical(),
-    has_follow_up_previous_year = col_logical(),
-
+    
+    # Outcome
+    covid_vax_1_date = col_date(format="%Y-%m-%d"),
+    
+    # Censoring
+    death_date = col_date(format="%Y-%m-%d"),
+    dereg_date = col_date(format="%Y-%m-%d"),
+    
+    # Demographic
     age = col_integer(),
     sex = col_character(),
     ethnicity = col_character(),
-    ethnicity_6_sus = col_character(),
-    #ethnicity_16 = col_character(),
-
-    # dates
-    dereg_date = col_date(format="%Y-%m-%d"),
-
-    prior_positive_test_date = col_date(format="%Y-%m-%d"),
-    prior_primary_care_covid_case_date = col_date(format="%Y-%m-%d"),
-    prior_covidadmitted_date = col_date(format="%Y-%m-%d"),
-
-    admitted_0_date = col_date(format="%Y-%m-%d"),
-    admitted_1_date = col_date(format="%Y-%m-%d"),
-    admitted_2_date = col_date(format="%Y-%m-%d"),
-    admitted_3_date = col_date(format="%Y-%m-%d"),
-    admitted_4_date = col_date(format="%Y-%m-%d"),
-    admitted_5_date = col_date(format="%Y-%m-%d"),
-
-    discharged_0_date = col_date(format="%Y-%m-%d"),
-    discharged_1_date = col_date(format="%Y-%m-%d"),
-    discharged_2_date = col_date(format="%Y-%m-%d"),
-    discharged_3_date = col_date(format="%Y-%m-%d"),
-    discharged_4_date = col_date(format="%Y-%m-%d"),
-    discharged_5_date = col_date(format="%Y-%m-%d"),
-
-    primary_care_probable_covid_1_date = col_date(format="%Y-%m-%d"),
-    primary_care_probable_covid_2_date = col_date(format="%Y-%m-%d"),
-    primary_care_probable_covid_3_date = col_date(format="%Y-%m-%d"),
-    primary_care_probable_covid_4_date = col_date(format="%Y-%m-%d"),
-    primary_care_probable_covid_5_date = col_date(format="%Y-%m-%d"),
-
-    primary_care_suspected_covid_1_date = col_date(format="%Y-%m-%d"),
-    primary_care_suspected_covid_2_date = col_date(format="%Y-%m-%d"),
-    primary_care_suspected_covid_3_date = col_date(format="%Y-%m-%d"),
-    primary_care_suspected_covid_4_date = col_date(format="%Y-%m-%d"),
-    primary_care_suspected_covid_5_date = col_date(format="%Y-%m-%d"),
-
-    covid_vax_1_date = col_date(format="%Y-%m-%d"),
-    covid_vax_2_date = col_date(format="%Y-%m-%d"),
-    covid_vax_3_date = col_date(format="%Y-%m-%d"),
-    covid_vax_4_date = col_date(format="%Y-%m-%d"),
-
-    covid_vax_pfizer_1_date = col_date(format="%Y-%m-%d"),
-    covid_vax_pfizer_2_date = col_date(format="%Y-%m-%d"),
-    covid_vax_pfizer_3_date = col_date(format="%Y-%m-%d"),
-    covid_vax_pfizer_4_date = col_date(format="%Y-%m-%d"),
-
-    covid_vax_az_1_date = col_date(format="%Y-%m-%d"),
-    covid_vax_az_2_date = col_date(format="%Y-%m-%d"),
-    covid_vax_az_3_date = col_date(format="%Y-%m-%d"),
-    covid_vax_az_4_date = col_date(format="%Y-%m-%d"),
-
-    positive_test_1_date = col_date(format="%Y-%m-%d"),
-    positive_test_2_date = col_date(format="%Y-%m-%d"),
-    primary_care_covid_case_1_date = col_date(format="%Y-%m-%d"),
-    primary_care_covid_case_2_date = col_date(format="%Y-%m-%d"),
-    emergency_1_date = col_date(format="%Y-%m-%d"),
-    emergency_2_date = col_date(format="%Y-%m-%d"),
-    covidadmitted_1_date = col_date(format="%Y-%m-%d"),
-    covidadmitted_2_date = col_date(format="%Y-%m-%d"),
-    coviddeath_date = col_date(format="%Y-%m-%d"),
-    death_date = col_date(format="%Y-%m-%d"),
-
-    # Put into 'category'
-    bmi = col_character(),
-
-    chronic_cardiac_disease = col_logical(),
-    heart_failure = col_logical(),
-    other_heart_disease = col_logical(),
-
-    dialysis = col_logical(),
-
+    ethnicity_other = col_date(format="%Y-%m-%d"),
+    ethnicity_not_given = col_date(format="%Y-%m-%d"),
+    ethnicity_not_stated = col_date(format="%Y-%m-%d"),
+    ethnicity_no_record = col_date(format="%Y-%m-%d"),
+    
+    # Clinical measurements and comorbidities
+    bmi = col_double(),
+    bmi_stage_date = col_date(format="%Y-%m-%d"),
+    sev_obesity = col_date(format="%Y-%m-%d"),
+    chronic_heart_disease = col_logical(),
     diabetes = col_logical(),
-    chronic_liver_disease = col_logical(),
-
-    current_copd = col_logical(),
-    cystic_fibrosis = col_logical(),
-    other_resp_conditions = col_logical(),
-
-    lung_cancer = col_logical(),
-    haematological_cancer = col_logical(),
-    cancer_excl_lung_and_haem = col_logical(),
-
-    chemo_or_radio = col_logical(),
-    solid_organ_transplantation = col_logical(),
-    bone_marrow_transplant = col_logical(),
-    sickle_cell_disease = col_logical(),
-    permanant_immunosuppression = col_logical(),
-    temporary_immunosuppression = col_logical(),
+    chronic_kidney_disease_diagnostic = col_logical(),
+    chronic_kidney_disease_all_stages = col_logical(),
+    chronic_kidney_disease_all_stages_1_5 = col_logical(),
+    sev_mental_ill = col_date(format="%Y-%m-%d"),
+    learning_disability = col_date(format="%Y-%m-%d"),
+    chronic_neuro_dis_inc_sig_learn_dis = col_date(format="%Y-%m-%d"),
     asplenia = col_logical(),
-    dmards = col_logical(),
-
-    dementia = col_logical(),
-    other_neuro_conditions = col_logical(),
-    LD_incl_DS_and_CP = col_logical(),
-    psychosis_schiz_bipolar = col_logical(),
-    flu_vaccine = col_logical()
-
+    chronic_liver_disease = col_logical(),
+    chronis_respiratory_disease = col_date(format="%Y-%m-%d"),
+    immunosuppression_diagnosis = col_date(format="%Y-%m-%d"),
+    immunosuppression_medication = col_date(format="%Y-%m-%d"),
+    
+    # Geographical
+    practice_id_at_start = col_integer(),
+    practice_id_at_end = col_integer(),
+    practice_id_at_death = col_integer(),
+    practice_id_at_dereg = col_integer(),
+    imd = col_character(),
+    region = col_character(),
+    stp = col_character(),
+    rural_urban = col_character(),
+    
+    # Other
+    flu_vaccine = col_logical(),
+    shielded = col_logical(),
+    shielded_since_feb_15 = col_logical(),
+    prior_covid_date = col_date(format="%Y-%m-%d")
+  
   ),
-
   na = character() # more stable to convert to missing later
 )
-
-## Fill in unknown ethnicity from GP records with ethnicity from SUS (secondary care)
-data_extract0 <- data_extract0 %>%
-  mutate(ethnicity = ifelse(ethnicity == "", ethnicity_6_sus, ethnicity)) %>%
-  select(-ethnicity_6_sus)
 
 ## Parse NAs
 data_extract <- data_extract0 %>%
@@ -187,54 +128,39 @@ data_extract <- data_extract0 %>%
 
 
 
-#  SECTION TO SORT OUT BAD DUMMY DATA ----
-
-## Extract all event date columns and collapse into one 'date' and one 'event' column and order by 
-## date (for each patient_id)
-data_dates_reordered_long <- data_extract %>%
-  select(patient_id, matches("^(.*)_(\\d+)_date")) %>%
-  pivot_longer(
-    cols = -patient_id,
-    names_to = c("event", "index"),
-    names_pattern = "^(.*)_(\\d+)_date",
-    values_to = "date",
-    values_drop_na = TRUE
-  ) %>%
-  arrange(patient_id, event, date) %>%
-  group_by(patient_id, event) %>%
+## Format columns (i.e, set factor levels)
+data_processed <- data_extract %>%
   mutate(
-    index = row_number(),
-    name = paste0(event,"_",index,"_date")
-  ) %>%
-  ungroup() %>%
-  select(
-    patient_id, name, event, index, date
-  )
-
-## Convert back to wide format (columns now in date order)
-data_dates_reordered_wide <- data_dates_reordered_long %>%
-  arrange(name, patient_id) %>%
-  pivot_wider(
-    id_cols=c(patient_id),
-    names_from = name,
-    values_from = date
-  )
-
-## Merge back non-date columns
-data_extract_reordered <- left_join(
-  data_extract %>% select(-matches("^(.*)_(\\d+)_date")),
-  data_dates_reordered_wide,
-  by="patient_id"
-)
-
-## Format variables (i.e, set factor levels)
-data_processed <- data_extract_reordered %>%
-  mutate(
-
-    start_date = as.Date(gbl_vars$start_date), # i.e., this is interpreted later as [midnight at the _end of_ the start date] = [midnight at the _start of_ start date + 1], So that for example deaths on start_date+1 occur at t=1, not t=0.
-    end_date = as.Date(gbl_vars$end_date),
-    censor_date = pmin(end_date, death_date, na.rm=TRUE),
-
+    
+    # Start date
+    start_date = as.Date("2020-12-07", format = "%Y-%m-%d"),
+    
+    # End date
+    end_date = as.Date("2021-03-17", format = "%Y-%m-%d"),
+    
+    # COVID vaccination
+    covid_vax = as.integer(ifelse(is.na(covid_vax_1_date), 0, 1)),
+    
+    # Censoring
+    censor_date = pmin(death_date, 
+                       dereg_date, 
+                       as.Date("2021-04-01", format = "%Y-%m-%d"), 
+                       na.rm=TRUE),
+    
+    # Follow-up time
+    follow_up_time = tte(start_date,
+                         covid_vax_1_date,
+                         censor_date),
+    
+    # Age
+    ageband = cut(
+      age,
+      breaks = c(-Inf, 75, 80, 85, 90, 95, Inf),
+      labels = c("70-74", "75-79", "80-84", "85-89", "90-94", "95+"),
+      right = FALSE
+    ),
+    
+    # Sex
     sex = fct_case_when(
       sex == "F" ~ "Female",
       sex == "M" ~ "Male",
@@ -242,25 +168,64 @@ data_processed <- data_extract_reordered %>%
       #sex == "U" ~ "Unknown",
       TRUE ~ NA_character_
     ),
-
-    ageband = cut(
-      age,
-      breaks=c(-Inf, 18, 50, 60, 70, 80, Inf),
-      labels=c("under 18", "18-49", "50s", "60s", "70s", "80+"),
-      right=FALSE
-    ),
-
+    
+    # Ethnicity
+    ethnicity =  ifelse(is.na(ethnicity) & !is.na(ethnicity_other), 17, 
+                        ifelse(is.na(ethnicity) & !is.na(ethnicity_not_given), 18,
+                               ifelse(is.na(ethnicity) & !is.na(ethnicity_not_stated), 19,
+                                      ifelse(is.na(ethnicity) & !is.na(ethnicity_no_record), 20,
+                                             ethnicity)))),
+    
+    ethnicity = ifelse(is.na(ethnicity), 20, ethnicity),
+    
     ethnicity = fct_case_when(
-      ethnicity == "1" ~ "White",
-      ethnicity == "4" ~ "Black",
-      ethnicity == "3" ~ "South Asian",
-      ethnicity == "2" ~ "Mixed",
-      ethnicity == "5" ~ "Other",
+      ethnicity == "1" ~ "White - British",
+      ethnicity == "2" ~ "White - Irish",
+      ethnicity == "3" ~ "White - Any other White background",
+      ethnicity == "4" ~ "Mixed - White and Black Caribbean",
+      ethnicity == "5" ~ "Mixed - White and Black African",
+      ethnicity == "6" ~ "Mixed - White and Asian",
+      ethnicity == "7" ~ "Mixed - Any other mixed background",
+      ethnicity == "8" ~ "Asian or Asian British - Indian",
+      ethnicity == "9" ~ "Asian or Asian British - Pakistani",
+      ethnicity == "10" ~ "Asian or Asian British - Bangladeshi",
+      ethnicity == "11" ~ "Asian or Asian British - Any other Asian background",
+      ethnicity == "12" ~ "Black or Black British - Caribbean",
+      ethnicity == "13" ~ "Black or Black British - African",
+      ethnicity == "14" ~ "Black or Black British - Any other Black background",
+      ethnicity == "15" ~ "Other ethnic groups - Chinese",
+      ethnicity == "16" ~ "Other ethnic groups - Any other ethnic group",
+      ethnicity == "17" ~ "Patients with any other ethnicity code",
+      ethnicity == "18" ~ "Ethnicity not given - patient refused",
+      ethnicity == "19" ~ "Ethnicity not stated",
+      ethnicity == "20" ~ "Ethnicity not recorded",
       #TRUE ~ "Unknown",
       TRUE ~ NA_character_
-
     ),
-
+    
+    # Morbidly obese
+    morbid_obesity_bmi = ifelse(bmi >= 40, 1, 0),
+    morbid_obesity_date = ifelse(sev_obesity >= bmi_stage_date, 1, 0),
+    morbid_obesity = ifelse(morbid_obesity_date == 1 & morbid_obesity_bmi == 0, 1, morbid_obesity_bmi),
+    morbid_obesity = ifelse(is.na(morbid_obesity), 0, morbid_obesity),
+    
+    # Mental illness
+    sev_mental_ill = ifelse(is.na(sev_mental_ill), FALSE, TRUE),
+    
+    # Learning disability
+    learning_disability = ifelse(is.na(learning_disability), FALSE, TRUE),
+    
+    # CND inc LD
+    chronic_neuro_dis_inc_sig_learn_dis = ifelse(is.na(chronic_neuro_dis_inc_sig_learn_dis), FALSE, TRUE),
+    
+    # CRD
+    chronis_respiratory_disease = ifelse(is.na(chronis_respiratory_disease), FALSE, TRUE),
+    
+    # Immunosuppression
+    immunosuppression_diagnosis = ifelse(is.na(immunosuppression_diagnosis), FALSE, TRUE),
+    immunosuppression_medication = ifelse(is.na(immunosuppression_medication), FALSE, TRUE),
+    
+    # IMD
     imd = na_if(imd, "0"),
     imd = fct_case_when(
       imd == 1 ~ "1 most deprived",
@@ -271,141 +236,69 @@ data_processed <- data_extract_reordered %>%
       #TRUE ~ "Unknown",
       TRUE ~ NA_character_
     ),
-
-    region = factor(region,
-                    levels= c(
-                      "East",
-                      "East Midlands",
-                      "London",
-                      "North East",
-                      "North West",
-                      "South East",
-                      "South West",
-                      "West Midlands",
-                      "Yorkshire and The Humber"
-                    )
+    
+    # Practice id at death, dereg or end
+    practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death, 
+                                                    ifelse(!is.na(dereg_date) & dereg_date < end_date,
+                                                           practice_id_at_dereg, practice_id_at_end)),
+    
+    
+    # Region
+    region = fct_case_when(
+      region == "London" ~ "London",
+      region == "East" ~ "East of England",
+      region == "East Midlands" ~ "East Midlands",
+      region == "North East" ~ "North East",
+      region == "North West" ~ "North West",
+      region == "South East" ~ "South East",
+      region == "South West" ~ "South West",
+      region == "West Midlands" ~ "West Midlands",
+      region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
+      #TRUE ~ "Unknown",
+      TRUE ~ NA_character_
     ),
     
+    # stp
     stp = as.factor(stp),
     
-    care_home_type = as.factor(care_home_type),
-
-    bmi = as.factor(bmi),
-
-    cause_of_death = fct_case_when(
-      !is.na(coviddeath_date) ~ "covid-related",
-      !is.na(death_date) ~ "not covid-related",
-      TRUE ~ NA_character_),
-
-    noncoviddeath_date = if_else(!is.na(death_date) & is.na(coviddeath_date), death_date, as.Date(NA_character_))
-
+    # Rural/urban
+    rural_urban = fct_case_when(
+      rural_urban == 1 ~ "Urban - major conurbation",
+      rural_urban == 2 ~ "Urban - minor conurbation",
+      rural_urban == 3 ~ "Urban - city and town",
+      rural_urban == 4 ~ "Urban - city and town in a sparse setting",
+      rural_urban == 5 ~ "Rural - town and fringe",
+      rural_urban == 6 ~ "Rural - town and fringe in a sparse setting",
+      rural_urban == 7 ~ "Rural village and dispersed",
+      rural_urban == 8 ~ "Rural village and dispersed in a sparse setting",
+      #TRUE ~ "Unknown",
+      TRUE ~ NA_character_
+    ),
+    
+    # Prior covid
+    prior_covid = as.integer(ifelse(is.na(prior_covid_date), 0, 1))
+    
   ) %>%
-  droplevels() %>%
-  filter(
-    !is.na(age),
-    !is.na(sex),
-    !is.na(imd),
-    !is.na(ethnicity),
-    !is.na(region)
+  filter(age >= 70,
+         sex %in% c("Male", "Female"),
+         !is.na(imd),
+         !is.na(ethnicity),
+         !is.na(region),
+         !is.na(rural_urban),
   ) %>%
-  ## TEMPORARY STEP TO REDUCE DATASET SIZE -- REMOVE FOR REAL RUN!
-  sample_n(tbl=., size=min(c(100000, nrow(.))))
+  select(patient_id, covid_vax, follow_up_time, practice_id_at_start, practice_id_latest_active_registration, stp, 
+         age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease, diabetes, 
+         chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_1_5,
+         sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
+         chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
+         prior_covid, flu_vaccine, shielded, shielded_since_feb_15)
 
+# Data for modelling
+data_processed_modelling <- data_processed %>%
+  select(-practice_id_at_start) %>%
+  mutate(practice_id_latest_active_registration = as.factor(practice_id_latest_active_registration)) %>%
+  droplevels()
 
-# Create one-row-per-event datasets ----
-
-## For hospitalisation/discharge
-data_admissions <- data_processed %>%
-    select(patient_id, matches("^admitted\\_\\d+\\_date"), matches("^discharged\\_\\d+\\_date")) %>%
-    pivot_longer(
-      cols = -patient_id,
-      names_to = c(".value", "index"),
-      names_pattern = "^(.*)_(\\d+)_date",
-      values_drop_na = TRUE
-    ) %>%
-    select(patient_id, index, admitted_date=admitted, discharged_date = discharged) %>%
-    arrange(patient_id, admitted_date)
-
-## For covid in primary care
-data_pr_suspected_covid <- data_processed %>%
-  select(patient_id, matches("^primary_care_suspected_covid\\_\\d+\\_date")) %>%
-  pivot_longer(
-    cols = -patient_id,
-    names_to = c(NA, "suspected_index"),
-    names_pattern = "^(.*)_(\\d+)_date",
-    values_to = "date",
-    values_drop_na = TRUE
-  ) %>%
-  arrange(patient_id, date)
-
-data_pr_probable_covid <- data_processed %>%
-  select(patient_id, matches("^primary_care_probable_covid\\_\\d+\\_date")) %>%
-  pivot_longer(
-    cols = -patient_id,
-    names_to = c(NA, "probable_index"),
-    names_pattern = "^(.*)_(\\d+)_date",
-    values_to = "date",
-    values_drop_na = TRUE
-  ) %>%
-  arrange(patient_id, date)
-
-## For vaccination
-data_vax <- local({
-
-  data_vax_all <- data_processed %>%
-    select(patient_id, matches("covid\\_vax\\_\\d+\\_date")) %>%
-    pivot_longer(
-      cols = -patient_id,
-      names_to = c(NA, "vax_index"),
-      names_pattern = "^(.*)_(\\d+)_date",
-      values_to = "date",
-      values_drop_na = TRUE
-    ) %>%
-    arrange(patient_id, date)
-
-  data_vax_pf <- data_processed %>%
-    select(patient_id, matches("covid\\_vax\\_pfizer\\_\\d+\\_date")) %>%
-    pivot_longer(
-      cols = -patient_id,
-      names_to = c(NA, "vax_pf_index"),
-      names_pattern = "^(.*)_(\\d+)_date",
-      values_to = "date",
-      values_drop_na = TRUE
-    ) %>%
-    arrange(patient_id, date)
-
-  data_vax_az <- data_processed %>%
-    select(patient_id, matches("covid\\_vax\\_az\\_\\d+\\_date")) %>%
-    pivot_longer(
-      cols = -patient_id,
-      names_to = c(NA, "vax_az_index"),
-      names_pattern = "^(.*)_(\\d+)_date",
-      values_to = "date",
-      values_drop_na = TRUE
-    ) %>%
-    arrange(patient_id, date)
-
-  data_vax_all %>%
-    left_join(data_vax_pf, by=c("patient_id", "date")) %>%
-    left_join(data_vax_az, by=c("patient_id", "date")) %>%
-    mutate(
-      vaccine_type = fct_case_when(
-        !is.na(vax_az_index) & is.na(vax_pf_index) ~ "Ox-AZ",
-        is.na(vax_az_index) & !is.na(vax_pf_index) ~ "Pf-BN",
-        is.na(vax_az_index) & is.na(vax_pf_index) ~ "Unknown",
-        !is.na(vax_az_index) & !is.na(vax_pf_index) ~ "Both",
-        TRUE ~ NA_character_
-      )
-    ) %>%
-    arrange(patient_id, date)
-
-})
-
-
-# Save datasets as .rds files ----
+# Save dataset as .rds files ----
 write_rds(data_processed, here::here("output", "data", "data_all.rds"), compress="gz")
-write_rds(data_vax, here::here("output", "data", "data_long_vax_dates.rds"), compress="gz")
-write_rds(data_admissions, here::here("output", "data", "data_long_admission_dates.rds"), compress="gz")
-write_rds(data_pr_probable_covid, here::here("output", "data", "data_long_pr_probable_covid_dates.rds"), compress="gz")
-write_rds(data_pr_suspected_covid, here::here("output", "data", "data_long_pr_suspected_covid_dates.rds"), compress="gz")
-
+write_rds(data_processed_modelling, here::here("output", "data", "data_modelling.rds"), compress="gz")

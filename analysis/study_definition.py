@@ -26,7 +26,7 @@ from codelists import *
   
 ## Define study start and end variables explicitly
 start_date = "2020-12-07"
-end_date = "2021-04-01"
+end_date = "2021-03-17"
 
 ## Define study population and variables
 study = StudyDefinition(
@@ -48,7 +48,7 @@ study = StudyDefinition(
         AND
         registered
         AND
-        age >= 80
+        age >= 70
         AND
         has_follow_up_previous_year
         AND
@@ -112,8 +112,7 @@ study = StudyDefinition(
   death_date = patients.died_from_any_cause(
     on_or_after = "index_date + 1 day",
     returning = "date_of_death",
-    include_month = True,
-    include_day = True,
+    date_format = "YYYY-MM-DD",
   ),
   
   ### De-registration
@@ -152,25 +151,25 @@ study = StudyDefinition(
     return_expectations = {
       "category": {
         "ratios": {
-          "1": 0.0625,
-          "2": 0.0625,
-          "3": 0.0625,
-          "4": 0.0625,
-          "5": 0.0625,
-          "6": 0.0625,
-          "7": 0.0625,
-          "8": 0.0625,
-          "9": 0.0625,
-          "10": 0.0625,
-          "11": 0.0625,
-          "12": 0.0625,
-          "13": 0.0625,
-          "14": 0.0625,
-          "15": 0.0625,
-          "16": 0.0625,
+          "1": 0.25,
+          "2": 0.05,
+          "3": 0.05,
+          "4": 0.05,
+          "5": 0.05,
+          "6": 0.05,
+          "7": 0.05,
+          "8": 0.05,
+          "9": 0.05,
+          "10": 0.05,
+          "11": 0.05,
+          "12": 0.05,
+          "13": 0.05,
+          "14": 0.05,
+          "15": 0.05,
+          "16": 0.05,
         }
       },
-      "rate": "universal",
+      "incidence": 0.75,
     },
   ),
   
@@ -190,6 +189,7 @@ study = StudyDefinition(
     find_last_match_in_period = True,
     on_or_before = "index_date",
     date_format = "YYYY-MM-DD",
+    return_expectations = {"incidence": 0.00000001},
   ),
   
   ### Ethnicity not stated
@@ -313,13 +313,7 @@ study = StudyDefinition(
     date_format = "YYYY-MM-DD",
   ),
   
-  ### Stroke
-  stroke = patients.with_these_clinical_events(
-    stroke_codes,
-    on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.01, },
-  ),
+  
   
   ### Asplenia or Dysfunction of the Spleen codes
   asplenia = patients.with_these_clinical_events(
@@ -368,12 +362,42 @@ study = StudyDefinition(
   
   ## GEOGRAPHICAL/DEPRIVATION
   
-  ### Practice
-  practice_id = patients.registered_practice_as_of(
-    "index_date",  # day before vaccine campaign start
+  ### Practice id at start
+  practice_id_at_start = patients.registered_practice_as_of(
+    start_date,
     returning = "pseudo_id",
     return_expectations = {
-      "int": {"distribution": "normal", "mean": 1000, "stddev": 100},
+      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
+      "incidence": 1,
+    },
+  ),
+  
+  ### Practice id at end
+  practice_id_at_end = patients.registered_practice_as_of(
+    end_date,
+    returning = "pseudo_id",
+    return_expectations = {
+      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
+      "incidence": 1,
+    },
+  ),
+  
+  ### Practice id at death
+  practice_id_at_death = patients.registered_practice_as_of(
+    "death_date",
+    returning = "pseudo_id",
+    return_expectations = {
+      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
+      "incidence": 1,
+    },
+  ),
+  
+  ### Practice id at dereg
+  practice_id_at_dereg = patients.registered_practice_as_of(
+    "dereg_date",
+    returning = "pseudo_id",
+    return_expectations = {
+      "int": {"distribution": "normal", "mean": 100, "stddev": 10},
       "incidence": 1,
     },
   ),
@@ -417,10 +441,11 @@ study = StudyDefinition(
           "North East": 0.1,
           "North West": 0.1,
           "Yorkshire and The Humber": 0.1,
-          "East Midlands": 0.2,
+          "East Midlands": 0.1,
           "West Midlands": 0.1,
           "East": 0.1,
           "London": 0.2,
+          "South West": 0.1,
           "South East": 0.1,},},
     },
   ),
@@ -577,15 +602,6 @@ study = StudyDefinition(
       on_or_before = "2021-02-14",
       return_expectations = {"incidence": 0.01,},
     ),
-  ),
-  
-  ### To represent household contact of shielding individual
-  hhld_imdef_dat = patients.with_these_clinical_events(
-    hhld_imdef_codes,
-    returning = "date",
-    find_last_match_in_period = True,
-    on_or_before = "index_date",
-    date_format = "YYYY-MM-DD",
   ),
   
 )
