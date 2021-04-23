@@ -176,7 +176,7 @@ write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_str
 
 plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
 ggsave(
-  here::here("output", "models", "plot_strat_coxph.svg"),
+  here::here("output", "models", "final", "plot_strat_coxph.svg"),
   plot_coxph,
   units = "cm", width = 20, height = 30
 )
