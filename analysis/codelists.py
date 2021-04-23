@@ -231,10 +231,3 @@ high_risk_codes = codelist(
 ## Lower Risk from COVID-19 codes
 not_high_risk_codes = codelist(
     ['1300591000000101', '1300571000000100'], system="snomed")
-
-## To represent household contact of shielding individual
-hhld_imdef_codes = codelist_from_csv(
-    "codelists/primis-covid19-vacc-uptake-hhld_imdef.csv",
-    system = "snomed",
-    column = "code",
-)
