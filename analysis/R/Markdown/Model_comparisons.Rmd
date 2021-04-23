@@ -147,41 +147,7 @@ data_cox <- data_tte %>%
 
 ## Import models data
 coxmod1a <- read_rds(here::here("output", "models", "testing", "mod_coxph_adj.rds"))
-#coxmod1b <- read_rds(here::here("output", "models", "testing", "mod_coxph_adjb.rds"))
-coxmod1c <- read_rds(here::here("output", "models", "testing", "mod_coxph_adjc.rds"))
-coxmod2 <- read_rds(here::here("output", "models", "testing",  "mod_test_coxme_adj.rds"))
-
-## Function to test random effects
-TestRanef <- function(coxphModel,coxmeModel) {
-
-    if (!class(coxphModel) == "coxph" | !class(coxmeModel) == "coxme") {
-        stop("Wrong models")
-    }
-
-    ## Degrees of freedom
-    coxphDf <- sum(!is.na(coef(coxphModel)))
-    coxmeDf <- coxmeModel$df
-    names(coxmeDf) <- c("Integrated","Penalized")
-    ## DF differnces
-    dfDiff <- coxmeDf - coxphDf
-
-
-    ## Log likelihodds
-    coxphLogLik <- coxphModel$loglik[2]
-    coxmeLogLik <- coxmeModel$loglik + c(0, 0, coxmeModel$penalty)
-    coxmeLogLik <- coxmeLogLik[2:3]
-    ## -2 logLik difference
-    logLikNeg2Diff <- c(-2 * (coxphLogLik - coxmeLogLik["Integrated"]),
-                        -2 * (coxphLogLik - coxmeLogLik["Penalized"]))
-
-    ## p-values
-    pVals <- pchisq(q = logLikNeg2Diff, df = dfDiff, lower.tail = FALSE)
-
-    ## Combine
-    outDf <- data.frame(dfDiff, logLikNeg2Diff, pVals)
-    colnames(outDf) <- c("df diff", "-2logLik diff", "p-values")
-    outDf
-}
+coxmod1b <- read_rds(here::here("output", "models", "testing", "mod_strat_coxph_adj.rds"))
 ```
 
 ## 1. Cox PH model - adjusted; baseline demographics, comorbs, geographical, flu and shielding
@@ -210,37 +176,38 @@ anova(coxmod1a)
 
 ### Stratified Cox regression results
 ```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 16}
-ggforest2(coxmod1c, data = data_cox)
+ggforest2(coxmod1b, data = data_cox)
 
-coxmod1c %>% 
+coxmod1b %>% 
   gtsummary::tbl_regression(exp = TRUE)
 ```  
 
 ### Anova
 ```{r, echo = FALSE, warning= FALSE, message= FALSE}
-anova(coxmod1a, coxmod1c)
+anova(coxmod1a)
+anova(coxmod1a, coxmod1b)
 ```
 
-## 3. Mixed effects Cox PH model - adjusted; baseline demographics, comorbs, geographical, flu and shielding
+<!-- ## 3. Mixed effects Cox PH model - adjusted; baseline demographics, comorbs, geographical, flu and shielding -->
 
-## Registered patients counts
-```{r, echo = FALSE, warning= FALSE, message= FALSE}
-practice_counts <- data_cox %>% 
-  group_by(practice_id_latest_active_registration) %>%
-  summarise(`Number_of_registered_patients` = n())
+<!-- ## Registered patients counts -->
+<!-- ```{r, echo = FALSE, warning= FALSE, message= FALSE} -->
+<!-- practice_counts <- data_cox %>%  -->
+<!--   group_by(practice_id_latest_active_registration) %>% -->
+<!--   summarise(`Number_of_registered_patients` = n()) -->
 
-## Exclude 
-data_cox_reduced <- data_cox %>%
-  filter(#practice_id_latest_active_registration %in% 
-         #  subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration,
-         practice_id_latest_active_registration %in% 
-           subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration[1:1000]) %>%
-  droplevels()
+<!-- ## Exclude  -->
+<!-- data_cox_reduced <- data_cox %>% -->
+<!--   filter(#practice_id_latest_active_registration %in%  -->
+<!--          #  subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration, -->
+<!--          practice_id_latest_active_registration %in%  -->
+<!--            subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration[1:1000]) %>% -->
+<!--   droplevels() -->
 
-length(unique(data_cox_reduced$patient_id))
-length(unique(data_cox$patient_id))/length(unique(data_cox_reduced$patient_id))*100
-length(unique(data_cox_reduced$practice_id_latest_active_registration))
-```
+<!-- length(unique(data_cox_reduced$patient_id)) -->
+<!-- length(unique(data_cox$patient_id))/length(unique(data_cox_reduced$patient_id))*100 -->
+<!-- length(unique(data_cox_reduced$practice_id_latest_active_registration)) -->
+<!-- ``` -->
 
 <!-- ### Mixed effects Cox regression results -->
 <!-- ```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 16} -->
