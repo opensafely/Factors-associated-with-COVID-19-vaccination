@@ -1,13 +1,16 @@
-######################################
+---
+title: "Factors associated with COVID-19 vaccination"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+---
 
-# This script:
-# - imports processed data
-# - fits a mixed effects cox model using the coxme package
-# - saves model summaries (tables and figures)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
-######################################
-
-
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
 # Preliminaries ----
 
 ## Import libraries
@@ -17,18 +20,14 @@ library('survival')
 library('coxme')
 library('gtsummary')
 library('gt')
-library('survminer')
-#library('ehahelper')
-
-## Create output directory
-dir.create(here::here("output", "models", "final"), showWarnings = FALSE, recursive=TRUE)
+library("survminer")
+library('kableExtra')
 
 ## Function to plot stratified cox model
 ggforest2 <-  function (model, data = NULL, main = "Hazard ratio", cpositions = c(0.02, 
                                                                                   0.22, 0.4), fontsize = 0.7, refLabel = "reference", noDigits = 2) 
 {
   conf.high <- conf.low <- estimate <- NULL
-  stopifnot(inherits(model, "coxph"))
   data <- survminer:::.get_data(model, data = data)
   terms <- attr(model$terms, "dataClasses")[-1]
   coef <- as.data.frame(broom::tidy(model, conf.int = TRUE))
@@ -138,7 +137,7 @@ ggforest2 <-  function (model, data = NULL, main = "Hazard ratio", cpositions = 
 }
 
 ## Import processed data
-data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
+data_tte <- read_rds(here::here("output", "data", "data_all.rds"))
 
 ## Converts logical to integer so that model coefficients print nicely in gtsummary methods
 data_cox <- data_tte %>%
@@ -149,34 +148,49 @@ data_cox <- data_tte %>%
     )
   )
 
+## Import models data
+coxmod <- read_rds(here::here("output", "models", "final", "mod_strat_coxph_adj.rds"))
+```
 
-# MODELS ----
+## Purpose
 
-## Stratified Cox PH model - adjusted; baseline demographics, comorbs, geographical, flu and shielding 
-mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
-                               ageband + sex + ethnicity + morbid_obesity +
-                               chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-                               chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
-                               asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                               immunosuppression_medication + imd + region + stp + rural_urban + prior_covid + flu_vaccine + shielded +
-                               shielded_since_feb_15 + strata(practice_id_latest_active_registration),
-                             data = data_cox)
+(Taken from https://docs.google.com/document/d/1PZgllPNU8zi2xVPrPDHoBxzQGti7F3C7R9AyqGkKAJU/edit)
 
-write_rds(mod.strat.coxph.adj, here::here("output", "models", "final", "mod_strat_coxph_adj.rds"), compress="gz")
+Firstly, and obviously, we are not trying to directly estimate the causal effect of any one putative cause on vaccination propensity/timing/uptake. This requires statistical models tailored to each specific causal effect of interest, which we are not doing here. Essentially, we are not providing answers to “what if” questions.
+
+Secondly, it is not feasible to use this model to make predictions about vaccination uptake in the future. The vaccination programme is far too dynamic over time; target populations for vaccination quickly shift from one priority group to the next, vaccine availability will change over time, new policies are introduced in response to emerging evidence about effectiveness, safely, covid risk, inequalities, etc. It is also susceptible to the Prediction Paradox, i.e., predictions influencing policies or behaviors which then invalidates the predictions. This means predictive performance shouldn’t be considered important, and we shouldn’t be providing individualised risk scores.
+
+What is possible, and informative, is to use the model to describe observed differences in vaccine uptake across different patient groups, strictly over the studied period. In particular, this can help to probe apparent inequalities. Not to prove or disprove -- that would require a causal investigation -- but to identify systematic variation in uptake which isn’t sufficiently accounted for by other modelled factors. 
 
 
-# Output model coefficients ----
+## Results
 
-## Summary table
-tab_mod1 <- gtsummary::tbl_regression(mod.strat.coxph.adj, exp = TRUE)
-gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_coxph.html"))
-write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
+Associations between patient-level factors and covid vaccination are shown in the Figure 1 below (also shown in table format at end of document).
 
-## Forest plot
+```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 16, fig.cap="Figure 1: Estimated Hazard Ratios for each potential factor from a stratified Cox model"}
+ggforest2(coxmod, data = data_cox)
+```
 
-plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
-ggsave(
-  here::here("output", "models", "final", "plot_strat_coxph.svg"),
-  plot_coxph,
-  units = "cm", width = 20, height = 30
-)
+
+General overview:
+
+* Increasing age was strongly associated with being vaccinated, with those in the 95+ years age group being over twice as likely to be vaccinated compared with those aged 70-74 years
+
+* Males vs females
+
+* All non-white ethnic groups had higher risk than those with white ethnicity: HRs (adjusted for all included risk factors) ranged from 1.83-2.17 for Black, Asian/Asian British and mixed ethnicities compared to white
+
+* Increasing risks were seen with increasing levels of deprivation
+
+* Most comorbidities were associated with higher risk , including diabetes, asthma (with a greater HR for those with recent use of an oral corticosteroid), respiratory disease, chronic heart disease, liver disease, stroke/dementia, other neurological diseases, reduced kidney function, autoimmune diseases (rheumatoid arthritis, lupus or psoriasis) and other immunosuppressive conditions, as per Table 2. 
+
+
+
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+gtsummary::tbl_regression(coxmod, exp = TRUE)  %>% 
+  as_gt() %>%
+  gt::tab_header("Table 1. Hazard Ratios (HRs) and 95% confidence intervals (CI) for COVID-19 vaccination")
+```
+
+
