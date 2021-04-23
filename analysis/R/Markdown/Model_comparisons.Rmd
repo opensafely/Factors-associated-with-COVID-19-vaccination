@@ -221,15 +221,33 @@ coxmod1c %>%
 anova(coxmod1a, coxmod1c)
 ```
 
-<!-- ## 3. Mixed effects Cox PH model - adjusted; baseline demographics, comorbs, geographical, flu and shielding -->
+## 3. Mixed effects Cox PH model - adjusted; baseline demographics, comorbs, geographical, flu and shielding
+
+## Registered patients counts
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+practice_counts <- data_cox %>% 
+  group_by(practice_id_latest_active_registration) %>%
+  summarise(`Number_of_registered_patients` = n())
+
+## Exclude 
+data_cox_reduced <- data_cox %>%
+  filter(#practice_id_latest_active_registration %in% 
+         #  subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration,
+         practice_id_latest_active_registration %in% 
+           subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration[1:1000]) %>%
+  droplevels()
+
+length(unique(data_cox_reduced$patient_id))
+length(unique(data_cox_reduced$practice_id_latest_active_registration))
+```
 
 <!-- ### Mixed effects Cox regression results -->
 <!-- ```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 16} -->
 <!-- ggforest2(coxmod2, data = data_cox) -->
 
-<!-- coxmod1c %>%  -->
+<!-- coxmod1c %>% -->
 <!--   gtsummary::tbl_regression(exp = TRUE) -->
-<!-- ```   -->
+<!-- ``` -->
 
 <!-- ### Testing proportional Hazards assumption -->
 
