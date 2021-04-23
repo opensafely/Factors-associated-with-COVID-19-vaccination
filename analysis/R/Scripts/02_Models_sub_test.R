@@ -43,12 +43,12 @@ practice_counts <- data_cox %>%
   summarise(`Number_of_registered_patients` = n())
 
 ## Exclude 
-data_cox_reduced <- data_cox %>%
-  filter(#practice_id_latest_active_registration %in% 
-         #  subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration,
-         practice_id_latest_active_registration %in% 
-           subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration[1:1000]) %>%
-  droplevels()
+# data_cox_reduced <- data_cox %>%
+#   filter(#practice_id_latest_active_registration %in% 
+#          #  subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration,
+#          practice_id_latest_active_registration %in% 
+#            subset(practice_counts, Number_of_registered_patients >= 100)$practice_id_latest_active_registration[1:1000]) %>%
+#   droplevels()
 
 
 
@@ -62,6 +62,6 @@ mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                          immunosuppression_medication + imd + flu_vaccine + shielded + shielded_since_feb_15 + rural_urban +
                          region + (1 | practice_id_latest_active_registration),
-                       data = data_cox_reduced)
+                       data = data_cox)
 
 write_rds(mod.coxme.adj, here::here("output", "models", "testing", "mod_test_coxme_adj.rds"), compress="gz")
