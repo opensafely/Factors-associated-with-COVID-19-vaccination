@@ -147,7 +147,7 @@ data_cox <- data_tte %>%
 
 ## Import models data
 coxmod1a <- read_rds(here::here("output", "models", "testing", "mod_coxph_adj.rds"))
-coxmod1b <- read_rds(here::here("output", "models", "testing", "mod_coxph_adjb.rds"))
+#coxmod1b <- read_rds(here::here("output", "models", "testing", "mod_coxph_adjb.rds"))
 coxmod1c <- read_rds(here::here("output", "models", "testing", "mod_coxph_adjc.rds"))
 coxmod2 <- read_rds(here::here("output", "models", "testing",  "mod_test_coxme_adj.rds"))
 
