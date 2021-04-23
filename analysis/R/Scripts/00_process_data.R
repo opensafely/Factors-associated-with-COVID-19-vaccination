@@ -107,7 +107,8 @@ data_extract0 <- read_csv(
     flu_vaccine = col_logical(),
     shielded = col_logical(),
     shielded_since_feb_15 = col_logical(),
-    hhld_imdef_dat = col_date(format="%Y-%m-%d")
+    prior_covid_date = col_date(format="%Y-%m-%d")
+  
   ),
   na = character() # more stable to convert to missing later
 )
@@ -274,8 +275,9 @@ data_processed <- data_extract %>%
       TRUE ~ NA_character_
     ),
     
-    # Household contact of shielding individual
-    hhld_imdef_dat = ifelse(is.na(hhld_imdef_dat), FALSE, TRUE)
+    # Prior covid
+    prior_covid = as.integer(ifelse(is.na(prior_covid_date), 0, 1))
+    
   ) %>%
   filter(age >= 70,
          sex %in% c("Male", "Female"),
@@ -289,7 +291,7 @@ data_processed <- data_extract %>%
          chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_1_5,
          sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
          chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
-         flu_vaccine, shielded, shielded_since_feb_15)
+         prior_covid, flu_vaccine, shielded, shielded_since_feb_15)
 
 # Data for modelling
 data_processed_modelling <- data_processed %>%
