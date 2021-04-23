@@ -59,7 +59,7 @@ actions:
       moderately_sensitive:
         html: output/Data_summaries.html
         
-  # Models
+  # Coxph models
   cox_models:
     run: r:latest analysis/R/Scripts/02_Models.R
     needs: [generate_study_population, data_process]
@@ -67,15 +67,15 @@ actions:
       highly_sensitive :
         models: output/models/testing/mod*.rds
         
+  # Coxme model
   cox_models_sub:
     run: r:latest analysis/R/Scripts/02_Models_sub_test.R
     needs: [generate_study_population, data_process]
     outputs:
       highly_sensitive :
         models: output/models/testing/mod_test*.rds
-        
 
-  # Models summaries
+  # Model summaries
   cox_models_summaries:
     run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Model_comparisons.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
     needs: [generate_study_population, data_process, cox_models, cox_models_sub]
