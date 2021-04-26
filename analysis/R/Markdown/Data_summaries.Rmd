@@ -42,11 +42,6 @@ summary(practice_counts$`Number_of_registered_patients`)
 * `r practice_counts %>% filter(Number_of_registered_patients < 500) %>% nrow() ` practices have less than 500 hundred registered (study population/eligible) patients 
 * `r practice_counts %>% filter(Number_of_registered_patients < 1000) %>% nrow() ` practices have less than 1000 hundred registered (study population/eligible) patients 
 
-```{r, warning= FALSE, echo = FALSE}
-practice_counts %>% 
-  datatable()
-```
-
 ## Events per practice
 
 ```{r, warning= FALSE, echo = FALSE}
