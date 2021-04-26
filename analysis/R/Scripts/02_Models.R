@@ -57,7 +57,7 @@ write_rds(mod.coxph.unadj, here::here("output", "models", "testing", "mod_coxph_
 mod.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                          ageband + sex + ethnicity + morbid_obesity +
                          chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-                         chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                         chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                          immunosuppression_medication + imd + stp + region + rural_urban + prior_covid + flu_vaccine + 
                          shielded + shielded_since_feb_15,
@@ -69,7 +69,7 @@ write_rds(mod.coxph.adj, here::here("output", "models", "testing", "mod_coxph_ad
 # mod.coxph.adjb <- coxph(Surv(follow_up_time, covid_vax) ~
 #                          ageband + sex + ethnicity + morbid_obesity +
 #                          chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-#                          chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+#                          chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
 #                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
 #                          immunosuppression_medication + imd + region + rural_urban + flu_vaccine + shielded +
 #                          shielded_since_feb_15 + practice_id_latest_active_registration,
@@ -87,7 +87,7 @@ write_rds(mod.strat.coxph.unadj, here::here("output", "models", "testing", "mod_
 mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                                ageband + sex + ethnicity + morbid_obesity +
                                chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-                               chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                               chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                                asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                                immunosuppression_medication + imd + region + stp + rural_urban + prior_covid + flu_vaccine + 
                                shielded + shielded_since_feb_15 + strata(practice_id_latest_active_registration),
@@ -99,7 +99,7 @@ write_rds(mod.strat.coxph.adj, here::here("output", "models", "testing", "mod_st
 # mod.coxme.adj <- coxme(Surv(follow_up_time, covid_vax) ~
 #                          ageband + sex + morbid_obesity +
 #                          chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-#                          chronic_kidney_disease_all_stages_1_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+#                          chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
 #                          asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
 #                          immunosuppression_medication + imd + region + rural_urban + flu_vaccine + shielded +
 #                          shielded_since_feb_15 + (1 | practice_id_latest_active_registration),
