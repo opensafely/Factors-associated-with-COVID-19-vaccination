@@ -167,7 +167,7 @@ What is possible, and informative, is to use the model to describe observed diff
 
 Associations between patient-level factors and covid vaccination are shown in the Figure 1 below (also shown in table format at end of document).
 
-```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 16, fig.cap="Figure 1: Estimated Hazard Ratios for each potential factor from a stratified Cox model"}
+```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 20, fig.cap="Figure 1: Estimated Hazard Ratios for each potential factor from a stratified Cox model"}
 ggforest2(coxmod, data = data_cox)
 ```
 
