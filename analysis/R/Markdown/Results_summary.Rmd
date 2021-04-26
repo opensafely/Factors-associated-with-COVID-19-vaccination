@@ -165,13 +165,6 @@ What is possible, and informative, is to use the model to describe observed diff
 
 ## Results
 
-Associations between patient-level factors and covid vaccination are shown in the Figure 1 below (also shown in table format at end of document).
-
-```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 20, fig.cap="Figure 1: Estimated Hazard Ratios for each potential factor from a stratified Cox model"}
-ggforest2(coxmod, data = data_cox)
-```
-
-
 General overview:
 
 * For the 80+ cohort, vaccination uptake decreased with age 
@@ -189,6 +182,15 @@ General overview:
 * Those with a history of covid were less likely to have been vaccinated while those with a hisory of havign the flu jab were more likely to have been vaccinated
 
 * Decreased vaccination uptake in shielding individuals
+
+
+A full overview of the associations between patient-level factors and covid vaccination are shown in the Figure 1 below. Results also available in Table format after figure.
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 20, fig.cap="Figure 1: Estimated Hazard Ratios for each potential factor from a stratified Cox model"}
+ggforest2(coxmod, data = data_cox)
+```
+
+
 
 
 ```{r, echo = FALSE, warning= FALSE, message= FALSE}
