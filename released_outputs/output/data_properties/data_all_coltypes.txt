@@ -1,0 +1,93 @@
+$patient_id
+[1] "integer"
+
+$covid_vax
+[1] "integer"
+
+$follow_up_time
+[1] "numeric"
+
+$practice_id_at_start
+[1] "integer"
+
+$practice_id_latest_active_registration
+[1] "integer"
+
+$stp
+[1] "factor"
+
+$age
+[1] "integer"
+
+$ageband
+[1] "factor"
+
+$sex
+[1] "factor"
+
+$ethnicity
+[1] "factor"
+
+$morbid_obesity
+[1] "numeric"
+
+$chronic_heart_disease
+[1] "logical"
+
+$diabetes
+[1] "logical"
+
+$chronic_kidney_disease_diagnostic
+[1] "logical"
+
+$chronic_kidney_disease_all_stages
+[1] "logical"
+
+$chronic_kidney_disease_all_stages_1_5
+[1] "logical"
+
+$sev_mental_ill
+[1] "logical"
+
+$learning_disability
+[1] "logical"
+
+$chronic_neuro_dis_inc_sig_learn_dis
+[1] "logical"
+
+$asplenia
+[1] "logical"
+
+$chronic_liver_disease
+[1] "logical"
+
+$chronis_respiratory_disease
+[1] "logical"
+
+$immunosuppression_diagnosis
+[1] "logical"
+
+$immunosuppression_medication
+[1] "logical"
+
+$imd
+[1] "factor"
+
+$region
+[1] "factor"
+
+$rural_urban
+[1] "factor"
+
+$prior_covid
+[1] "integer"
+
+$flu_vaccine
+[1] "logical"
+
+$shielded
+[1] "logical"
+
+$shielded_since_feb_15
+[1] "logical"
+
