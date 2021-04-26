@@ -191,8 +191,6 @@ ggforest2(coxmod, data = data_cox)
 ```
 
 
-
-
 ```{r, echo = FALSE, warning= FALSE, message= FALSE}
 gtsummary::tbl_regression(coxmod, exp = TRUE)  %>% 
   as_gt() %>%
