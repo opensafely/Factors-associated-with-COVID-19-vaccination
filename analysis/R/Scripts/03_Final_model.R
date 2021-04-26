@@ -173,7 +173,6 @@ gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_
 write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
 
 ## Forest plot
-
 plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
 ggsave(
   here::here("output", "models", "final", "plot_strat_coxph.svg"),
