@@ -174,17 +174,21 @@ ggforest2(coxmod, data = data_cox)
 
 General overview:
 
-* Increasing age was strongly associated with being vaccinated, with those in the 95+ years age group being over twice as likely to be vaccinated compared with those aged 70-74 years
+* For the 80+ cohort, vaccination uptake decreased with age 
 
-* Males vs females
+* Males were marginally more likely to be vaccinated females
 
-* All non-white ethnic groups had higher risk than those with white ethnicity: HRs (adjusted for all included risk factors) ranged from 1.83-2.17 for Black, Asian/Asian British and mixed ethnicities compared to white
+* Black, Asian/Asian British and mixed ethnicities were much less likely to be vaccinated, compared to white
 
-* Increasing risks were seen with increasing levels of deprivation
+* Decreasing vaccination uptake were seen with increasing levels of deprivation
 
-* Most comorbidities were associated with higher risk , including diabetes, asthma (with a greater HR for those with recent use of an oral corticosteroid), respiratory disease, chronic heart disease, liver disease, stroke/dementia, other neurological diseases, reduced kidney function, autoimmune diseases (rheumatoid arthritis, lupus or psoriasis) and other immunosuppressive conditions, as per Table 2. 
+* Most comorbidities were associated with decreased vaccination uptake, including morbid obesity, diabetes, severve mental illness, learning disability, neurological diseases (including stroke), chronic respiratory disease
 
+* No major rural/urban divide
 
+* Those with a history of covid were less likely to have been vaccinated while those with a hisory of havign the flu jab were more likely to have been vaccinated
+
+* Decreased vaccination uptake in shielding individuals
 
 
 ```{r, echo = FALSE, warning= FALSE, message= FALSE}
