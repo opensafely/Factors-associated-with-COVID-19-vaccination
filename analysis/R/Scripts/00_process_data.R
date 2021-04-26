@@ -83,7 +83,7 @@ data_extract0 <- read_csv(
     diabetes = col_logical(),
     chronic_kidney_disease_diagnostic = col_logical(),
     chronic_kidney_disease_all_stages = col_logical(),
-    chronic_kidney_disease_all_stages_1_5 = col_logical(),
+    chronic_kidney_disease_all_stages_3_5 = col_logical(),
     sev_mental_ill = col_date(format="%Y-%m-%d"),
     learning_disability = col_date(format="%Y-%m-%d"),
     chronic_neuro_dis_inc_sig_learn_dis = col_date(format="%Y-%m-%d"),
