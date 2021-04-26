@@ -279,8 +279,8 @@ study = StudyDefinition(
   ),
   
   ### Chronic kidney disease codes-stages 3 - 5
-  chronic_kidney_disease_all_stages_1_5 = patients.with_these_clinical_events(
-    chronic_kidney_disease_codes_all_stages_1_5,
+  chronic_kidney_disease_all_stages_3_5 = patients.with_these_clinical_events(
+    chronic_kidney_disease_codes_all_stages_3_5,
     on_or_before = "index_date",
     returning = "binary_flag",
     return_expectations = {"incidence": 0.01},
