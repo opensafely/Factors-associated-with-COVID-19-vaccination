@@ -94,6 +94,15 @@ actions:
         tables: output/models/final/tab*.html
         data: output/models/final/tab*.csv
         plots: output/models/final/plot*.svg
+        
+        
+  # Strata summaries
+  strata_summary:
+    run: r:latest analysis/R/Scripts/04_Strata_Summary.R
+    needs: [data_process, cox_model_final]
+    outputs:
+      moderately_sensitive:
+        plots: output/models/final/plot_strata*.svg
   
   # Results summary
   results_summary:
