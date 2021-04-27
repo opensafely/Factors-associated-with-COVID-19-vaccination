@@ -43,7 +43,7 @@ $chronic_kidney_disease_diagnostic
 $chronic_kidney_disease_all_stages
 [1] "logical"
 
-$chronic_kidney_disease_all_stages_1_5
+$chronic_kidney_disease_all_stages_3_5
 [1] "logical"
 
 $sev_mental_ill
