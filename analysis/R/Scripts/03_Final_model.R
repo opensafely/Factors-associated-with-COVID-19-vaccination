@@ -165,17 +165,17 @@ mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
 write_rds(mod.strat.coxph.adj, here::here("output", "models", "final", "mod_strat_coxph_adj.rds"), compress="gz")
 
 
-# Output model coefficients ----
-
-## Summary table
-tab_mod1 <- gtsummary::tbl_regression(mod.strat.coxph.adj, exp = TRUE)
-gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_coxph.html"))
-write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
-
-## Forest plot
-plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
-ggsave(
-  here::here("output", "models", "final", "plot_strat_coxph.svg"),
-  plot_coxph,
-  units = "cm", width = 20, height = 30
-)
+# # Output model coefficients ----
+# 
+# ## Summary table
+# tab_mod1 <- gtsummary::tbl_regression(mod.strat.coxph.adj, exp = TRUE)
+# gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_coxph.html"))
+# write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
+# 
+# ## Forest plot
+# plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
+# ggsave(
+#   here::here("output", "models", "final", "plot_strat_coxph.svg"),
+#   plot_coxph,
+#   units = "cm", width = 20, height = 30
+# )
