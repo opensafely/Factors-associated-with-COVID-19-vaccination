@@ -158,7 +158,7 @@ mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                                chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                                chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                                asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                               immunosuppression_medication + imd + region + stp + rural_urban + prior_covid + flu_vaccine + shielded +
+                               immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded +
                                shielded_since_feb_15 + strata(practice_id_latest_active_registration),
                              data = data_cox)
 
