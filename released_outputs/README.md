@@ -9,4 +9,7 @@
   * output/models
     * output/models/final
       * [output/models/final/plot_strat_coxph.svg](output/models/final/plot_strat_coxph.svg)
+      * [output/models/final/plot_strata_cmlhaz.svg](output/models/final/plot_strata_cmlhaz.svg)
+      * [output/models/final/plot_strata_cmlhaz30.svg](output/models/final/plot_strata_cmlhaz30.svg)
+      * [output/models/final/plot_strata_llsurv.svg](output/models/final/plot_strata_llsurv.svg)
   * [output/Results_summary.html](output/Results_summary.html)
