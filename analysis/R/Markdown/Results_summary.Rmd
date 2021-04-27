@@ -149,7 +149,7 @@ data_cox <- data_tte %>%
   )
 
 ## Import models data
-coxmod <- read_rds(here::here("output", "models", "testing", "mod_strat_coxph_adj.rds"))
+coxmod <- read_rds(here::here("output", "models", "final", "mod_strat_coxph_adj.rds"))
 ```
 
 ## Purpose
