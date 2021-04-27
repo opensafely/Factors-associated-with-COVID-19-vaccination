@@ -90,10 +90,10 @@ actions:
     outputs:
       highly_sensitive :
         models: output/models/final/mod*.rds
-      moderately_sensitive:
-        tables: output/models/final/tab*.html
-        data: output/models/final/tab*.csv
-        plots: output/models/final/plot*.svg
+      # moderately_sensitive:
+      #   tables: output/models/final/tab*.html
+      #   data: output/models/final/tab*.csv
+      #   plots: output/models/final/plot*.svg
         
   # Strata summaries
   strata_summary:
