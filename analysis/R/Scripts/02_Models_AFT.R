@@ -232,6 +232,7 @@ for (i in 1:length(sample_size)) {
                               asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                               immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
                               rural_urban + region + strata(practice_id_latest_active_registration),
+                              dist = "lognormal",
                             data = data_sub))
   timings[4,2] <- fit4[3]
   
@@ -243,6 +244,7 @@ for (i in 1:length(sample_size)) {
                                 asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                                 immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
                                 rural_urban + region + frailty(practice_id_latest_active_registration),
+                              dist = "lognormal",
                               data = data_sub))
   timings[5,2] <- fit5[3]
   
