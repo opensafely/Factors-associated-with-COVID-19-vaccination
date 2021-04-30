@@ -270,7 +270,7 @@ plot <- ggplot(timings_plot, aes(x = `Number of practices`, y = Time, colour = M
   geom_point() +
   geom_line()
 
-ggsave(here::here("output", "models", "final", "plot_strat_coxph.svg"),
+ggsave(here::here("output", "models", "testing", "cox_vs_aft", "plot_models_fit_time.svg"),
        plot,
        units = "cm", width = 10, height = 8)
 
