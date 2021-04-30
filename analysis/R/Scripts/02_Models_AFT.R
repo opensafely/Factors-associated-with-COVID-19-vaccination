@@ -173,7 +173,7 @@ for (i in 1:length(sample_size)) {
     left_join(table_results_mod.aft.re.adj, by = c("Variable"))
   
   write_csv(table_results, here::here("output", "models", "testing", "cox_vs_aft", 
-                                       paste("tables_results_", sample_size[i],".csv", sep = "")))
+                                       paste("table_results_", sample_size[i],".csv", sep = "")))
   
   
   # Timings
