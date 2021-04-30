@@ -83,8 +83,8 @@ actions:
       highly_sensitive :
         models: output/models/testing/cox_vs_aft/mod*.rds
       moderately_sensitive:
-        tables: output/models/final/table*.csv
-        plots: output/models/final/plot*.svg
+        tables: output/models/testing/cox_vs_aft/table*.csv
+        plots: output/models/testing/cox_vs_aft/plot*.svg
 
   # Model summaries
   cox_models_summaries:
