@@ -171,7 +171,7 @@ mod.aft.re.adj <- survreg(Surv(follow_up_time, covid_vax) ~
                             asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                             immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
                             rural_urban + region + frailty(practice_id_latest_active_registration),
-                          data = data_sub)
+                          data = data_cox)
 
 write_rds(mod.aft.re.adj, here::here("output", "models", "final", "mod_aft_re_adj.rds"), compress="gz")
 
