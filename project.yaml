@@ -109,7 +109,7 @@ actions:
   # Strata summaries
   strata_summary:
     run: r:latest analysis/R/Scripts/04_Strata_Summary.R
-    needs: [data_process, cox_model_final]
+    needs: [data_process, model_final]
     outputs:
       moderately_sensitive:
         plots: output/models/final/plot_strata*.svg
