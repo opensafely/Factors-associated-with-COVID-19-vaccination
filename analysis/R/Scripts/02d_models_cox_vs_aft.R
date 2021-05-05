@@ -47,7 +47,7 @@ mod.stratcoxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
 write_rds(mod.stratcoxph.adj, here::here("output", "models", "cox_vs_aft", "mod_stratcoxph_adj.rds"), compress="gz")
 
 cox.zph(mod.stratcoxph.adj, transform = "identity")$table
-cox.zph(mod.stratcoxph.adj, transform = "rank")$table
+#cox.zph(mod.stratcoxph.adj, transform = "rank")$table
 cox.zph(mod.stratcoxph.adj, transform = "log") $table
 cox.zph(mod.stratcoxph.adj, transform = "km")$table
 
