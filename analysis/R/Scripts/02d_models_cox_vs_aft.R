@@ -51,6 +51,20 @@ write_rds(mod.stratcoxph.adj, here::here("output", "models", "cox_vs_aft", "mod_
 
 ## AFT models
 ### Weibull
+mod.aft.adj.weibulla <- survreg(Surv(follow_up_time, covid_vax) ~
+                                 ageband + sex + ethnicity + morbid_obesity + chronic_heart_disease + 
+                                 diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                                 chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + 
+                                 chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease + 
+                                 chronis_respiratory_disease + immunosuppression_diagnosis +
+                                 immunosuppression_medication + imd + region + rural_urban + prior_covid + 
+                                 flu_vaccine + shielded + shielded_since_feb_15,                               dist = "weibull",
+                               data = data_cox)
+
+write_rds(mod.aft.adj.weibulla, here::here("output", "models", "cox_vs_aft", "mod_aft_weibull_adja.rds"), compress="gz")
+
+
+### Weibull
 mod.aft.adj.weibull <- survreg(Surv(follow_up_time, covid_vax) ~
                             ageband + sex + ethnicity + morbid_obesity + chronic_heart_disease + 
                             diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
