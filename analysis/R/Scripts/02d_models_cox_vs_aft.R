@@ -15,6 +15,7 @@ library('lubridate')
 library('survival')
 library('gtsummary')
 library('gt')
+library("survminer")
 
 ## Create output directory
 dir.create(here::here("output", "models", "cox_vs_aft"), showWarnings = FALSE, recursive=TRUE)
