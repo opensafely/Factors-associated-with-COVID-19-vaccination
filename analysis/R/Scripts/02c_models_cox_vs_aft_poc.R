@@ -65,16 +65,16 @@ for (i in 1:length(sample_size)) {
   
   ## Stratified Cox model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & practice as strata
   mod.stratcoxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
-                           ageband + sex + ethnicity + morbid_obesity +
-                           chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-                           chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
-                           asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                           immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                           rural_urban + region + strata(practice_id_latest_active_registration),
-                         data = data_sub)
+                                ageband + sex + ethnicity + morbid_obesity +
+                                chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                                chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                                asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
+                                immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
+                                rural_urban + region + strata(practice_id_latest_active_registration),
+                              data = data_sub)
   
   write_rds(mod.stratcoxph.adj, here::here("output", "models", "testing", "cox_vs_aft", 
-                                      paste("mod_stratcoxph_adj_", sample_size[i],".rds", sep = "")), compress="gz")
+                                           paste("mod_stratcoxph_adj_", sample_size[i],".rds", sep = "")), compress="gz")
   
   # AFT model - adjusted; baseline demographics, comorbs, geographical, flu, shielding
   mod.aft.adj <- survreg(Surv(follow_up_time, covid_vax) ~
@@ -88,33 +88,33 @@ for (i in 1:length(sample_size)) {
                          data = data_sub)
   
   write_rds(mod.aft.adj, here::here("output", "models", "testing", "cox_vs_aft", 
-                                      paste("mod_aft_adj_", sample_size[i],".rds", sep = "")), compress="gz")
+                                    paste("mod_aft_adj_", sample_size[i],".rds", sep = "")), compress="gz")
   
   # Stratified AFT model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & practice as strata
   mod.strat.aft.adj <- survreg(Surv(follow_up_time, covid_vax) ~
+                                 ageband + sex + ethnicity + morbid_obesity +
+                                 chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                                 chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                                 asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
+                                 immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
+                                 rural_urban + region + strata(practice_id_latest_active_registration),
+                               data = data_sub)
+  
+  write_rds(mod.strat.aft.adj, here::here("output", "models", "testing", "cox_vs_aft", 
+                                          paste("mod_strat_aft_adj_", sample_size[i],".rds", sep = "")), compress="gz")
+  
+  # AFT model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & practice as random effect
+  mod.aft.re.adj <- survreg(Surv(follow_up_time, covid_vax) ~
                               ageband + sex + ethnicity + morbid_obesity +
                               chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                               chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                               asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                               immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                              rural_urban + region + strata(practice_id_latest_active_registration),
+                              rural_urban + region + frailty(practice_id_latest_active_registration),
                             data = data_sub)
   
-  write_rds(mod.strat.aft.adj, here::here("output", "models", "testing", "cox_vs_aft", 
-                                       paste("mod_strat_aft_adj_", sample_size[i],".rds", sep = "")), compress="gz")
-  
-  # AFT model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & practice as random effect
-  mod.aft.re.adj <- survreg(Surv(follow_up_time, covid_vax) ~
-                         ageband + sex + ethnicity + morbid_obesity +
-                         chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-                         chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
-                         asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                         immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                         rural_urban + region + frailty(practice_id_latest_active_registration),
-                       data = data_sub)
-  
   write_rds(mod.aft.re.adj, here::here("output", "models", "testing", "cox_vs_aft", 
-                                    paste("mod_aft_re_adj_", sample_size[i],".rds", sep = "")), compress="gz")
+                                       paste("mod_aft_re_adj_", sample_size[i],".rds", sep = "")), compress="gz")
   
   
   # Tables
@@ -124,7 +124,7 @@ for (i in 1:length(sample_size)) {
     mutate(LCI = round(exp.coef. - 1.96*se.coef., digits = 2),
            UCI = round(exp.coef. + 1.96*se.coef., digits = 2),
            `CoxPH HR (95% CI)` = paste(round(exp.coef., digits = 2),
-                                 " (", LCI, " - ", UCI, ")", sep = "")) %>%
+                                       " (", LCI, " - ", UCI, ")", sep = "")) %>%
     select(Variable, `CoxPH HR (95% CI)`)
   
   ## Stratified Cox model
@@ -133,7 +133,7 @@ for (i in 1:length(sample_size)) {
     mutate(LCI = round(exp.coef. - 1.96*se.coef., digits = 2),
            UCI = round(exp.coef. + 1.96*se.coef., digits = 2),
            `Strat CoxPH HR (95% CI)` = paste(round(exp.coef., digits = 2),
-                                 " (", LCI, " - ", UCI, ")", sep = "")) %>%
+                                             " (", LCI, " - ", UCI, ")", sep = "")) %>%
     select(Variable, `Strat CoxPH HR (95% CI)`)
   
   # AFT model
@@ -143,7 +143,7 @@ for (i in 1:length(sample_size)) {
     mutate(LCI = round(Value - 1.96*Std..Error, digits = 2),
            UCI = round(Value + 1.96*Std..Error, digits = 2),
            `AFT Time ratio (95% CI)` = paste(round(Value, digits = 2),
-                                 " (", LCI, " - ", UCI, ")", sep = "")) %>%
+                                             " (", LCI, " - ", UCI, ")", sep = "")) %>%
     select(Variable, `AFT Time ratio (95% CI)`)
   
   # Stratified AFT model - adjusted; baseline demographics, comorbs, geographical, flu, shielding & practice as strata
@@ -152,7 +152,7 @@ for (i in 1:length(sample_size)) {
     mutate(LCI = round(Value - 1.96*Std..Error, digits = 2),
            UCI = round(Value + 1.96*Std..Error, digits = 2),
            `Strat AFT Time ratio (95% CI)` = paste(round(Value, digits = 2),
-                                         " (", LCI, " - ", UCI, ")", sep = "")) %>%
+                                                   " (", LCI, " - ", UCI, ")", sep = "")) %>%
     select(Variable, `Strat AFT Time ratio (95% CI)`)
   table_results_mod.strat.aft.adj <- table_results_mod.strat.aft.adj[2:62,]
   
@@ -162,7 +162,7 @@ for (i in 1:length(sample_size)) {
     mutate(LCI = round(Value - 1.96*Std..Error, digits = 2),
            UCI = round(Value + 1.96*Std..Error, digits = 2),
            `AFT with RE Time ratio (95% CI)` = paste(round(Value, digits = 2),
-                                         " (", LCI, " - ", UCI, ")", sep = "")) %>%
+                                                     " (", LCI, " - ", UCI, ")", sep = "")) %>%
     select(Variable, `AFT with RE Time ratio (95% CI)`)
   table_results_mod.aft.re.adj <- table_results_mod.aft.re.adj[2:62,]
   
@@ -173,7 +173,7 @@ for (i in 1:length(sample_size)) {
     left_join(table_results_mod.aft.re.adj, by = c("Variable"))
   
   write_csv(table_results, here::here("output", "models", "testing", "cox_vs_aft", 
-                                       paste("table_results_", sample_size[i],".csv", sep = "")))
+                                      paste("table_results_", sample_size[i],".csv", sep = "")))
   
   
   # Timings
@@ -189,51 +189,51 @@ for (i in 1:length(sample_size)) {
   
   ## Cox model
   fit1 <- system.time(coxph(Surv(follow_up_time, covid_vax) ~
-                           ageband + sex + ethnicity + morbid_obesity +
-                           chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-                           chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
-                           asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                           immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                           rural_urban + region,
-                         data = data_sub))
+                              ageband + sex + ethnicity + morbid_obesity +
+                              chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                              chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                              asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
+                              immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
+                              rural_urban + region,
+                            data = data_sub))
   
   timings[1,2] <- fit1[3]
   
   ## Stratified Cox model
   fit2 <- system.time(coxph(Surv(follow_up_time, covid_vax) ~
-                                ageband + sex + ethnicity + morbid_obesity +
-                                chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-                                chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
-                                asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                                immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                                rural_urban + region + strata(practice_id_latest_active_registration),
-                              data = data_sub))
-  
-  timings[2,2] <- fit2[3]
-  
-  # AFT model a
-  fit3 <- system.time(survreg(Surv(follow_up_time, covid_vax) ~
-                           ageband + sex + ethnicity + morbid_obesity +
-                           chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-                           chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
-                           asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                           immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                           rural_urban + region,
-                         dist = "lognormal",
-                         data = data_sub))
-  
-  timings[3,2] <- fit3[3]
-  
-  # AFT model b
-  fit4 <- system.time(survreg(Surv(follow_up_time, covid_vax) ~
                               ageband + sex + ethnicity + morbid_obesity +
                               chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                               chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                               asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                               immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
                               rural_urban + region + strata(practice_id_latest_active_registration),
-                              dist = "lognormal",
                             data = data_sub))
+  
+  timings[2,2] <- fit2[3]
+  
+  # AFT model a
+  fit3 <- system.time(survreg(Surv(follow_up_time, covid_vax) ~
+                                ageband + sex + ethnicity + morbid_obesity +
+                                chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                                chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                                asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
+                                immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
+                                rural_urban + region,
+                              dist = "lognormal",
+                              data = data_sub))
+  
+  timings[3,2] <- fit3[3]
+  
+  # AFT model b
+  fit4 <- system.time(survreg(Surv(follow_up_time, covid_vax) ~
+                                ageband + sex + ethnicity + morbid_obesity +
+                                chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                                chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                                asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
+                                immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
+                                rural_urban + region + strata(practice_id_latest_active_registration),
+                              dist = "lognormal",
+                              data = data_sub))
   timings[4,2] <- fit4[3]
   
   # AFT model c
@@ -251,7 +251,7 @@ for (i in 1:length(sample_size)) {
   timings_all <- left_join(timings_all, timings, by = c("Method"))
   
   print(i)
-
+  
 }
 
 ## Plot timings
