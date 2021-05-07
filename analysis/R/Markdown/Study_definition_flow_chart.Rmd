@@ -64,10 +64,10 @@ data_flow_chart %>%
   filter(practice_id == practice_id_at_end_or_at_death) %>%
   nrow()
 ```
-#### Population aged over 80 years, alive and registered with a general practice using TPP software on 7th December 2020
+#### Population aged over 70 years, alive and registered with a general practice using TPP software on 7th December 2020
 ```{r, echo = FALSE}
 criteria_1 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE)
 criteria_1 %>%
@@ -77,7 +77,7 @@ criteria_1 %>%
 #### At least 1 year of follow-up prior to 7th December 2020
 ```{r, echo = FALSE}
 criteria_2 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE,
          has_follow_up_previous_year == TRUE) 
@@ -93,7 +93,7 @@ criteria_2 %>%
 #### Non care home
 ```{r, echo = FALSE}
 criteria_3 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE,
          has_follow_up_previous_year == TRUE,
@@ -110,7 +110,7 @@ criteria_3 %>%
 #### Patients with non-missing sex
 ```{r, echo = FALSE}
 criteria_4 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE,
          has_follow_up_previous_year == TRUE,
@@ -130,7 +130,7 @@ criteria_4 %>%
 #### Patients with non-missing IMD
 ```{r, echo = FALSE}
 criteria_5 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE,
          has_follow_up_previous_year == TRUE,
@@ -149,7 +149,7 @@ criteria_5 %>%
 #### Patients with non-missing region
 ```{r, echo = FALSE}
 criteria_6 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE,
          has_follow_up_previous_year == TRUE,
@@ -170,7 +170,7 @@ criteria_6 %>%
 #### Patients with non-missing stp
 ```{r, echo = FALSE}
 criteria_7 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE,
          has_follow_up_previous_year == TRUE,
@@ -191,7 +191,7 @@ criteria_7 %>%
 #### Patients with non-missing rural/urban
 ```{r, echo = FALSE}
 criteria_8 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE,
          has_follow_up_previous_year == TRUE,
@@ -213,7 +213,7 @@ criteria_8 %>%
 #### Patients with same practice id at start and end of study period
 ```{r, echo = FALSE}
 criteria_9 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE,
          has_follow_up_previous_year == TRUE,
@@ -241,7 +241,7 @@ practice_counts <- criteria_9 %>%
   summarise(`Number_of_registered_patients` = n())
 
 criteria_10 <- data_flow_chart %>%
-  filter(age >= 80,
+  filter(age >= 70,
          registered == TRUE,
          has_died == FALSE,
          has_follow_up_previous_year == TRUE,
@@ -267,7 +267,7 @@ criteria_10 %>%
 # The key boxes that we want to plot
 
 ## Population alive and registered with a general practice using TPP software on 7th December 2020
-criteria1 <- boxGrob(glue_col("All patients aged 80 years and older \n who were alive and registered with a general \n practice using TPP software \n on 7 December 2020",
+criteria1 <- boxGrob(glue_col("All patients aged 70 years and older \n who were alive and registered with a general \n practice using TPP software \n on 7 December 2020",
                               "N = {pop}",
                               pop = txtInt(nrow(criteria_1)),
                               .sep = "\n"))
