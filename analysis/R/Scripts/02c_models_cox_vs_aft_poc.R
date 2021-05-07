@@ -56,8 +56,7 @@ for (i in 1:length(sample_size)) {
                            chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                            chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                            asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                           immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                           rural_urban,
+                           immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15,
                          data = data_sub)
   
   write_rds(mod.coxph.adj, here::here("output", "models", "testing", "cox_vs_aft", 
@@ -215,7 +214,7 @@ for (i in 1:length(sample_size)) {
                                 chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                                 chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                                 asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                                immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 ,
+                                immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15,
                               dist = "lognormal",
                               data = data_sub))
   
