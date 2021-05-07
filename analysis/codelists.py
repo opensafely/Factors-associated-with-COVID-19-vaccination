@@ -188,15 +188,15 @@ flu_med_codes = codelist_from_csv(
 )
 
 flu_clinical_given_codes = codelist_from_csv(
-  "codelists/opensafely-influenza-vaccination-clinical-codes-given.csv",  
-  system = "ctv3", 
-  column = "CTV3ID",
+  "codelists/nhsd-primary-care-domain-refsets-flu_cod.csv",
+  system = "snomed",
+  column = "code",
 )
 
 flu_clinical_not_given_codes = codelist_from_csv(
-  "codelists/opensafely-influenza-vaccination-clinical-codes-not-given.csv",  
-  system = "ctv3", 
-  column = "CTV3ID",
+  "codelists/nhsd-primary-care-domain-refsets-fludec_cod.csv",
+  system = "snomed",
+  column = "code",
 )
 
 ## History of covid
