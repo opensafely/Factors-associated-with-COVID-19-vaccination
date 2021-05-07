@@ -1,0 +1,516 @@
+---
+title: "Comparison of proportional hazards and accelerated failure time models in analysing factors associated with having the COVID-19 vaccination"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE}
+# Preliminaries ----
+
+## Import libraries
+library('tidyverse')
+library('lubridate')
+library('survival')
+library('gtsummary')
+library('gt')
+library("survminer")
+library('kableExtra')
+library('gridExtra')
+
+## Functions to tidy p-values
+round_tidy = function(x, digits){
+	sprintf.arg = paste0("%.", digits, "f")
+	x.out = do.call(sprintf, list(sprintf.arg, x)) # keep trailing zeros
+	return(x.out)
+}
+
+p_tidy = function(x, digits, prefix="="){
+	x.out = paste0(prefix, round_tidy(x, digits))
+	all_zeros = paste0(prefix, round_tidy(0, digits))
+	less_than = paste0("<", format(10^-digits, scientific=FALSE))
+	x.out[x.out == all_zeros] = less_than
+	return(x.out)
+}
+
+## Import processed data
+data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
+
+## Converts logical to integer so that model coefficients print nicely in gtsummary methods
+data_cox <- data_tte %>%
+  mutate(
+    across(
+      where(is.logical),
+      ~.x*1L
+    )
+  )
+
+## Import models
+coxmod <- read_rds(here::here("output", "models", "cox_vs_aft", "mod_stratcoxph_adj.rds"))
+
+art_weibull <- read_rds(here::here("output", "models", "cox_vs_aft", "mod_aft_weibull_adj.rds")) 
+art_exponential <- read_rds(here::here("output", "models", "cox_vs_aft", "mod_aft_exponential_adj.rds")) 
+art_loglogistic <- read_rds(here::here("output", "models", "cox_vs_aft", "mod_aft_loglogistic_adj.rds")) 
+art_lognormal <- read_rds(here::here("output", "models", "cox_vs_aft", "mod_aft_lognormal_adj.rds")) 
+
+art_re_weibull <- read_rds(here::here("output", "models", "cox_vs_aft", "mod_aft_re_weibull_adj.rds")) 
+art_re_exponential <- read_rds(here::here("output", "models", "cox_vs_aft", "mod_aft_re_exponential_adj.rds")) 
+art_re_loglogistic <- read_rds(here::here("output", "models", "cox_vs_aft", "mod_aft_re_loglogistic_adj.rds")) 
+art_re_lognormal <- read_rds(here::here("output", "models", "cox_vs_aft", "mod_aft_re_lognormal_adj.rds")) 
+```
+
+## Purpose
+(Taken from https://docs.google.com/document/d/1PZgllPNU8zi2xVPrPDHoBxzQGti7F3C7R9AyqGkKAJU/edit)
+
+Firstly, and obviously, we are not trying to directly estimate the causal effect of any one putative cause on vaccination propensity/timing/uptake. This requires statistical models tailored to each specific causal effect of interest, which we are not doing here. Essentially, we are not providing answers to “what if” questions.
+
+Secondly, it is not feasible to use this model to make predictions about vaccination uptake in the future. The vaccination programme is far too dynamic over time; target populations for vaccination quickly shift from one priority group to the next, vaccine availability will change over time, new policies are introduced in response to emerging evidence about effectiveness, safely, covid risk, inequalities, etc. It is also susceptible to the Prediction Paradox, i.e., predictions influencing policies or behaviors which then invalidates the predictions. This means predictive performance should not be considered important, and we should not  be providing individualised risk scores.
+
+What is possible, and informative, is to use the model to describe observed differences in vaccine uptake across different patient groups, strictly over the studied period. In particular, this can help to probe apparent inequalities. Not to prove or disprove -- that would require a causal investigation -- but to identify systematic variation in uptake which is not sufficiently accounted for by other modelled factors. 
+
+
+## Statistical analysis
+
+### Background
+* The initial plan was to use Cox proportional hazards (PH) regression to model FAW COVID vaccine
+  * The main assumption of the PH model is that the hazard ratio is constant over time
+  * Violation of this assumption may lead to several statistical problems such as misinterpretation of the estimation results and reducing the power of the related statistical tests 
+* Accelerated failure time (AFT) models can be used as an alternative to a PH model, especially to overcome the statistical problems due to the violation of PH assumption
+  * The AFT model accounts for the effects of the covariates directly on survival times instead of the hazards rate as in the PH model
+  * The interpretation of the results in AFT model is therefore arguable easier than the results of PH model because the parameters indicate the effect of the explanatory variables on the mean survival time
+
+### Methods
+1. The log cumulative hazard plots approach and Schoenfeld residual statistical test were applied to the data set in
+order to examine the existence of non-PH
+2. A coxPH model, Weibull AFT model, exponential AFT model, and log-normal AFT model were fitted to the data set
+3. The fit of the models was compared using probability plots, Akaike information criterion (AIC) and Bayesian information criterion (BIC), smaller value of which indicate better fit
+
+
+## Results
+
+### Participants
+A total of `r length(unique(subset(data_cox, sex == "Female")$patient_id))` individuals were female (`r round(length(unique(subset(data_cox, sex == "Female")$patient_id))/length(unique(data_cox$patient_id))*100, digits = 1)`%) and mean age of individuals was `r round(mean(data_cox$age), digits = 1)` (SD `r round(sd(data_cox$age), digits = 1)`) years. The median (25th, 75th percentiles) time to vaccination was `r round(median(data_cox$follow_up_time), digits = 0)` (`r round(quantile(data_cox$follow_up_time)[2], digits = 0)`, `r round(quantile(data_cox$follow_up_time)[4], digits = 0)`) days.
+
+### Assessing the proportional hazards assumption
+Two approaches were used to identify the presence of non-proportional hazards: 1) log cumulative hazard plots and 2) goodness of fit (GOF) testing.
+
+#### 1. Log cumulative hazard plots
+In order to identify the presence of non-proportional hazards, it is common to use log cumulative hazard
+plots. If the plot does not yield parallel curves over the log(time), then the PH assumption is not correct (i.e., the PH assumption is violated in the model).
+
+The curves in x,y,z in Figure 1 are not parallel, which implies that the PH assumption is violated for modelling the COVID vaccination data. Note, log cumulative hazard plots are not shown for all covariates. This is beacuse this method does not work well for continuous predictor or categorical predictors that have many levels because the graph becomes to "cluttered".
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 15, fig.cap="Figure 1: The log cumulative hazard plots of categorical covariates", fig.align = 'center'}
+# Age
+fit <- survfit(Surv(follow_up_time, covid_vax) ~ ageband, data = data_cox)
+
+survival.table1 <- broom::tidy(fit) %>% 
+  filter(n.event > 0) %>% 
+  group_by(strata) %>%
+  mutate(hazard = n.event / (n.risk * (lead(time) - time)),
+         log_cum_hazard = log(cumsum(hazard)),
+         `Age band` = substr(strata, 9, 13))
+
+plot_age <- ggplot() +
+  geom_step(data = survival.table1, aes(x = log(time), y = log_cum_hazard, col = `Age band`)) +
+  labs(x = "log(time)", y = "log(-log(survival))") +
+  theme_classic() +
+  guides(col = guide_legend(nrow = 1)) + 
+  theme(legend.position = "bottom", legend.background = element_rect(fill = "white", colour = NA),
+        plot.title = element_text(hjust = 0.5), legend.title = element_blank()) +
+  ggtitle("(a) Age")
+
+# Sex
+fit <- survfit(Surv(follow_up_time, covid_vax) ~ sex, data = data_cox)
+
+survival.table1 <- broom::tidy(fit) %>% 
+  filter(n.event > 0) %>% 
+  group_by(strata) %>%
+  mutate(hazard = n.event / (n.risk * (lead(time) - time)),
+         log_cum_hazard = log(cumsum(hazard)),
+         Sex = substr(strata, 5, 10))
+
+plot_sex <- ggplot() +
+  geom_step(data = survival.table1, aes(x = log(time), y = log_cum_hazard, col = Sex)) +
+  labs(x = "log(time)", y = "log(-log(survival))") +
+  theme_classic() +
+  guides(col = guide_legend(nrow = 1)) + 
+  theme(legend.position = "bottom", legend.background = element_rect(fill = "white", colour = NA),
+        plot.title = element_text(hjust = 0.5), legend.title = element_blank()) +
+  ggtitle("(b) Sex")
+
+# Ethnicity
+fit <- survfit(Surv(follow_up_time, covid_vax) ~ ethnicity, data = data_cox)
+
+survival.table1 <- broom::tidy(fit) %>% 
+  filter(n.event > 0) %>% 
+  group_by(strata) %>%
+  mutate(hazard = n.event / (n.risk * (lead(time) - time)),
+         log_cum_hazard = log(cumsum(hazard)),
+         Ethnicity = substr(strata, 11, 100)) 
+
+plot_ethnicity <- ggplot() +
+  geom_step(data = survival.table1, aes(x = log(time), y = log_cum_hazard, col = Ethnicity)) +
+  labs(x = "log(time)", y = "log(-log(survival))") +
+  theme_classic() +
+  guides(col = guide_legend(ncol = 2)) + 
+  theme(legend.position = "right", legend.background = element_rect(fill = "white", colour = NA),
+        plot.title = element_text(hjust = 0.5), legend.title = element_blank(), legend.text=element_text(size=9)) +
+  ggtitle("(g) Ethnicity")
+
+# IMD
+fit <- survfit(Surv(follow_up_time, covid_vax) ~ imd, data = data_cox)
+
+survival.table1 <- broom::tidy(fit) %>% 
+  filter(n.event > 0) %>% 
+  group_by(strata) %>%
+  mutate(hazard = n.event / (n.risk * (lead(time) - time)),
+         log_cum_hazard = log(cumsum(hazard)),
+         IMD = substr(strata, 5, 50))
+
+plot_imd <- ggplot() +
+  geom_step(data = survival.table1, aes(x = log(time), y = log_cum_hazard, col = IMD)) +
+  labs(x = "log(time)", y = "log(-log(survival))") +
+  theme_classic() +
+  guides(col = guide_legend(nrow = 1)) + 
+  theme(legend.position = "bottom" ,legend.background = element_rect(fill = "white", colour = NA),
+        plot.title = element_text(hjust = 0.5), legend.title = element_blank()) +
+  ggtitle("(e) IMD")
+
+# Rural/urban
+fit <- survfit(Surv(follow_up_time, covid_vax) ~ rural_urban, data = data_cox)
+
+survival.table1 <- broom::tidy(fit) %>% 
+  filter(n.event > 0) %>% 
+  group_by(strata) %>%
+  mutate(hazard = n.event / (n.risk * (lead(time) - time)),
+         log_cum_hazard = log(cumsum(hazard)),
+         `Rural/urban` = substr(strata, 13, 75))
+
+plot_ru <- ggplot() +
+  geom_step(data = survival.table1, aes(x = log(time), y = log_cum_hazard, col = `Rural/urban`)) +
+  labs(x = "log(time)", y = "log(-log(survival))") +
+  theme_classic() +
+  guides(col = guide_legend(nrow = 4)) + 
+  theme(legend.position = "bottom" ,legend.background = element_rect(fill = "white", colour = NA),
+        plot.title = element_text(hjust = 0.5), legend.title = element_blank()) +
+  ggtitle("(d) Rural/urban")
+
+# Region
+fit <- survfit(Surv(follow_up_time, covid_vax) ~ region, data = data_cox)
+
+survival.table1 <- broom::tidy(fit) %>% 
+  filter(n.event > 0) %>% 
+  group_by(strata) %>%
+  mutate(hazard = n.event / (n.risk * (lead(time) - time)),
+         log_cum_hazard = log(cumsum(hazard)),
+         Region = substr(strata, 8, 75))
+
+plot_region <- ggplot() +
+  geom_step(data = survival.table1, aes(x = log(time), y = log_cum_hazard, col = Region)) +
+  labs(x = "log(time)", y = "log(-log(survival))") +
+  theme_classic() +
+  guides(col = guide_legend(nrow = 4)) + 
+  theme(legend.position = "bottom" ,legend.background = element_rect(fill = "white", colour = NA),
+        plot.title = element_text(hjust = 0.5), legend.title = element_blank()) +
+  ggtitle("(c) Region")
+
+# Flu vaccine
+fit <- survfit(Surv(follow_up_time, covid_vax) ~ flu_vaccine, data = data_cox)
+
+survival.table1 <- broom::tidy(fit) %>% 
+  filter(n.event > 0) %>% 
+  group_by(strata) %>%
+  mutate(hazard = n.event / (n.risk * (lead(time) - time)),
+         log_cum_hazard = log(cumsum(hazard)),
+         `Flu vaccine` = substr(strata, 13, 13),
+         `Flu vaccine` = ifelse(`Flu vaccine` == 0, "No flu vaccination", "Flu vaccination within the last 5 years"))
+
+plot_flu <- ggplot() +
+  geom_step(data = survival.table1, aes(x = log(time), y = log_cum_hazard, col = `Flu vaccine`)) +
+  labs(x = "log(time)", y = "log(-log(survival))") +
+  theme_classic() +
+  guides(col = guide_legend(nrow = 1)) + 
+  theme(legend.position = "bottom" ,legend.background = element_rect(fill = "white", colour = NA),
+        plot.title = element_text(hjust = 0.5), legend.title = element_blank()) +
+  ggtitle("(f) Flu vaccination")
+
+grid.arrange(plot_age, plot_sex, plot_region, plot_ru, plot_imd, plot_flu, plot_ethnicity, ncol = 2,
+             layout_matrix = cbind(c(1,3,5,7), c(2,4,6,7)))
+```
+
+
+#### 2. Goodness of fit (GOF) testing approach
+The basic idea of the GOF test is that if the PH assumption for a covariate is not violated, there is no correlation between the Schoenfeld residuals and the vaccination time.
+
+The results of GOF testing with three different forms of vaccination time for all covariates in the data can be seen in Table 1, where it can be seen that the per variable tests for all transformation forms consist of at least one significant covariate at 5% level. This implies that there is no correlation between the covariate and a specific transformation form. In other words, this covariate does not hold the PH assumption. Moreover, the global tests for all considered vaccination time transformation forms show strong evidence of non-PH.
+
+```{r table1, echo = FALSE, warning= FALSE, message= FALSE, results='asis', fig.cap="Table 1: P-values for four GOF tests based on Schoenfeld residual", fig.align = 'center'}
+# Kaplan-Meier
+ph.test.km <- cox.zph(coxmod, transform = "km")$table %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(P = p_tidy(p, digits = 4, prefix = "")) %>%
+  select(Variable, `Kaplan-Meier` = P) 
+
+# Log(time) 
+ph.test.log <- cox.zph(coxmod, transform = "log") $table %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(P = p_tidy(p, digits = 4, prefix = "")) %>%
+  select(Variable, `Log(time)` = P) 
+
+# # Time ranking
+# ph.test.rank <- cox.zph(coxmod, transform = "rank")$table %>%
+#   as.data.frame() %>%
+#   rownames_to_column(var = "Variable") %>%
+#   mutate(P = p_tidy(p, digits = 4, prefix = "")) %>%
+#   select(Variable, `Time ranking` = P) 
+
+# Time
+ph.test.id <- cox.zph(coxmod, transform = "identity")$table %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(P = p_tidy(p, digits = 4, prefix = "")) %>%
+  select(Variable, `Time` = P) 
+
+ph_table <- left_join(ph.test.km, ph.test.log, by = "Variable") %>%
+  # left_join(ph.test.rank, by = "Variable") %>%
+  left_join(ph.test.id, by = "Variable") %>%
+  rename(" " = Variable)
+
+ph_table$`Kaplan-Meier` = cell_spec(ph_table$`Kaplan-Meier`, bold = ifelse(ph_table$`Kaplan-Meier` < 0.05, TRUE, FALSE))
+ph_table$`Log(time)` = cell_spec(ph_table$`Log(time)`, bold = ifelse(ph_table$`Log(time)` < 0.05, TRUE, FALSE))
+# ph_table$`Time ranking` = cell_spec(ph_table$`Time ranking`, bold = ifelse(ph_table$`Time ranking` < 0.05, TRUE, FALSE))
+ph_table$Time = cell_spec(ph_table$Time, bold = ifelse(ph_table$Time < 0.05, TRUE, FALSE))
+
+ph_table %>%
+  kbl(escape = F) %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  add_header_above(c(" ", "P-value" = 3)) %>%
+  kable_styling()
+```
+
+
+###  Comparison of the PH model and the AFT models
+According to AIC and BIC values (Table 2) and Cox Snell residual plots (Figure 2), the AFT model with a *X* distribution had the best fit on the data.
+
+```{r table2, echo = FALSE, warning= FALSE, message= FALSE, results='asis', fig.cap="Table 2: Comparison of the PH model and the AFT models using using Akaike information criterion and Bayesian information criterion values", fig.align = 'center'}
+# Results table
+comparison_tab <- data.frame(Model = c("PH model ", "Weibull AFT model", "Exponential AFT model",
+                                       "Log-logistic AFT model", "Log-normal AFT model", 
+                                       "Weibull AFT model (with random effects)", 
+                                       "Exponential AFT model (with random effects)", 
+                                       "Log-logistic AFT model (with random effects)", 
+                                       "Log-normal AFT model (with random effects)"),
+                             AIC = NA,
+                             BIC = NA)
+
+# Loop through models and fill in
+models = list(coxmod, 
+              art_weibull, art_exponential, art_loglogistic, art_lognormal,
+              art_re_weibull, art_re_exponential, art_re_loglogistic, art_re_lognormal)
+
+for (i in 1:length(models)){
+  comparison_tab[i,2] <- AIC(models[[i]])
+  comparison_tab[i,3] <- BIC(models[[i]])
+}
+
+# Print table
+comparison_tab %>%
+  kbl(escape = F) %>%
+  kable_classic(full_width = F, html_font = "Cambria")
+```
+
+
+```{r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 12, fig.height = 8, fig.cap="Figure 2: Cox Snell residual plots for Weibull, Exponential, Log-logistic and Log-normal AFT models. The panels indicate the Cox-Snell residuals (together with their cumulative hazard function) obtained from fitting different parametric models to the same data via maximum likelihood estimation", fig.align = 'center'}
+
+# # Weibull
+# fitted_values <- art_weibull$linear.predictors
+# resids_Weibull <- (log(art_weibull$y[, 1]) - fitted_values) / art_weibull$scale
+# resKM_W <- survfit(Surv(resids_Weibull, covid_vax) ~ 1, data = data_cox)
+# 
+# # Exponential
+# fitted_values <- art_exponential$linear.predictors
+# resids_exponential <- (log(art_exponential$y[, 1]) - fitted_values) / art_exponential$scale
+# resKM_E <- survfit(Surv(resids_exponential, covid_vax) ~ 1, data = data_cox)
+# 
+# # Log-normal
+# fitted_values <- art_lognormal$linear.predictors
+# resids_lognormal <- (log(art_lognormal$y[, 1]) - fitted_values) / art_lognormal$scale
+# resKM_LN <- survfit(Surv(resids_lognormal, covid_vax) ~ 1, data = data_cox)
+# 
+# # Log-logistic
+# fitted_values <- art_loglogistic$linear.predictors
+# resids_loglogistic <- (log(art_loglogistic$y[, 1]) - fitted_values) / art_loglogistic$scale
+# resKM_LL <- survfit(Surv(resids_loglogistic, covid_vax) ~ 1, data = data_cox)
+# 
+# # Plot
+# par(mfrow = c(2,2))
+# 
+# plot(resKM_W, mark.time = FALSE, xlab = "AFT Residuals", ylab = "Survival Probability")
+# xx <- seq(min(resids_Weibull), max(resids_Weibull), length.out = 35)
+# yy <- exp(- exp(xx))
+# lines(xx, yy, col = "red", lwd = 2)
+# legend("bottomleft", c("KM estimate", "95% CI KM estimate", 
+#     "Survival function of Weibull distribution"), 
+#     lty = c(1,2,1), col = c(1,1,2), bty = "n")
+# 
+# plot(resKM_E, mark.time = FALSE, xlab = "AFT Residuals", ylab = "Survival Probability")
+# xx <- seq(min(resids_exponential), max(resids_exponential), length.out = 35)
+# yy <- exp(xx)
+# lines(xx, yy, col = "red", lwd = 2)
+# legend("bottomleft", c("KM estimate", "95% CI KM estimate", 
+#     "Survival function of Exponential distribution"), 
+#     lty = c(1,2,1), col = c(1,1,2), bty = "n")
+# 
+# plot(resKM_LL, mark.time = FALSE, xlab = "AFT Residuals", ylab = "Survival Probability")
+# xx <- seq(min(resids_loglogistic, max(resids_loglogistic), length.out = 35))
+# yy <- plogis(xx, lower.tail = FALSE)
+# lines(xx, yy, col = "red", lwd = 2)
+# legend("bottomleft", c("KM estimate", "95% CI KM estimate", 
+#     "Survival function of Log-logistic distribution"), 
+#     lty = c(1,2,1), col = c(1,1,2), bty = "n")
+# 
+# plot(resKM_LN, mark.time = FALSE, xlab = "AFT Residuals", ylab = "Survival Probability")
+# xx <- seq(min(resids_lognormal), max(resids_lognormal), length.out = 35)
+# yy <- pnorm(xx, lower.tail = FALSE)
+# lines(xx, yy, col = "red", lwd = 2)
+# legend("bottomleft", c("KM estimate", "95% CI KM estimate", 
+#     "Survival function of Log-normal distribution"), 
+#     lty = c(1,2,1), col = c(1,1,2), bty = "n")
+
+par(mfrow = c(1,1))
+
+```
+
+## Results of regression models
+Table 3 shows the estimation results and the p-values of PH model and AFT models in order to assess
+the effects of each parameter on the vaccination time.
+
+```{r table3, echo = FALSE, warning= FALSE, message= FALSE, results='asis', fig.cap="Table 3: Parameter estimates and 95% confidence interval from the different models", fig.align = 'center'}
+# Cox
+cox_results <- summary(coxmod)$coefficients  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(coef - 1.96*`se(coef)`), digits = 2),
+         UCI = round(exp(coef + 1.96*`se(coef)`), digits = 2),
+         `HR (95% CI)` = paste(round(`exp(coef)`, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `HR (95% CI)`)
+  
+# Weibull
+weibull_resultsa <- summary(art_weibull)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+weibull_resultsa <- weibull_resultsa[-1,]
+
+weibull_resultsb <- summary(art_re_weibull)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+weibull_resultsb <- weibull_resultsb[-1,]
+
+weibull_results <- left_join(weibull_resultsa, weibull_resultsb, by = "Variable")
+
+# Expotential
+exponential_resultsa <- summary(art_exponential)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+exponential_resultsa <- exponential_resultsa[-1,]
+
+exponential_resultsb <- summary(art_re_exponential)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+exponential_resultsb <- exponential_resultsb[-1,]
+
+exponential_results <- left_join(exponential_resultsa, exponential_resultsb, by = "Variable")
+
+# Log logistic
+loglogistic_resultsa <- summary(art_loglogistic)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+loglogistic_resultsa <- loglogistic_resultsa[-1,]
+
+loglogistic_resultsb <- summary(art_re_loglogistic)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+loglogistic_resultsb <- loglogistic_resultsb[-1,]
+
+loglogistic_results <- left_join(loglogistic_resultsa, loglogistic_resultsb, by = "Variable")
+
+# Log normal
+lognormal_resultsa <- summary(art_lognormal)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+lognormal_resultsa <- lognormal_resultsa[-1,]
+
+lognormal_resultsb <- summary(art_re_lognormal)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+lognormal_resultsb <- lognormal_resultsb[-1,]
+
+lognormal_results <- left_join(lognormal_resultsa, lognormal_resultsb, by = "Variable")
+
+# Combine
+results <- left_join(cox_results, weibull_results, by = "Variable") %>%
+  left_join(exponential_results, by = "Variable") %>%
+  left_join(loglogistic_results, by = "Variable") %>%
+  left_join(lognormal_results, by = "Variable") 
+
+colnames(results) <- c("Variable", 
+                       "Stratified",
+                       "without re", "with re",
+                       "without re", "with re",
+                       "without re", "with re",
+                       "without re", "with re")
+
+results %>%
+  kbl(escape = F) %>%
+  add_header_above(c(" ", "Cox PH \n HR (95% CI)", "Weibull AFT model \n TR (95% CI)" = 2, "Exponential AFT model \n TR (95% CI)" = 2, "Log-logistic AFT model \n TR (95% CI)" = 2, "Log-normal AFT model \n TR (95% CI)" = 2)) %>%
+  kable_classic(full_width = T, html_font = "Cambria") %>%
+  kable_styling(font_size = 11)
+```

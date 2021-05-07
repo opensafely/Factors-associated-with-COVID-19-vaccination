@@ -46,7 +46,7 @@ actions:
   # Summarise data
   data_properties:
     run: r:latest analysis/R/Scripts/01_data_properties.R output/data/data_all.rds output/data_properties
-    needs: [data_process]
+    needs: [generate_study_population, data_process]
     outputs:
       moderately_sensitive:
         datasummary: output/data_properties/data_all*.txt
@@ -59,46 +59,73 @@ actions:
       moderately_sensitive:
         html: output/Data_summaries.html
 
-  # Coxph models
-  cox_models:
-    run: r:latest analysis/R/Scripts/02_Models.R
-    needs: [generate_study_population, data_process]
-    outputs:
-      highly_sensitive :
-        models: output/models/testing/mod*.rds
+  # # Coxph models
+  # cox_models:
+  #   run: r:latest analysis/R/Scripts/02a_models_coxph.R
+  #   needs: [generate_study_population, data_process]
+  #   outputs:
+  #     highly_sensitive :
+  #       models: output/models/testing/mod*.rds
         
   # # Coxme model
-  # cox_models_sub:
-  #   run: r:latest analysis/R/Scripts/02_Models_sub_test.R
+  # coxme_model:
+  #   run: r:latest analysis/R/Scripts/02b_models_coxme.R
   #   needs: [generate_study_population, data_process]
   #   outputs:
   #     highly_sensitive :
   #       models: output/models/testing/mod_test*.rds
+  
+  # # Model summaries
+  # cox_models_summaries:
+  #   run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Model_comparisons.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
+  #   needs: [generate_study_population, data_process, cox_models, coxme_model]
+  #   outputs:
+  #     moderately_sensitive:
+  #       html: output/Model_comparisons.html
+  
+  # AFT vs Cox models feasibility
+  aft_vs_cox_poc:
+    run: r:latest analysis/R/Scripts/02c_models_cox_vs_aft_poc.R
+    needs: [generate_study_population, data_process]
+    outputs:
+      highly_sensitive :
+        models: output/models/testing/cox_vs_aft/mod*.rds
+      moderately_sensitive:
+        tables: output/models/testing/cox_vs_aft/table*.csv
+        plots: output/models/testing/cox_vs_aft/plot*.svg
 
-  # Model summaries
-  cox_models_summaries:
-    run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Model_comparisons.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
-    needs: [generate_study_population, data_process, cox_models]
+  # AFT models
+  aft_vs_cox_models:
+    run: r:latest analysis/R/Scripts/02d_models_cox_vs_aft.R
+    needs: [generate_study_population, data_process]
+    outputs:
+      highly_sensitive :
+        models: output/models/cox_vs_aft/mod*.rds
+        
+  # Model comparison
+  aft_vs_cox_comparison:
+    run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Cox_vs_aft_model_comparison.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
+    needs: [generate_study_population, data_process, aft_vs_cox_models]
     outputs:
       moderately_sensitive:
-        html: output/Model_comparisons.html
+        html: output/Cox_vs_aft_model_comparison.html
         
-  # Stratified cox model
-  cox_model_final:
-    run: r:latest analysis/R/Scripts/03_Final_model.R
+  # Final (stratified cox) model
+  model_final:
+    run: r:latest analysis/R/Scripts/03_model_final.R
     needs: [generate_study_population, data_process]
     outputs:
       highly_sensitive :
         models: output/models/final/mod*.rds
-      # moderately_sensitive:
-      #   tables: output/models/final/tab*.html
-      #   data: output/models/final/tab*.csv
-      #   plots: output/models/final/plot*.svg
-        
+      moderately_sensitive:
+        tables: output/models/final/tab*.html
+        data: output/models/final/tab*.csv
+        plots: output/models/final/plot*.svg
+ 
   # Strata summaries
   strata_summary:
-    run: r:latest analysis/R/Scripts/04_Strata_Summary.R
-    needs: [data_process, cox_model_final]
+    run: r:latest analysis/R/Scripts/04_strata_summary.R
+    needs: [data_process, model_final]
     outputs:
       moderately_sensitive:
         plots: output/models/final/plot_strata*.svg
@@ -106,7 +133,7 @@ actions:
   # Results summary
   results_summary:
     run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Results_summary.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
-    needs: [generate_study_population, data_process, cox_model_final]
+    needs: [generate_study_population, data_process, model_final]
     outputs:
       moderately_sensitive:
         html: output/Results_summary.html
