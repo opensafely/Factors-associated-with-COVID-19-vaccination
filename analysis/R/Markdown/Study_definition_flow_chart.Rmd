@@ -262,6 +262,23 @@ criteria_10 %>%
   nrow()
 ```
 
+#### Vaccinated patients
+```{r, echo = FALSE}
+study_pop <- data_flow_chart %>%
+  filter(age >= 70,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         nursing_residential_care == 0,
+         sex %in% c("F", "M"),
+         imd > 0,
+         region != "",
+         stp != "",
+         rural_urban > 0) 
+
+table(study_pop$covid_vax)
+```
+
 ### Inclusion/exclusion chart
 ``` {r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 8, fig.height = 10}
 # The key boxes that we want to plot
