@@ -262,6 +262,23 @@ criteria_10 %>%
   nrow()
 ```
 
+#### Vaccinated patients
+```{r, echo = FALSE}
+study_pop <- data_flow_chart %>%
+  filter(age >= 70,
+         registered == TRUE,
+         has_died == FALSE,
+         has_follow_up_previous_year == TRUE,
+         nursing_residential_care == 0,
+         sex %in% c("F", "M"),
+         imd > 0,
+         region != "",
+         stp != "",
+         rural_urban > 0) 
+
+table(study_pop$covid_vax)
+```
+
 ### Inclusion/exclusion chart
 ``` {r, echo = FALSE, warning= FALSE, message= FALSE, fig.width = 8, fig.height = 10}
 # The key boxes that we want to plot
@@ -308,7 +325,7 @@ exclude3 <- boxGrob(glue("Missing data (n = {tot})",
                          imd = txtInt(nrow(criteria_4 %>% filter(imd == 0))),
                          region = txtInt(nrow(criteria_4 %>% filter(region == ""))),
                          stp = txtInt(nrow(criteria_4 %>% filter(stp == ""))),
-                         urban = txtInt(nrow(criteria_4 %>% filter(rural_urban > 0))),
+                         urban = txtInt(nrow(criteria_4 %>% filter(rural_urban == 0))),
                          .sep = "\n"),
                     txt_gp = gpar(fontsize = 9),
                     just = "left")
