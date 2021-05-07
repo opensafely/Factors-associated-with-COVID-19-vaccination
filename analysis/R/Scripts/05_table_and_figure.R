@@ -165,7 +165,9 @@ ggsave(
 
 ## Summary table
 tab_mod1 <- gtsummary::tbl_regression(mod.strat.coxph.adj, exp = TRUE)
-gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_coxph.html"))
-#write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
+head(tab_mod1$table_body)
+#gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_coxph.html"))
+write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
+
 
 
