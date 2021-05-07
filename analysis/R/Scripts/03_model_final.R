@@ -150,6 +150,7 @@ data_cox <- data_tte %>%
   )
 
 
+
 # MODELS ----
 
 ## Stratified Cox PH model - adjusted; baseline demographics, comorbs, geographical, flu and shielding 
