@@ -112,7 +112,7 @@ actions:
         
   # Final (stratified cox) model
   model_final:
-    run: r:latest analysis/R/Scripts/03_final_model.R
+    run: r:latest analysis/R/Scripts/03_model_final.R
     needs: [generate_study_population, data_process]
     outputs:
       highly_sensitive :
