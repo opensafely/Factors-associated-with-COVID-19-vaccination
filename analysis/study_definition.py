@@ -495,17 +495,22 @@ study = StudyDefinition(
   ### Flu Vaccine: Last 5 years prior to march 31st 2020
   flu_vaccine = patients.satisfying(
     """
-        flu_vaccine_tpp_table>0 OR
+        flu_vaccine_imm_table>0 OR
         flu_vaccine_med>0 OR
         flu_vaccine_clinical>0
         """,
     
-    flu_vaccine_tpp_table = patients.with_tpp_vaccination_record(
-      target_disease_matches = "INFLUENZA",
+    flu_vaccine_imm_table = patients.with_vaccination_record(
+      tpp={
+          "target_disease_matches": "INFLUENZA",
+      },
+      emis={
+          "procedure_codes": flu_clinical_given_codes,
+      },
       between = ["2015-04-01", "2020-03-31"], 
       returning = "binary_flag",
     ),
-    
+
     flu_vaccine_med = patients.with_these_medications(
       flu_med_codes,
       between = ["2015-04-01", "2020-03-31"], 

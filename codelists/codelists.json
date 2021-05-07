@@ -144,17 +144,17 @@
       "downloaded_at": "2021-04-06 14:40:28.132202Z",
       "sha": "aa7cf32d4c16deb5a14fb3d68f0a2babfe431caf"
     },
-    "opensafely-influenza-vaccination-clinical-codes-given.csv": {
-      "id": "opensafely/influenza-vaccination-clinical-codes-given/2020-05-21",
-      "url": "https://codelists.opensafely.org/codelist/opensafely/influenza-vaccination-clinical-codes-given/2020-05-21/",
-      "downloaded_at": "2021-04-06 14:40:28.238867Z",
-      "sha": "c5e7b06fcd7a4f786bcf549e2c0c4ca944eba9b1"
+    "nhsd-primary-care-domain-refsets-flu_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/flu_cod/20200812",
+      "url": "https://codelists.opensafely.org/codelist/nhsd-primary-care-domain-refsets/flu_cod/20200812/",
+      "downloaded_at": "2021-05-07 09:02:41.238565Z",
+      "sha": "fc33d0ea49931e2a2b6344a008e903738e021f31"
     },
-    "opensafely-influenza-vaccination-clinical-codes-not-given.csv": {
-      "id": "opensafely/influenza-vaccination-clinical-codes-not-given/2020-05-19",
-      "url": "https://codelists.opensafely.org/codelist/opensafely/influenza-vaccination-clinical-codes-not-given/2020-05-19/",
-      "downloaded_at": "2021-04-06 14:40:28.376584Z",
-      "sha": "db68fd1368358f1ecbbc006c83419b3b47bcb82c"
+    "nhsd-primary-care-domain-refsets-fludec_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/fludec_cod/20200812",
+      "url": "https://codelists.opensafely.org/codelist/nhsd-primary-care-domain-refsets/fludec_cod/20200812/",
+      "downloaded_at": "2021-05-07 09:02:41.342719Z",
+      "sha": "8d1aa05bd99d58143d3a97a0bab094441ea8608a"
     },
     "opensafely-covid-identification.csv": {
       "id": "opensafely/covid-identification/2020-06-03",
