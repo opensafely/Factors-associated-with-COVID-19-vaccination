@@ -514,3 +514,14 @@ results %>%
   kable_classic(full_width = T, html_font = "Cambria") %>%
   kable_styling(font_size = 11)
 ```
+
+## Summary
+The objective of this research was to compare the performance of PH and AFT models in analysing the factors affecting receiving the COVID vaccination. This anlysis was limited to four AFT models which were based on
+Weibull, exponential, loglogistic and log-normal distribution. The analysis by using graphical approach and
+a statistical test showed that the non-proportional hazards exist in the data set. Based on the
+Akaike information criterion (AIC), the log-normal AFT model was the most appropriate model
+among the other considered models. Results of the best fitted model (log-normal AFT model)
+showed that the covariates such as age, ethnicity, imd and sheilding staus were
+among factors affecting reciving the COVID vaccination. 
+
+While the log-normal AFT model was the most appropriate model out of all of the AFT models fitted above, specifying a different AFT distribution (i.e., via splines) is likely to result in a more accurate model.
