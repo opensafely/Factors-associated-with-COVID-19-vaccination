@@ -512,5 +512,5 @@ results %>%
   kbl(escape = F) %>%
   add_header_above(c(" ", "Cox PH \n HR (95% CI)", "Weibull AFT model \n TR (95% CI)" = 2, "Exponential AFT model \n TR (95% CI)" = 2, "Log-logistic AFT model \n TR (95% CI)" = 2, "Log-normal AFT model \n TR (95% CI)" = 2)) %>%
   kable_classic(full_width = T, html_font = "Cambria") %>%
-  kable_styling(font_size = 9)
+  kable_styling(font_size = 11)
 ```
