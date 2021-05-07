@@ -129,7 +129,7 @@ actions:
   # Results summary
   results_summary:
     run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Results_summary.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
-    needs: [model_final]
+    needs: [data_process, model_final]
     outputs:
       moderately_sensitive:
         html: output/Results_summary.html
