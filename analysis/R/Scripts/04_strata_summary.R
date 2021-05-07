@@ -258,14 +258,14 @@ plotfacethist <- function(data, catvar, contvar, contname, subtitle=NULL,
   
   plotdata <- plotfacethistdata(contdata, "variable_explicit_na", "contvariable")
   
-  ggplot()+
+    ggplot()+
     geom_histogram(
       data = contdata %>% filter(!is.na(contvariable)),
-      aes(x=contvariable), colour="black", fill="darkgrey", size=1, binwidth=0.05, boundary = 0.5, closed = "left"
+      aes(x=contvariable), colour="white", fill="darkgrey", size=0.5, binwidth=0.05, boundary = 0.5, closed = "left"
     ) +
-    geom_point(data=plotdata, aes(y=-breakint/3, x=Q50), colour='red', size=1, alpha=0.5)+
-    geom_linerange(data=plotdata, aes(y=-breakint/3, xmin=Q25, xmax=Q75), colour='red', size=1, alpha=0.5)+
-    geom_linerange(data=plotdata, aes(y=-breakint/3, xmin=Q10, xmax=Q90), colour='red', size=0.5, alpha=0.5)+
+    geom_point(data=plotdata, aes(y=-breakint/3, x=Q50), colour='darkgrey', size=2, alpha=0.5)+
+    geom_linerange(data=plotdata, aes(y=-breakint/3, xmin=Q25, xmax=Q75), colour='darkgrey', size=1.5, alpha=0.5)+
+    geom_linerange(data=plotdata, aes(y=-breakint/3, xmin=Q10, xmax=Q90), colour='darkgrey', size=0.5, alpha=0.5)+
     geom_hline(yintercept=0)+
     facet_wrap(vars(variable_explicit_na), ncol=1, strip.position="top")+#, space='free_y', scales="free_y")+
     scale_y_continuous(breaks = seq(0, ylim_upper, breakint), limits = c(-(breakint/1.8), NA))+
