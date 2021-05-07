@@ -153,40 +153,29 @@ data_cox <- data_tte %>%
 # MODELS ----
 
 ## Stratified Cox PH model - adjusted; baseline demographics, comorbs, geographical, flu and shielding 
-# mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
-#                                ageband + sex + ethnicity + morbid_obesity +
-#                                chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-#                                chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
-#                                asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-#                                immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded +
-#                                shielded_since_feb_15 + strata(practice_id_latest_active_registration),
-#                              data = data_cox)
-# 
-# write_rds(mod.strat.coxph.adj, here::here("output", "models", "final", "mod_strat_coxph_adj.rds"), compress="gz")
+mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
+                               ageband + sex + ethnicity + morbid_obesity +
+                               chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
+                               chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
+                               asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
+                               immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded +
+                               shielded_since_feb_15 + strata(practice_id_latest_active_registration),
+                             data = data_cox)
 
-mod.aft.re.adj <- survreg(Surv(follow_up_time, covid_vax) ~
-                            ageband + sex + ethnicity + morbid_obesity +
-                            chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
-                            chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
-                            asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                            immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                            rural_urban + region + frailty(practice_id_latest_active_registration),
-                          data = data_cox)
-
-write_rds(mod.aft.re.adj, here::here("output", "models", "final", "mod_aft_re_adj.rds"), compress="gz")
+write_rds(mod.strat.coxph.adj, here::here("output", "models", "final", "mod_strat_coxph_adj.rds"), compress="gz")
 
 
-# # Output model coefficients ----
-# 
-# ## Summary table
-# tab_mod1 <- gtsummary::tbl_regression(mod.strat.coxph.adj, exp = TRUE)
-# gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_coxph.html"))
-# write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
-# 
-# ## Forest plot
-# plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
-# ggsave(
-#   here::here("output", "models", "final", "plot_strat_coxph.svg"),
-#   plot_coxph,
-#   units = "cm", width = 20, height = 30
-# )
+# Output model coefficients ----
+
+## Summary table
+tab_mod1 <- gtsummary::tbl_regression(mod.strat.coxph.adj, exp = TRUE)
+gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_coxph.html"))
+write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
+
+## Forest plot
+plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
+ggsave(
+  here::here("output", "models", "final", "plot_strat_coxph.svg"),
+  plot_coxph,
+  units = "cm", width = 20, height = 30
+)
