@@ -299,4 +299,33 @@ ggsave(
   units = "cm", width = 20, height = 20
 )
 
+quibble <- function(x, q = c(0.25, 0.5, 0.75)) {
+  ## function that takes a vector and returns a tibble of its quantiles
+  tibble("{{ x }}" := quantile(x, q), "{{ x }}_q" := q)
+}
 
+
+strata_quantiles <- strata_estimates %>%
+  group_by(time) %>%
+  summarise(quibble(cml.haz, seq(0,1,0.1)))
+
+CHdeciles <- ggplot(strata_quantiles)+
+  geom_line(aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=cml.haz_q), alpha=0.2, colour='blue', size=0.25)+
+  scale_x_date(date_breaks = "1 month", labels = scales::date_format("%Y-%m"), limits = c(as.Date("2020-12-01"), NA))+
+  labs(
+    x="Date", y="Cumul. hazard decile"
+  )+
+  theme_bw()+
+  theme(
+    panel.border = element_blank(),
+    axis.line.x = element_line(colour = "black"),
+    axis.text.x = element_text(angle = 70, vjust = 1, hjust=1),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+  )
+
+ggsave(
+  here::here("output", "models", "final", "plot_strata_deciles.svg"),
+  CHdeciles,
+  units = "cm", width = 20, height = 20
+)
