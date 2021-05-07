@@ -137,7 +137,7 @@ ggforest2 <-  function (model, data = NULL, main = "Hazard ratio", cpositions = 
 }
 
 ## Import processed data
-data_tte <- read_rds(here::here("output", "data", "data_all.rds"))
+data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
 
 ## Converts logical to integer so that model coefficients print nicely in gtsummary methods
 data_cox <- data_tte %>%
