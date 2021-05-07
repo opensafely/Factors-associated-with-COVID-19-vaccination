@@ -175,12 +175,128 @@ ggsave(
 
 
 
-plot_strata_cmlhaz30 <- ggplot(strata_estimates %>% filter(time==30))+
+plot_strata_cmlhaz28 <- ggplot(strata_estimates %>% filter(time==28))+
   geom_histogram(aes(x=cml.haz), alpha=0.2)+
   theme_bw()
 
 ggsave(
-  here::here("output", "models", "final", "plot_strata_cmlhaz30.svg"),
-  plot_strata_cmlhaz30,
+  here::here("output", "models", "final", "plot_strata_cmlhaz28.svg"),
+  plot_strata_cmlhaz28,
   units = "cm", width = 20, height = 20
 )
+
+
+plot_strata_cmlhaz56 <- ggplot(strata_estimates %>% filter(time==56))+
+  geom_histogram(aes(x=cml.haz), alpha=0.2)+
+  theme_bw()
+
+ggsave(
+  here::here("output", "models", "final", "plot_strata_cmlhaz56.svg"),
+  plot_strata_cmlhaz56,
+  units = "cm", width = 20, height = 20
+)
+
+
+
+
+
+
+
+Qdata <- function(data, groupvar, contvar){
+  
+  data %>%
+    group_by({{groupvar}}) %>%
+    summarise(
+      n=n(),
+      n_valid=sum(!is.na({{contvar}})),
+      pct_valid = n_valid/n,
+      Q10=quantile({{contvar}}, 0.1, na.rm=TRUE),
+      Q25=quantile({{contvar}}, 0.25, na.rm=TRUE),
+      Q50=quantile({{contvar}}, 0.5, na.rm=TRUE),
+      Q75=quantile({{contvar}}, 0.75, na.rm=TRUE),
+      Q90=quantile({{contvar}}, 0.9, na.rm=TRUE),
+      #mean=mean({{contvar}}, na.rm=TRUE),
+      #bsci = list(Hmisc::smean.cl.boot({{contvar}}, conf.int=0.95, B=1000, reps=FALSE)),
+      #mean.ll = map_dbl(bsci, ~.[2]),
+      #mean.ul = map_dbl(bsci, ~.[3])
+    ) %>% 
+    #select(-bsci) %>%
+    ungroup() 
+}
+
+
+
+strata_estimates_snapshots <- strata_estimates %>% 
+  filter(time %in% c(7,28,56)) %>%
+  mutate(time_cat = fct_reorder(paste0("Day ",time), time))
+
+plotfacethistdata <- function(data, catvar, contvar, filt=TRUE){
+  #  function to get data for simple faceted histogram
+  plotdata <-
+    data %>% 
+    filter(filt) %>%
+    select(all_of(c(catvar, contvar))) %>%
+    rename(variable=all_of(catvar), contvariable=all_of(contvar)) %>%
+    mutate(
+      variable_explicit_na=(fct_explicit_na(variable, na_level="(Missing)")),
+    )
+  
+  Qdata(plotdata, variable_explicit_na, contvariable)
+}
+
+plotfacethist <- function(data, catvar, contvar, contname, subtitle=NULL, 
+                          ywrapwidth=Inf, breakint=50, titlewrapwidth=40, ylim_upper=NULL){
+  #  function to plot faceted histogram, taking data from plotfacethistdata
+  
+  contdata <- 
+    data %>% 
+    select(all_of(c(catvar, contvar))) %>%
+    rename(variable=all_of(catvar), contvariable=all_of(contvar)) %>%
+    mutate(
+      variable_explicit_na=(fct_explicit_na(variable, na_level="(Missing)")),
+    )
+  
+  plotdata <- plotfacethistdata(contdata, "variable_explicit_na", "contvariable")
+  
+  ggplot()+
+    geom_histogram(
+      data = contdata %>% filter(!is.na(contvariable)),
+      aes(x=contvariable), colour="black", fill="darkgrey", size=1, binwidth=0.05, boundary = 0.5, closed = "left"
+    ) +
+    geom_point(data=plotdata, aes(y=-breakint/3, x=Q50), colour='red', size=1, alpha=0.5)+
+    geom_linerange(data=plotdata, aes(y=-breakint/3, xmin=Q25, xmax=Q75), colour='red', size=1, alpha=0.5)+
+    geom_linerange(data=plotdata, aes(y=-breakint/3, xmin=Q10, xmax=Q90), colour='red', size=0.5, alpha=0.5)+
+    geom_hline(yintercept=0)+
+    facet_wrap(vars(variable_explicit_na), ncol=1, strip.position="top")+#, space='free_y', scales="free_y")+
+    scale_y_continuous(breaks = seq(0, ylim_upper, breakint), limits = c(-(breakint/1.8), NA))+
+    labs(
+      x=contname, y=NULL)+
+    theme_bw(base_size = 10) +
+    theme(
+      panel.border = element_blank(),
+      #axis.line.x = element_line(colour = "black"),
+      panel.grid = element_blank(),
+      panel.grid.major.y = element_blank(),
+      panel.grid.major.x = element_line(colour = "lightgrey"),
+      strip.background = element_blank(),
+      
+      plot.title = element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position =  "plot",
+      plot.caption = element_text(hjust = 0, face = "italic"),
+      strip.text = element_text(angle = 0, hjust = 1),
+    )+
+    NULL
+  
+}
+
+
+CHsnapshots <- plotfacethist(strata_estimates_snapshots, "time_cat", "cml.haz", "Cumul. hazard", breakint=50, ylim_upper=1000)
+
+ggsave(
+  here::here("output", "models", "final", "plot_strata_snapshots.svg"),
+  CHsnapshots,
+  units = "cm", width = 20, height = 20
+)
+
+
