@@ -389,5 +389,126 @@ par(mfrow = c(1,1))
 
 ```
 
+## Results of regression models
 Table 3 shows the estimation results and the p-values of PH model and AFT models in order to assess
-the effects of each parameter on the survival time.
+the effects of each parameter on the vaccination time.
+
+```{r table2, echo = FALSE, warning= FALSE, message= FALSE, results='asis', fig.cap="Table 3: Parameter estimates and 95% confidence interval from the different models", fig.align = 'center'}
+# Cox
+cox_results <- summary(coxmod)$coefficients  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(coef - 1.96*`se(coef)`), digits = 2),
+         UCI = round(exp(coef + 1.96*`se(coef)`), digits = 2),
+         `HR (95% CI)` = paste(round(`exp(coef)`, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `HR (95% CI)`)
+  
+# Weibull
+weibull_resultsa <- summary(art_weibull)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+weibull_resultsa <- weibull_resultsa[-1,]
+
+weibull_resultsb <- summary(art_re_weibull)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+weibull_resultsb <- weibull_resultsb[-1,]
+
+weibull_results <- left_join(weibull_resultsa, weibull_resultsb, by = "Variable")
+
+# Expotential
+exponential_resultsa <- summary(art_exponential)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+exponential_resultsa <- exponential_resultsa[-1,]
+
+exponential_resultsb <- summary(art_re_exponential)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+exponential_resultsb <- exponential_resultsb[-1,]
+
+exponential_results <- left_join(exponential_resultsa, exponential_resultsb, by = "Variable")
+
+# Log logistic
+loglogistic_resultsa <- summary(art_loglogistic)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+loglogistic_resultsa <- loglogistic_resultsa[-1,]
+
+loglogistic_resultsb <- summary(art_re_loglogistic)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+loglogistic_resultsb <- loglogistic_resultsb[-1,]
+
+loglogistic_results <- left_join(loglogistic_resultsa, loglogistic_resultsb, by = "Variable")
+
+# Log normal
+lognormal_resultsa <- summary(art_lognormal)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+lognormal_resultsa <- lognormal_resultsa[-1,]
+
+lognormal_resultsb <- summary(art_re_lognormal)$table  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(Value - 1.96*`Std. Error`), digits = 2),
+         UCI = round(exp(Value + 1.96*`Std. Error`), digits = 2),
+         `TR (95% CI)` = paste(round(Value, digits = 2), " (", LCI, " - ", UCI, ")", sep = "")) %>%
+  select(Variable, `TR (95% CI)`)
+
+lognormal_resultsb <- lognormal_resultsb[-1,]
+
+lognormal_results <- left_join(lognormal_resultsa, lognormal_resultsb, by = "Variable")
+
+# Combine
+results <- left_join(cox_results, weibull_results, by = "Variable") %>%
+  left_join(exponential_results, by = "Variable") %>%
+  left_join(loglogistic_results, by = "Variable") %>%
+  left_join(lognormal_results, by = "Variable") 
+
+colnames(results) <- c("Variable", 
+                       "Stratified CoxPH",
+                       "Weibull AFT model", "Weibull AFT model (with random effects)",
+                       "Exponential AFT model", "Exponential AFT model (with random effects)",
+                       "Log-logistic AFT model", "Log-logistic AFT model (with random effects)",
+                       "Log-normal AFT model", "Log-normal AFT model (with random effects)")
+
+results %>%
+  kbl(escape = F) %>%
+  kable_classic(full_width = T, html_font = "Cambria")
+```
