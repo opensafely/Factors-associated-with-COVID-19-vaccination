@@ -393,7 +393,7 @@ par(mfrow = c(1,1))
 Table 3 shows the estimation results and the p-values of PH model and AFT models in order to assess
 the effects of each parameter on the vaccination time.
 
-```{r table2, echo = FALSE, warning= FALSE, message= FALSE, results='asis', fig.cap="Table 3: Parameter estimates and 95% confidence interval from the different models", fig.align = 'center'}
+```{r table3, echo = FALSE, warning= FALSE, message= FALSE, results='asis', fig.cap="Table 3: Parameter estimates and 95% confidence interval from the different models", fig.align = 'center'}
 # Cox
 cox_results <- summary(coxmod)$coefficients  %>% 
   as.data.frame() %>%
@@ -502,13 +502,15 @@ results <- left_join(cox_results, weibull_results, by = "Variable") %>%
   left_join(lognormal_results, by = "Variable") 
 
 colnames(results) <- c("Variable", 
-                       "Stratified CoxPH",
-                       "Weibull AFT model", "Weibull AFT model (with random effects)",
-                       "Exponential AFT model", "Exponential AFT model (with random effects)",
-                       "Log-logistic AFT model", "Log-logistic AFT model (with random effects)",
-                       "Log-normal AFT model", "Log-normal AFT model (with random effects)")
+                       "Stratified",
+                       "without re", "with re",
+                       "without re", "with re",
+                       "without re", "with re",
+                       "without re", "with re")
 
 results %>%
   kbl(escape = F) %>%
-  kable_classic(full_width = T, html_font = "Cambria")
+  add_header_above(c(" ", "Cox PH \n HR (95% CI)", "Weibull AFT model \n TR (95% CI)" = 2, "Exponential AFT model \n TR (95% CI)" = 2, "Log-logistic AFT model \n TR (95% CI)" = 2, "Log-normal AFT model \n TR (95% CI)" = 2)) %>%
+  kable_classic(full_width = T, html_font = "Cambria") %>%
+  kable_styling(font_size = 9)
 ```
