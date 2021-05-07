@@ -325,7 +325,7 @@ exclude3 <- boxGrob(glue("Missing data (n = {tot})",
                          imd = txtInt(nrow(criteria_4 %>% filter(imd == 0))),
                          region = txtInt(nrow(criteria_4 %>% filter(region == ""))),
                          stp = txtInt(nrow(criteria_4 %>% filter(stp == ""))),
-                         urban = txtInt(nrow(criteria_4 %>% filter(rural_urban > 0))),
+                         urban = txtInt(nrow(criteria_4 %>% filter(rural_urban == 0))),
                          .sep = "\n"),
                     txt_gp = gpar(fontsize = 9),
                     just = "left")
