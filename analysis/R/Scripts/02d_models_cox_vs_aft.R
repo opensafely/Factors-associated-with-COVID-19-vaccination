@@ -42,7 +42,7 @@ mod.stratcoxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                               chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + 
                               chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease + 
                               chronis_respiratory_disease + immunosuppression_diagnosis +
-                              immunosuppression_medication + imd + region + rural_urban + prior_covid + 
+                              immunosuppression_medication + imd + rural_urban + prior_covid + 
                               flu_vaccine + shielded + shielded_since_feb_15 + 
                               strata(practice_id_latest_active_registration),
                             data = data_cox)
@@ -57,7 +57,7 @@ mod.aft.adj.weibull <- survreg(Surv(follow_up_time, covid_vax) ~
                             chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + 
                             chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease + 
                             chronis_respiratory_disease + immunosuppression_diagnosis +
-                            immunosuppression_medication + imd + region + rural_urban + prior_covid + 
+                            immunosuppression_medication + imd + rural_urban + prior_covid + 
                             flu_vaccine + shielded + shielded_since_feb_15,
                             dist = "weibull",
                           data = data_cox)
@@ -71,7 +71,7 @@ mod.aft.adj.exponential <- survreg(Surv(follow_up_time, covid_vax) ~
                                     chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability +
                                     chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease +
                                     chronis_respiratory_disease + immunosuppression_diagnosis +
-                                    immunosuppression_medication + imd + region + rural_urban + prior_covid +
+                                    immunosuppression_medication + imd + rural_urban + prior_covid +
                                     flu_vaccine + shielded + shielded_since_feb_15,
                                    dist = "exponential",
                                   data = data_cox)
@@ -85,7 +85,7 @@ mod.aft.adj.loglogistic <- survreg(Surv(follow_up_time, covid_vax) ~
                                     chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability +
                                     chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease +
                                     chronis_respiratory_disease + immunosuppression_diagnosis +
-                                    immunosuppression_medication + imd + region + rural_urban + prior_covid +
+                                    immunosuppression_medication + imd + rural_urban + prior_covid +
                                     flu_vaccine + shielded + shielded_since_feb_15,
                                    dist = "loglogistic",
                                   data = data_cox)
@@ -99,7 +99,7 @@ mod.aft.adj.lognormal <- survreg(Surv(follow_up_time, covid_vax) ~
                                     chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability +
                                     chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease +
                                     chronis_respiratory_disease + immunosuppression_diagnosis +
-                                    immunosuppression_medication + imd + region + rural_urban + prior_covid +
+                                    immunosuppression_medication + imd + rural_urban + prior_covid +
                                     flu_vaccine + shielded + shielded_since_feb_15,
                                  dist = "lognormal",
                                   data = data_cox)
@@ -114,7 +114,7 @@ mod.aft.re.adj.weibull <- survreg(Surv(follow_up_time, covid_vax) ~
                                     chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability +
                                     chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease +
                                     chronis_respiratory_disease + immunosuppression_diagnosis +
-                                    immunosuppression_medication + imd + region + rural_urban + prior_covid +
+                                    immunosuppression_medication + imd + rural_urban + prior_covid +
                                     flu_vaccine + shielded + shielded_since_feb_15 +
                                     frailty(practice_id_latest_active_registration),
                                   dist = "weibull",
@@ -129,7 +129,7 @@ mod.aft.re.adj.exponential <- survreg(Surv(follow_up_time, covid_vax) ~
                                         chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability +
                                         chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease +
                                         chronis_respiratory_disease + immunosuppression_diagnosis +
-                                        immunosuppression_medication + imd + region + rural_urban + prior_covid +
+                                        immunosuppression_medication + imd + rural_urban + prior_covid +
                                         flu_vaccine + shielded + shielded_since_feb_15 +
                                         frailty(practice_id_latest_active_registration),
                                       dist = "exponential",
@@ -144,7 +144,7 @@ mod.aft.re.adj.loglogistic <- survreg(Surv(follow_up_time, covid_vax) ~
                                         chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability +
                                         chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease +
                                         chronis_respiratory_disease + immunosuppression_diagnosis +
-                                        immunosuppression_medication + imd + region + rural_urban + prior_covid +
+                                        immunosuppression_medication + imd + rural_urban + prior_covid +
                                         flu_vaccine + shielded + shielded_since_feb_15 +
                                         frailty(practice_id_latest_active_registration),
                                       dist = "loglogistic",
@@ -159,7 +159,7 @@ mod.aft.re.adj.lognormal <- survreg(Surv(follow_up_time, covid_vax) ~
                                       chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability +
                                       chronic_neuro_dis_inc_sig_learn_dis + asplenia + chronic_liver_disease +
                                       chronis_respiratory_disease + immunosuppression_diagnosis +
-                                      immunosuppression_medication + imd + region + rural_urban + prior_covid +
+                                      immunosuppression_medication + imd + rural_urban + prior_covid +
                                       flu_vaccine + shielded + shielded_since_feb_15 +
                                       frailty(practice_id_latest_active_registration),
                                     dist = "lognormal",

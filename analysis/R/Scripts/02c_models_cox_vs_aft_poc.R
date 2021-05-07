@@ -57,7 +57,7 @@ for (i in 1:length(sample_size)) {
                            chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                            asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                            immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                           rural_urban + region,
+                           rural_urban,
                          data = data_sub)
   
   write_rds(mod.coxph.adj, here::here("output", "models", "testing", "cox_vs_aft", 
@@ -70,7 +70,7 @@ for (i in 1:length(sample_size)) {
                                 chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                                 asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                                 immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                                rural_urban + region + strata(practice_id_latest_active_registration),
+                                strata(practice_id_latest_active_registration),
                               data = data_sub)
   
   write_rds(mod.stratcoxph.adj, here::here("output", "models", "testing", "cox_vs_aft", 
@@ -82,9 +82,7 @@ for (i in 1:length(sample_size)) {
                            chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                            chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                            asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                           immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                           rural_urban + region,
-                         dist = "lognormal",
+                           immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15                         dist = "lognormal",
                          data = data_sub)
   
   write_rds(mod.aft.adj, here::here("output", "models", "testing", "cox_vs_aft", 
@@ -97,7 +95,7 @@ for (i in 1:length(sample_size)) {
                                  chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                                  asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                                  immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                                 rural_urban + region + strata(practice_id_latest_active_registration),
+                                 strata(practice_id_latest_active_registration),
                                data = data_sub)
   
   write_rds(mod.strat.aft.adj, here::here("output", "models", "testing", "cox_vs_aft", 
@@ -110,7 +108,7 @@ for (i in 1:length(sample_size)) {
                               chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                               asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                               immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                              rural_urban + region + frailty(practice_id_latest_active_registration),
+                              frailty(practice_id_latest_active_registration),
                             data = data_sub)
   
   write_rds(mod.aft.re.adj, here::here("output", "models", "testing", "cox_vs_aft", 
@@ -193,9 +191,7 @@ for (i in 1:length(sample_size)) {
                               chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                               chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                               asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                              immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                              rural_urban + region,
-                            data = data_sub))
+                              immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15                            data = data_sub))
   
   timings[1,2] <- fit1[3]
   
@@ -206,7 +202,7 @@ for (i in 1:length(sample_size)) {
                               chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                               asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                               immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                              rural_urban + region + strata(practice_id_latest_active_registration),
+                              strata(practice_id_latest_active_registration),
                             data = data_sub))
   
   timings[2,2] <- fit2[3]
@@ -217,9 +213,7 @@ for (i in 1:length(sample_size)) {
                                 chronic_heart_disease + diabetes + chronic_kidney_disease_diagnostic + chronic_kidney_disease_all_stages +
                                 chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                                 asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
-                                immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                                rural_urban + region,
-                              dist = "lognormal",
+                                immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15                              dist = "lognormal",
                               data = data_sub))
   
   timings[3,2] <- fit3[3]
@@ -231,7 +225,7 @@ for (i in 1:length(sample_size)) {
                                 chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                                 asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                                 immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                                rural_urban + region + strata(practice_id_latest_active_registration),
+                                strata(practice_id_latest_active_registration),
                               dist = "lognormal",
                               data = data_sub))
   timings[4,2] <- fit4[3]
@@ -243,7 +237,7 @@ for (i in 1:length(sample_size)) {
                                 chronic_kidney_disease_all_stages_3_5 + sev_mental_ill + learning_disability + chronic_neuro_dis_inc_sig_learn_dis +
                                 asplenia + chronic_liver_disease + chronis_respiratory_disease + immunosuppression_diagnosis +
                                 immunosuppression_medication + imd + rural_urban + prior_covid + flu_vaccine + shielded + shielded_since_feb_15 + 
-                                rural_urban + region + frailty(practice_id_latest_active_registration),
+                                frailty(practice_id_latest_active_registration),
                               dist = "lognormal",
                               data = data_sub))
   timings[5,2] <- fit5[3]
