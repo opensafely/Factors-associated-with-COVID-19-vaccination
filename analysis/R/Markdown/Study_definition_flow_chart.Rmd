@@ -276,8 +276,6 @@ study_pop <- data_flow_chart %>%
          nursing_residential_care == 0,
          sex %in% c("F", "M"),
          imd > 0,
-         region != "",
-         stp != "",
          rural_urban > 0) 
 
 table(study_pop$covid_vax)
