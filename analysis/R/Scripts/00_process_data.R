@@ -144,7 +144,7 @@ data_processed <- data_extract %>%
     # Censoring
     censor_date = pmin(death_date, 
                        dereg_date, 
-                       as.Date("2021-04-01", format = "%Y-%m-%d"), 
+                       as.Date("2021-03-17", format = "%Y-%m-%d"), 
                        na.rm=TRUE),
     
     # Follow-up time
