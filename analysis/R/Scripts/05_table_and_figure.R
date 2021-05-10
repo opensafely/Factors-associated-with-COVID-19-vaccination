@@ -160,7 +160,7 @@ plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
 ggsave(
   here::here("output", "models", "final", "plot_strat_coxph.svg"),
   plot_coxph,
-  units = "cm", width = 30, height = 40
+  units = "cm", width = 35, height = 40
 )
 
 ## Summary table
