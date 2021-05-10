@@ -293,15 +293,6 @@
       "created_at": "2021-05-07T13:04:46Z",
       "completed_at": "2021-05-07T14:01:37Z"
     },
-    "generate_study_population_flow_chart_data": {
-      "state": "succeeded",
-      "commit": "f4af36d4580608a5531576bef1b550a6a0ad14e9",
-      "docker_image_id": "sha256:31320e01a801ee8daad622eb432bab384d4e02ff84de870280159bb8f6e12b36",
-      "job_id": "cjhd2hjhqnvjeoyj",
-      "run_by_user": "acagreen17",
-      "created_at": "2021-05-07T13:42:28Z",
-      "completed_at": "2021-05-07T14:02:01Z"
-    },
     "data_properties": {
       "state": "succeeded",
       "commit": "f4af36d4580608a5531576bef1b550a6a0ad14e9",
@@ -338,15 +329,6 @@
       "created_at": "2021-05-07T17:45:36Z",
       "completed_at": "2021-05-07T18:04:03Z"
     },
-    "flow_chart": {
-      "state": "succeeded",
-      "commit": "3554cc96fcc7a454ce5dbd32c39bf40184a904a6",
-      "docker_image_id": "sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981",
-      "job_id": "yfgwmhbceq4ud5b4",
-      "run_by_user": "acagreen17",
-      "created_at": "2021-05-10T10:35:31Z",
-      "completed_at": "2021-05-10T10:43:51Z"
-    },
     "results_summary": {
       "state": "failed",
       "commit": "3554cc96fcc7a454ce5dbd32c39bf40184a904a6",
@@ -355,15 +337,6 @@
       "run_by_user": "acagreen17",
       "created_at": "2021-05-10T10:35:31Z",
       "completed_at": "2021-05-10T10:52:09Z"
-    },
-    "table_and_figure": {
-      "state": "succeeded",
-      "commit": "1299d3e30de772ecb88d1d13e8e9ea21e76125ee",
-      "docker_image_id": "sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981",
-      "job_id": "u5buv2zlzr773hy6",
-      "run_by_user": "acagreen17",
-      "created_at": "2021-05-10T11:38:08Z",
-      "completed_at": "2021-05-10T11:38:56Z"
     },
     "aft_vs_cox_models": {
       "state": "succeeded",
@@ -382,6 +355,33 @@
       "run_by_user": "acagreen17",
       "created_at": "2021-05-10T10:35:31Z",
       "completed_at": "2021-05-10T12:10:50Z"
+    },
+    "table_and_figure": {
+      "state": "succeeded",
+      "commit": "b67da4956f27037f6e12268e8dc7343d5e2a1b5d",
+      "docker_image_id": "sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981",
+      "job_id": "ytnxetx6ai5foi2n",
+      "run_by_user": "acagreen17",
+      "created_at": "2021-05-10T13:12:13Z",
+      "completed_at": "2021-05-10T13:13:03Z"
+    },
+    "generate_study_population_flow_chart_data": {
+      "state": "succeeded",
+      "commit": "b67da4956f27037f6e12268e8dc7343d5e2a1b5d",
+      "docker_image_id": "sha256:31320e01a801ee8daad622eb432bab384d4e02ff84de870280159bb8f6e12b36",
+      "job_id": "4zmaq4z3ghjxzt5r",
+      "run_by_user": "acagreen17",
+      "created_at": "2021-05-10T13:12:13Z",
+      "completed_at": "2021-05-10T13:29:29Z"
+    },
+    "flow_chart": {
+      "state": "succeeded",
+      "commit": "588612f6420456b7d2ac0d9547e3a53c5fedca29",
+      "docker_image_id": "sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981",
+      "job_id": "dzdir52jtyd6qvko",
+      "run_by_user": "acagreen17",
+      "created_at": "2021-05-10T14:04:40Z",
+      "completed_at": "2021-05-10T14:08:58Z"
     }
   },
   "workspace": "factors-associated-with-covid-19-vaccination",
