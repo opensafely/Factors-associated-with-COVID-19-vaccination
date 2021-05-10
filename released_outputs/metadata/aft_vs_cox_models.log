@@ -1,0 +1,40 @@
+2021-05-10T10:39:46.228126900Z -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+2021-05-10T10:39:46.236998000Z v ggplot2 3.3.2     v purrr   0.3.4
+2021-05-10T10:39:46.237015300Z v tibble  3.0.3     v dplyr   1.0.2
+2021-05-10T10:39:46.237023600Z v tidyr   1.1.2     v stringr 1.4.0
+2021-05-10T10:39:46.237030900Z v readr   1.3.1     v forcats 0.5.0
+2021-05-10T10:39:46.403590300Z -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+2021-05-10T10:39:46.403629300Z x dplyr::filter() masks stats::filter()
+2021-05-10T10:39:46.403637800Z x dplyr::lag()    masks stats::lag()
+2021-05-10T10:39:46.418811200Z 
+2021-05-10T10:39:46.418838100Z Attaching package: 'lubridate'
+2021-05-10T10:39:46.418846600Z 
+2021-05-10T10:39:46.420231100Z The following objects are masked from 'package:base':
+2021-05-10T10:39:46.420248100Z 
+2021-05-10T10:39:46.420256100Z     date, intersect, setdiff, union
+2021-05-10T10:39:46.420263300Z 
+2021-05-10T10:39:48.496566300Z Loading required package: ggpubr
+
+
+state: succeeded
+commit: 3554cc96fcc7a454ce5dbd32c39bf40184a904a6
+docker_image_id: sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981
+exit_code: 0
+job_id: irgug6pgqwae2eta
+run_by_user: acagreen17
+created_at: 2021-05-10T10:35:31Z
+started_at: 2021-05-10T10:39:43Z
+completed_at: 2021-05-10T11:57:51Z
+
+Completed successfully
+
+outputs:
+  output/models/cox_vs_aft/mod_aft_exponential_adj.rds     - highly_sensitive
+  output/models/cox_vs_aft/mod_aft_loglogistic_adj.rds     - highly_sensitive
+  output/models/cox_vs_aft/mod_aft_lognormal_adj.rds       - highly_sensitive
+  output/models/cox_vs_aft/mod_aft_re_exponential_adj.rds  - highly_sensitive
+  output/models/cox_vs_aft/mod_aft_re_loglogistic_adj.rds  - highly_sensitive
+  output/models/cox_vs_aft/mod_aft_re_lognormal_adj.rds    - highly_sensitive
+  output/models/cox_vs_aft/mod_aft_re_weibull_adj.rds      - highly_sensitive
+  output/models/cox_vs_aft/mod_aft_weibull_adj.rds         - highly_sensitive
+  output/models/cox_vs_aft/mod_stratcoxph_adj.rds          - highly_sensitive
