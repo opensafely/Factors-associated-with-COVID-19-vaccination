@@ -307,7 +307,12 @@ quibble <- function(x, q = c(0.25, 0.5, 0.75)) {
 
 strata_quantiles <- strata_estimates %>%
   group_by(time) %>%
-  summarise(quibble(cml.haz, seq(0,1,0.1)))
+  summarise(quibble(cml.haz, seq(0.1,0.9,0.1))) %>%
+  mutate(
+    date = as.Date("2020-12-08")+time
+  )
+
+write_rds(strata_quantiles, here::here("output", "models", "final", "cmlhaz_quantiles.csv"))
 
 CHdeciles <- ggplot(strata_quantiles)+
   geom_line(aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=cml.haz_q), alpha=0.2, colour='blue', size=0.25)+
@@ -337,7 +342,7 @@ ggsave(
 
 plot_strata_combined <- ggplot()+
   geom_step(data = strata_estimates, aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=strata), alpha=0.1)+
-  geom_step(data = strata_quantiles %>% filter(cml.haz_q %in% seq(0.1,0.9,0.1)), aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=cml.haz_q), alpha=0.9, colour='darkred', size=1)+
+  geom_step(data = strata_quantiles, aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=cml.haz_q), alpha=0.9, colour='darkred', size=1)+
   scale_x_date(date_breaks = "1 month", labels = scales::date_format("%Y-%m"), limits = c(as.Date("2020-12-01"), "2021-03-17"))+
   labs(
     x="Date", y="Cumulative hazard"

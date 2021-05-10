@@ -125,6 +125,7 @@ actions:
     outputs:
       moderately_sensitive:
         plots: output/models/final/plot_strata*.svg
+        csv: output/models/final/cmlhaz_quantiles.csv
   
   # Results summary
   results_summary:
