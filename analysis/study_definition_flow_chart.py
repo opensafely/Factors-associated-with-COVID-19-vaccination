@@ -67,6 +67,22 @@ study = StudyDefinition(
     #     """,
   ),
   
+  # Outcome
+  
+  ## Any COVID vaccination (first dose)
+  covid_vax_1_date = patients.with_vaccination_record(
+    returning = "date",
+    tpp = {"target_disease_matches": "SARS-2 CORONAVIRUS",},
+    emis = {"procedure_codes": covid_vaccine_EMIS_codes,},
+    find_first_match_in_period = True,
+    on_or_after = "index_date + 1 day",
+    date_format = "YYYY-MM-DD",
+    return_expectations = {"date": 
+        {"earliest": "2020-12-08",  # first vaccine administered on the 8/12
+          "latest": end_date,}
+    },
+  ),
+  
   # Inclusion/exclusion variables
   
   ## Alive

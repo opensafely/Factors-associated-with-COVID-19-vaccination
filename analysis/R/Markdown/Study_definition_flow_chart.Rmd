@@ -29,6 +29,9 @@ data_flow_chart <- read_csv(
     # Identifiers
     patient_id = col_integer(),
     
+    # Outcome
+    covid_vax_1_date = col_date(format="%Y-%m-%d"),
+    
     # Study criteria
     registered = col_logical(),
     has_died = col_logical(),
@@ -49,7 +52,8 @@ data_flow_chart <- read_csv(
   ),
   na = character() # more stable to convert to missing later
   ) %>%
-  mutate(practice_id_at_end_or_at_death = ifelse(!is.na(death_date) & death_date < as.Date("2021-03-17", format = "%Y-%m-%d"), practice_id_at_death, practice_id_at_end))
+  mutate(practice_id_at_end_or_at_death = ifelse(!is.na(death_date) & death_date < as.Date("2021-03-17", format = "%Y-%m-%d"), practice_id_at_death, practice_id_at_end),
+             covid_vax = as.integer(ifelse(is.na(covid_vax_1_date), 0, 1)))
 
 ```
 
