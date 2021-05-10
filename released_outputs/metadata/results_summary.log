@@ -1,0 +1,92 @@
+2021-05-10T10:39:28.177538200Z 
+2021-05-10T10:39:28.177618100Z 
+2021-05-10T10:39:28.177627800Z processing file: Results_summary.Rmd
+2021-05-10T10:39:28.226371100Z   |                                                                              |                                                                      |   0%  |                                                                              |........                                                              |  11%
+2021-05-10T10:39:28.226742600Z   ordinary text without R code
+2021-05-10T10:39:28.226759800Z 
+2021-05-10T10:39:28.227447000Z   |                                                                              |................                                                      |  22%
+2021-05-10T10:39:28.230526700Z label: setup (with options) 
+2021-05-10T10:39:28.234510500Z List of 1
+2021-05-10T10:39:28.237712200Z  $ include: logi FALSE
+2021-05-10T10:39:28.237781100Z 
+2021-05-10T10:39:28.261227100Z   |                                                                              |.......................                                               |  33%
+2021-05-10T10:39:28.261379300Z   ordinary text without R code
+2021-05-10T10:39:28.261395400Z 
+2021-05-10T10:39:28.261636500Z   |                                                                              |...............................                                       |  44%
+2021-05-10T10:39:28.262530500Z label: unnamed-chunk-1 (with options) 
+2021-05-10T10:39:28.262955200Z List of 3
+2021-05-10T10:39:28.264267400Z  $ echo   : logi FALSE
+2021-05-10T10:39:28.265489400Z  $ warning: logi FALSE
+2021-05-10T10:39:28.266709700Z  $ message: logi FALSE
+2021-05-10T10:39:28.266770500Z 
+2021-05-10T10:39:30.775807900Z -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+2021-05-10T10:39:30.784791500Z v ggplot2 3.3.2     v purrr   0.3.4
+2021-05-10T10:39:30.784813000Z v tibble  3.0.3     v dplyr   1.0.2
+2021-05-10T10:39:30.784821800Z v tidyr   1.1.2     v stringr 1.4.0
+2021-05-10T10:39:30.784828800Z v readr   1.3.1     v forcats 0.5.0
+2021-05-10T10:39:30.982451600Z -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+2021-05-10T10:39:30.982474000Z x dplyr::filter() masks stats::filter()
+2021-05-10T10:39:30.982482800Z x dplyr::lag()    masks stats::lag()
+2021-05-10T10:39:31.005918200Z 
+2021-05-10T10:39:31.005968800Z Attaching package: 'lubridate'
+2021-05-10T10:39:31.005977500Z 
+2021-05-10T10:39:31.007713400Z The following objects are masked from 'package:base':
+2021-05-10T10:39:31.007737500Z 
+2021-05-10T10:39:31.007746200Z     date, intersect, setdiff, union
+2021-05-10T10:39:31.007753400Z 
+2021-05-10T10:39:33.059800100Z Loading required package: bdsmatrix
+2021-05-10T10:39:33.448119400Z 
+2021-05-10T10:39:33.448168100Z Attaching package: 'bdsmatrix'
+2021-05-10T10:39:33.448177300Z 
+2021-05-10T10:39:33.448622700Z The following object is masked from 'package:base':
+2021-05-10T10:39:33.448644400Z 
+2021-05-10T10:39:33.448652700Z     backsolve
+2021-05-10T10:39:33.448659700Z 
+2021-05-10T10:39:34.064586500Z Loading required package: ggpubr
+2021-05-10T10:39:35.368414800Z 
+2021-05-10T10:39:35.368462700Z Attaching package: 'kableExtra'
+2021-05-10T10:39:35.368471200Z 
+2021-05-10T10:39:35.369213200Z The following object is masked from 'package:dplyr':
+2021-05-10T10:39:35.369234500Z 
+2021-05-10T10:39:35.369243200Z     group_rows
+2021-05-10T10:39:35.369250400Z 
+2021-05-10T10:39:49.315830500Z   |                                                                              |.......................................                               |  56%
+2021-05-10T10:39:49.315946600Z   ordinary text without R code
+2021-05-10T10:39:49.315968800Z 
+2021-05-10T10:39:49.316166400Z   |                                                                              |...............................................                       |  67%
+2021-05-10T10:39:49.317476800Z label: unnamed-chunk-2 (with options) 
+2021-05-10T10:39:49.318039000Z List of 6
+2021-05-10T10:39:49.319510100Z  $ echo      : logi FALSE
+2021-05-10T10:39:49.320813800Z  $ warning   : logi FALSE
+2021-05-10T10:39:49.321947700Z  $ message   : logi FALSE
+2021-05-10T10:39:49.323088000Z  $ fig.width : num 12
+2021-05-10T10:39:49.324259400Z  $ fig.height: num 20
+2021-05-10T10:39:49.325363300Z  $ fig.cap   : chr "Figure 1: Estimated Hazard Ratios for each potential factor from a stratified Cox model"
+2021-05-10T10:39:49.325494000Z 
+2021-05-10T10:39:51.030803200Z strata(practice_id_latest_active_registration)is not found in data columns, and will be skipped.
+2021-05-10T10:39:53.364118900Z   |                                                                              |......................................................                |  78%
+2021-05-10T10:39:53.364299300Z   ordinary text without R code
+2021-05-10T10:39:53.364325600Z 
+2021-05-10T10:39:53.364668400Z   |                                                                              |..............................................................        |  89%
+2021-05-10T10:39:53.365810300Z label: unnamed-chunk-3 (with options) 
+2021-05-10T10:39:53.366365900Z List of 3
+2021-05-10T10:39:53.367991700Z  $ echo   : logi FALSE
+2021-05-10T10:39:53.369067400Z  $ warning: logi FALSE
+2021-05-10T10:39:53.370129400Z  $ message: logi FALSE
+2021-05-10T10:39:53.370145600Z 
+
+
+state: failed
+commit: 3554cc96fcc7a454ce5dbd32c39bf40184a904a6
+docker_image_id: sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981
+exit_code: 137
+job_id: bxdpxxs22sdjigl7
+run_by_user: acagreen17
+created_at: 2021-05-10T10:35:31Z
+started_at: 2021-05-10T10:39:27Z
+completed_at: 2021-05-10T10:52:09Z
+
+Job exited with an error code
+
+outputs:
+  (no outputs)

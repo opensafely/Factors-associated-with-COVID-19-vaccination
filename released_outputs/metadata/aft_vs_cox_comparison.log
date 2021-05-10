@@ -1,0 +1,151 @@
+2021-05-10T11:58:43.958946700Z 
+2021-05-10T11:58:43.959030400Z 
+2021-05-10T11:58:43.959039700Z processing file: Cox_vs_aft_model_comparison.Rmd
+2021-05-10T11:58:44.010497600Z   |                                                                              |                                                                      |   0%  |                                                                              |.....                                                                 |   7%
+2021-05-10T11:58:44.010885800Z   ordinary text without R code
+2021-05-10T11:58:44.010910300Z 
+2021-05-10T11:58:44.011667000Z   |                                                                              |.........                                                             |  13%
+2021-05-10T11:58:44.014803600Z label: setup (with options) 
+2021-05-10T11:58:44.018783600Z List of 1
+2021-05-10T11:58:44.021958400Z  $ include: logi FALSE
+2021-05-10T11:58:44.021975500Z 
+2021-05-10T11:58:44.046083200Z   |                                                                              |..............                                                        |  20%
+2021-05-10T11:58:44.046244900Z   ordinary text without R code
+2021-05-10T11:58:44.046271800Z 
+2021-05-10T11:58:44.046490800Z   |                                                                              |...................                                                   |  27%
+2021-05-10T11:58:44.047494200Z label: unnamed-chunk-1 (with options) 
+2021-05-10T11:58:44.047854200Z List of 3
+2021-05-10T11:58:44.049224100Z  $ echo   : logi FALSE
+2021-05-10T11:58:44.050500800Z  $ warning: logi FALSE
+2021-05-10T11:58:44.051762800Z  $ message: logi FALSE
+2021-05-10T11:58:44.051826800Z 
+2021-05-10T11:58:46.406537000Z -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+2021-05-10T11:58:46.415245900Z v ggplot2 3.3.2     v purrr   0.3.4
+2021-05-10T11:58:46.415269400Z v tibble  3.0.3     v dplyr   1.0.2
+2021-05-10T11:58:46.415277800Z v tidyr   1.1.2     v stringr 1.4.0
+2021-05-10T11:58:46.415285100Z v readr   1.3.1     v forcats 0.5.0
+2021-05-10T11:58:46.587514700Z -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+2021-05-10T11:58:46.587580500Z x dplyr::filter() masks stats::filter()
+2021-05-10T11:58:46.587588600Z x dplyr::lag()    masks stats::lag()
+2021-05-10T11:58:46.605262100Z 
+2021-05-10T11:58:46.605283800Z Attaching package: 'lubridate'
+2021-05-10T11:58:46.605291400Z 
+2021-05-10T11:58:46.606754800Z The following objects are masked from 'package:base':
+2021-05-10T11:58:46.606771600Z 
+2021-05-10T11:58:46.606778800Z     date, intersect, setdiff, union
+2021-05-10T11:58:46.606785800Z 
+2021-05-10T11:58:48.630194500Z Loading required package: ggpubr
+2021-05-10T11:58:49.399914900Z 
+2021-05-10T11:58:49.399984400Z Attaching package: 'kableExtra'
+2021-05-10T11:58:49.399992800Z 
+2021-05-10T11:58:49.400434600Z The following object is masked from 'package:dplyr':
+2021-05-10T11:58:49.400455200Z 
+2021-05-10T11:58:49.400464000Z     group_rows
+2021-05-10T11:58:49.400474100Z 
+2021-05-10T11:58:49.414773400Z 
+2021-05-10T11:58:49.414791600Z Attaching package: 'gridExtra'
+2021-05-10T11:58:49.414799100Z 
+2021-05-10T11:58:49.415340700Z The following object is masked from 'package:dplyr':
+2021-05-10T11:58:49.415356200Z 
+2021-05-10T11:58:49.415363600Z     combine
+2021-05-10T11:58:49.415370400Z 
+2021-05-10T11:59:09.581981000Z   |                                                                              |.......................                                               |  33%
+2021-05-10T11:59:09.582051400Z    inline R code fragments
+2021-05-10T11:59:09.582060500Z 
+2021-05-10T11:59:13.378711200Z   |                                                                              |............................                                          |  40%
+2021-05-10T11:59:13.379822300Z label: unnamed-chunk-2 (with options) 
+2021-05-10T11:59:13.380324000Z List of 7
+2021-05-10T11:59:13.381768100Z  $ echo      : logi FALSE
+2021-05-10T11:59:13.382828700Z  $ warning   : logi FALSE
+2021-05-10T11:59:13.383876800Z  $ message   : logi FALSE
+2021-05-10T11:59:13.385010600Z  $ fig.width : num 12
+2021-05-10T11:59:13.386112400Z  $ fig.height: num 15
+2021-05-10T11:59:13.387320500Z  $ fig.cap   : chr "Figure 1: The log cumulative hazard plots of categorical covariates"
+2021-05-10T11:59:13.388202900Z  $ fig.align : chr "center"
+2021-05-10T11:59:13.388277500Z 
+2021-05-10T12:00:20.426016800Z   |                                                                              |.................................                                     |  47%
+2021-05-10T12:00:20.426189100Z   ordinary text without R code
+2021-05-10T12:00:20.426220200Z 
+2021-05-10T12:00:20.426530400Z   |                                                                              |.....................................                                 |  53%
+2021-05-10T12:00:20.427868400Z label: table1 (with options) 
+2021-05-10T12:00:20.428419400Z List of 6
+2021-05-10T12:00:20.429966900Z  $ echo     : logi FALSE
+2021-05-10T12:00:20.431118100Z  $ warning  : logi FALSE
+2021-05-10T12:00:20.432225400Z  $ message  : logi FALSE
+2021-05-10T12:00:20.433319900Z  $ results  : chr "asis"
+2021-05-10T12:00:20.435077100Z  $ fig.cap  : chr "Table 1: P-values for four GOF tests based on Schoenfeld residual"
+2021-05-10T12:00:20.435271000Z  $ fig.align: chr "center"
+2021-05-10T12:00:20.435310800Z 
+2021-05-10T12:10:36.048040100Z   |                                                                              |..........................................                            |  60%
+2021-05-10T12:10:36.048123700Z   ordinary text without R code
+2021-05-10T12:10:36.048133000Z 
+2021-05-10T12:10:36.048312100Z   |                                                                              |...............................................                       |  67%
+2021-05-10T12:10:36.049386700Z label: table2 (with options) 
+2021-05-10T12:10:36.049770900Z List of 6
+2021-05-10T12:10:36.051089700Z  $ echo     : logi FALSE
+2021-05-10T12:10:36.052124400Z  $ warning  : logi FALSE
+2021-05-10T12:10:36.053177000Z  $ message  : logi FALSE
+2021-05-10T12:10:36.054091500Z  $ results  : chr "asis"
+2021-05-10T12:10:36.055179000Z  $ fig.cap  : chr "Table 2: Comparison of the PH model and the AFT models using using Akaike information criterion and Bayesian in"| __truncated__
+2021-05-10T12:10:36.056097900Z  $ fig.align: chr "center"
+2021-05-10T12:10:36.056114600Z 
+2021-05-10T12:10:36.102804400Z   |                                                                              |...................................................                   |  73%
+2021-05-10T12:10:36.102863300Z   ordinary text without R code
+2021-05-10T12:10:36.102872000Z 
+2021-05-10T12:10:36.103033800Z   |                                                                              |........................................................              |  80%
+2021-05-10T12:10:36.104072700Z label: unnamed-chunk-3 (with options) 
+2021-05-10T12:10:36.104456400Z List of 7
+2021-05-10T12:10:36.105672600Z  $ echo      : logi FALSE
+2021-05-10T12:10:36.106785100Z  $ warning   : logi FALSE
+2021-05-10T12:10:36.107813400Z  $ message   : logi FALSE
+2021-05-10T12:10:36.108913000Z  $ fig.width : num 12
+2021-05-10T12:10:36.109987400Z  $ fig.height: num 8
+2021-05-10T12:10:36.111063800Z  $ fig.cap   : chr "Figure 2: Cox Snell residual plots for Weibull, Exponential, Log-logistic and Log-normal AFT models. The panels"| __truncated__
+2021-05-10T12:10:36.111951500Z  $ fig.align : chr "center"
+2021-05-10T12:10:36.112019600Z 
+2021-05-10T12:10:36.130258600Z   |                                                                              |.............................................................         |  87%
+2021-05-10T12:10:36.130449600Z   ordinary text without R code
+2021-05-10T12:10:36.130466900Z 
+2021-05-10T12:10:36.130630300Z   |                                                                              |.................................................................     |  93%
+2021-05-10T12:10:36.131716700Z label: table3 (with options) 
+2021-05-10T12:10:36.132098900Z List of 6
+2021-05-10T12:10:36.133367000Z  $ echo     : logi FALSE
+2021-05-10T12:10:36.134448500Z  $ warning  : logi FALSE
+2021-05-10T12:10:36.135505600Z  $ message  : logi FALSE
+2021-05-10T12:10:36.136474100Z  $ results  : chr "asis"
+2021-05-10T12:10:36.137425100Z  $ fig.cap  : chr "Table 3: Parameter estimates and 95% confidence interval from the different models"
+2021-05-10T12:10:36.138295700Z  $ fig.align: chr "center"
+2021-05-10T12:10:36.138365400Z 
+2021-05-10T12:10:36.406836200Z   |                                                                              |......................................................................| 100%
+2021-05-10T12:10:36.406917400Z   ordinary text without R code
+2021-05-10T12:10:36.406925400Z 
+2021-05-10T12:10:36.407460000Z 
+2021-05-10T12:10:36.409183200Z output file: Cox_vs_aft_model_comparison.knit.md
+2021-05-10T12:10:36.409199500Z 
+2021-05-10T12:10:36.435310200Z /usr/bin/pandoc +RTS -K512m -RTS Cox_vs_aft_model_comparison.utf8.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output /workspace/output/Cox_vs_aft_model_comparison.html --email-obfuscation none --self-contained --standalone --section-divs --template /usr/local/lib/R/site-library/rmarkdown/rmd/h/default.html --highlight-style tango --variable 'theme:cosmo' --include-in-header /tmp/Rtmp1TP3wz/rmarkdown-str7122b7a7a.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' 
+2021-05-10T12:10:40.275776500Z 
+2021-05-10T12:10:40.275853600Z Output created: output/Cox_vs_aft_model_comparison.html
+2021-05-10T12:10:40.278712000Z Warning messages:
+2021-05-10T12:10:40.278738300Z 1: Removed 6 row(s) containing missing values (geom_path). 
+2021-05-10T12:10:40.278747000Z 2: Removed 2 row(s) containing missing values (geom_path). 
+2021-05-10T12:10:40.278754200Z 3: Removed 9 row(s) containing missing values (geom_path). 
+2021-05-10T12:10:40.278761200Z 4: Removed 8 row(s) containing missing values (geom_path). 
+2021-05-10T12:10:40.278768100Z 5: Removed 5 row(s) containing missing values (geom_path). 
+2021-05-10T12:10:40.278774900Z 6: Removed 2 row(s) containing missing values (geom_path). 
+2021-05-10T12:10:40.278781800Z 7: Removed 19 row(s) containing missing values (geom_path). 
+
+
+state: succeeded
+commit: 3554cc96fcc7a454ce5dbd32c39bf40184a904a6
+docker_image_id: sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981
+exit_code: 0
+job_id: kn5tke4kjivstcmw
+run_by_user: acagreen17
+created_at: 2021-05-10T10:35:31Z
+started_at: 2021-05-10T11:58:43Z
+completed_at: 2021-05-10T12:10:50Z
+
+Completed successfully
+
+outputs:
+  output/Cox_vs_aft_model_comparison.html  - moderately_sensitive
