@@ -209,6 +209,14 @@ data_processed <- data_extract %>%
     morbid_obesity = ifelse(morbid_obesity_date == 1 & morbid_obesity_bmi == 0, 1, morbid_obesity_bmi),
     morbid_obesity = ifelse(is.na(morbid_obesity), 0, morbid_obesity),
     
+    # ckd
+    ckd = case_when(
+      !is.na(chronic_kidney_disease_diagnostic) ~ TRUE,
+      is.na(chronic_kidney_disease_all_stages) ~ FALSE,
+      chronic_kidney_disease_all_stages_3_5 >= chronic_kidney_disease_all_stages ~ TRUE,
+      TRUE ~ NA
+    ),
+    
     # Mental illness
     sev_mental_ill = ifelse(is.na(sev_mental_ill), FALSE, TRUE),
     
@@ -286,15 +294,14 @@ data_processed <- data_extract %>%
          !is.na(imd),
          !is.na(ethnicity),
          !is.na(rural_urban),
-  ) %>%
+  )
+
+# Data for modelling
+data_processed_modelling <- data_processed %>%
   select(patient_id, covid_vax, follow_up_time,
          ageband, sex, ethnicity, imd, immunosuppression, ckd, chronis_respiratory_disease,
          diabetes, chronic_liver_disease, chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease,
          asplenia, sev_mental_ill, morbid_obesity, practice_id_latest_active_registration)
-
-# Data for modelling
-data_processed_modelling <- data_processed %>%
-  select(-practice_id_at_start) %>%
   mutate(practice_id_latest_active_registration = as.factor(practice_id_latest_active_registration)) %>%
   droplevels()
 
