@@ -288,12 +288,10 @@ data_processed <- data_extract %>%
          !is.na(ethnicity),
          !is.na(rural_urban),
   ) %>%
-  select(patient_id, covid_vax, follow_up_time, practice_id_at_start, practice_id_latest_active_registration, 
-         age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease, diabetes, 
-         chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_3_5,
-         sev_mental_ill, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
-         chronis_respiratory_disease, immunosuppression,
-         imd, rural_urban)
+  select(patient_id, covid_vax, follow_up_time,
+         ageband, sex, ethnicity, imd, immunosuppression, ckd, chronis_respiratory_disease,
+         diabetes, chronic_liver_disease, chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease,
+         asplenia, sev_mental_ill, morbid_obesity, practice_id_latest_active_registration)
 
 # Data for modelling
 data_processed_modelling <- data_processed %>%
