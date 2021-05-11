@@ -218,7 +218,7 @@ data_processed <- data_extract %>%
     # CND inc LD
     chronic_neuro_dis_inc_sig_learn_dis = ifelse(is.na(chronic_neuro_dis_inc_sig_learn_dis), FALSE, TRUE),
     chronic_neuro_dis_inc_sig_learn_dis = ifelse(chronic_neuro_dis_inc_sig_learn_dis == FALSE, learning_disability,
-                                                 chronic_neuro_dis_inc_sig_learn_dis)
+                                                 chronic_neuro_dis_inc_sig_learn_dis),
     
     # CRD
     chronis_respiratory_disease = ifelse(is.na(chronis_respiratory_disease), FALSE, TRUE),
@@ -240,29 +240,28 @@ data_processed <- data_extract %>%
       TRUE ~ NA_character_
     ),
     
-    # Practice id at death, dereg or end
-    practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death, 
-                                                    ifelse(!is.na(dereg_date) & dereg_date < end_date,
-                                                           practice_id_at_dereg, practice_id_at_end)),
+    # # Practice id at death, dereg or end
+    # practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death, 
+    #                                                 ifelse(!is.na(dereg_date) & dereg_date < end_date,
+    #                                                        practice_id_at_dereg, practice_id_at_end)),
     
-    
-    # Region
-    region = fct_case_when(
-      region == "London" ~ "London",
-      region == "East" ~ "East of England",
-      region == "East Midlands" ~ "East Midlands",
-      region == "North East" ~ "North East",
-      region == "North West" ~ "North West",
-      region == "South East" ~ "South East",
-      region == "South West" ~ "South West",
-      region == "West Midlands" ~ "West Midlands",
-      region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
-      #TRUE ~ "Unknown",
-      TRUE ~ NA_character_
-    ),
-    
-    # stp
-    stp = as.factor(stp),
+    # # Region
+    # region = fct_case_when(
+    #   region == "London" ~ "London",
+    #   region == "East" ~ "East of England",
+    #   region == "East Midlands" ~ "East Midlands",
+    #   region == "North East" ~ "North East",
+    #   region == "North West" ~ "North West",
+    #   region == "South East" ~ "South East",
+    #   region == "South West" ~ "South West",
+    #   region == "West Midlands" ~ "West Midlands",
+    #   region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
+    #   #TRUE ~ "Unknown",
+    #   TRUE ~ NA_character_
+    # ),
+    # 
+    # # stp
+    # stp = as.factor(stp),
     
     # Rural/urban
     rural_urban = fct_case_when(
@@ -278,8 +277,8 @@ data_processed <- data_extract %>%
       TRUE ~ NA_character_
     ),
     
-    # Prior covid
-    prior_covid = as.integer(ifelse(is.na(prior_covid_date), 0, 1))
+    # # Prior covid
+    # prior_covid = as.integer(ifelse(is.na(prior_covid_date), 0, 1))
     
   ) %>%
   filter(age >= 70,
