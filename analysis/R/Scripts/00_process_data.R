@@ -213,10 +213,12 @@ data_processed <- data_extract %>%
     sev_mental_ill = ifelse(is.na(sev_mental_ill), FALSE, TRUE),
     
     # Learning disability
-    #learning_disability = ifelse(is.na(learning_disability), FALSE, TRUE),
+    learning_disability = ifelse(is.na(learning_disability), FALSE, TRUE),
     
     # CND inc LD
     chronic_neuro_dis_inc_sig_learn_dis = ifelse(is.na(chronic_neuro_dis_inc_sig_learn_dis), FALSE, TRUE),
+    chronic_neuro_dis_inc_sig_learn_dis = ifelse(chronic_neuro_dis_inc_sig_learn_dis == FALSE, learning_disability,
+                                                 chronic_neuro_dis_inc_sig_learn_dis)
     
     # CRD
     chronis_respiratory_disease = ifelse(is.na(chronis_respiratory_disease), FALSE, TRUE),
