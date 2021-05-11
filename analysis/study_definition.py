@@ -276,7 +276,7 @@ study = StudyDefinition(
   
   ### Chronic kidney disease codes-stages 3 - 5
   chronic_kidney_disease_codes_all_stages_3_5 = patients.with_these_clinical_events(
-    cchronic_kidney_disease_codes_all_stages_3_5_codes,
+    chronic_kidney_disease_codes_all_stages_3_5_codes,
     returning = "date",
     find_last_match_in_period = True,
     on_or_before = "index_date",
