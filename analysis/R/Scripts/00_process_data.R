@@ -248,11 +248,11 @@ data_processed <- data_extract %>%
       TRUE ~ NA_character_
     ),
     
-    # # Practice id at death, dereg or end
-    # practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death, 
-    #                                                 ifelse(!is.na(dereg_date) & dereg_date < end_date,
-    #                                                        practice_id_at_dereg, practice_id_at_end)),
-    
+    # Practice id at death, dereg or end
+    practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death,
+                                                    ifelse(!is.na(dereg_date) & dereg_date < end_date,
+                                                           practice_id_at_dereg, practice_id_at_end)),
+
     # # Region
     # region = fct_case_when(
     #   region == "London" ~ "London",
@@ -271,19 +271,19 @@ data_processed <- data_extract %>%
     # # stp
     # stp = as.factor(stp),
     
-    # Rural/urban
-    rural_urban = fct_case_when(
-      rural_urban == 1 ~ "Urban - major conurbation",
-      rural_urban == 2 ~ "Urban - minor conurbation",
-      rural_urban == 3 ~ "Urban - city and town",
-      rural_urban == 4 ~ "Urban - city and town in a sparse setting",
-      rural_urban == 5 ~ "Rural - town and fringe",
-      rural_urban == 6 ~ "Rural - town and fringe in a sparse setting",
-      rural_urban == 7 ~ "Rural village and dispersed",
-      rural_urban == 8 ~ "Rural village and dispersed in a sparse setting",
-      #TRUE ~ "Unknown",
-      TRUE ~ NA_character_
-    ),
+    # # Rural/urban
+    # rural_urban = fct_case_when(
+    #   rural_urban == 1 ~ "Urban - major conurbation",
+    #   rural_urban == 2 ~ "Urban - minor conurbation",
+    #   rural_urban == 3 ~ "Urban - city and town",
+    #   rural_urban == 4 ~ "Urban - city and town in a sparse setting",
+    #   rural_urban == 5 ~ "Rural - town and fringe",
+    #   rural_urban == 6 ~ "Rural - town and fringe in a sparse setting",
+    #   rural_urban == 7 ~ "Rural village and dispersed",
+    #   rural_urban == 8 ~ "Rural village and dispersed in a sparse setting",
+    #   #TRUE ~ "Unknown",
+    #   TRUE ~ NA_character_
+    # ),
     
     # # Prior covid
     # prior_covid = as.integer(ifelse(is.na(prior_covid_date), 0, 1))
@@ -294,16 +294,22 @@ data_processed <- data_extract %>%
          !is.na(imd),
          !is.na(ethnicity),
          !is.na(rural_urban),
-  )
-
-# Data for modelling
-data_processed_modelling <- data_processed %>%
+  ) %>%
   select(patient_id, covid_vax, follow_up_time,
          ageband, sex, ethnicity, imd, immunosuppression, ckd, chronis_respiratory_disease,
          diabetes, chronic_liver_disease, chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease,
          asplenia, sev_mental_ill, morbid_obesity, practice_id_latest_active_registration)
+
+# Data for modelling
+data_processed_modelling <- data_processed %>%
   mutate(practice_id_latest_active_registration = as.factor(practice_id_latest_active_registration)) %>%
-  droplevels()
+  droplevels() %>%
+  mutate(
+    across(
+      where(is.logical),
+      ~.x*1L
+    )
+  )
 
 # Save dataset as .rds files ----
 write_rds(data_processed, here::here("output", "data", "data_all.rds"), compress="gz")
