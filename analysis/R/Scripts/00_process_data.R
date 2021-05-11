@@ -89,7 +89,7 @@ data_extract0 <- read_csv(
     chronic_neuro_dis_inc_sig_learn_dis = col_date(format="%Y-%m-%d"),
     asplenia = col_logical(),
     chronic_liver_disease = col_logical(),
-    chronis_respiratory_disease = col_date(format="%Y-%m-%d"),
+    chronic_respiratory_disease = col_date(format="%Y-%m-%d"),
     immunosuppression_diagnosis = col_date(format="%Y-%m-%d"),
     immunosuppression_medication = col_date(format="%Y-%m-%d"),
     
@@ -229,7 +229,7 @@ data_processed <- data_extract %>%
                                                  chronic_neuro_dis_inc_sig_learn_dis),
     
     # CRD
-    chronis_respiratory_disease = ifelse(is.na(chronis_respiratory_disease), FALSE, TRUE),
+    chronic_respiratory_disease = ifelse(is.na(chronic_respiratory_disease), FALSE, TRUE),
     
     # Immunosuppression
     immunosuppression_diagnosis = ifelse(is.na(immunosuppression_diagnosis), FALSE, TRUE),
@@ -296,7 +296,7 @@ data_processed <- data_extract %>%
          !is.na(rural_urban),
   ) %>%
   select(patient_id, covid_vax, follow_up_time,
-         ageband, sex, ethnicity, imd, immunosuppression, ckd, chronis_respiratory_disease,
+         ageband, sex, ethnicity, imd, immunosuppression, ckd, chronic_respiratory_disease,
          diabetes, chronic_liver_disease, chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease,
          asplenia, sev_mental_ill, morbid_obesity, practice_id_latest_active_registration)
 

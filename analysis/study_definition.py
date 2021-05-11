@@ -332,7 +332,7 @@ study = StudyDefinition(
   ),
   
   ### Chronic respiratory disease
-  chronis_respiratory_disease = patients.with_these_clinical_events(
+  chronic_respiratory_disease = patients.with_these_clinical_events(
     chronis_respiratory_disease_codes,
     returning = "date",
     find_first_match_in_period = True,

@@ -32,7 +32,7 @@ data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
 ## Stratified Cox PH model - adjusted; baseline demographics + comorbs, 
 mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                                ageband, sex, ethnicity, imd, immunosuppression, ckd, 
-                             chronis_respiratory_disease, diabetes, chronic_liver_disease, 
+                             chronic_respiratory_disease, diabetes, chronic_liver_disease, 
                              chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease, asplenia, 
                              sev_mental_ill, morbid_obesity + strata(practice_id_latest_active_registration),
                              data = data_cox)
