@@ -23,118 +23,6 @@ library('survminer')
 dir.create(here::here("output", "models", "final"), showWarnings = FALSE, recursive=TRUE)
 
 ## Function to plot stratified cox model
-ggforest2 <-  function (model, data = NULL, main = "Hazard ratio", cpositions = c(0.02, 
-                                                                                  0.22, 0.4), fontsize = 0.7, refLabel = "reference", noDigits = 2) 
-{
-  conf.high <- conf.low <- estimate <- NULL
-  stopifnot(inherits(model, "coxph"))
-  data <- survminer:::.get_data(model, data = data)
-  terms <- attr(model$terms, "dataClasses")[-1]
-  coef <- as.data.frame(broom::tidy(model, conf.int = TRUE))
-  gmodel <- broom::glance(model)
-  allTerms <- lapply(seq_along(terms), function(i) {
-    var <- names(terms)[i]
-    if(var %in% colnames(data)) {
-      if (terms[i] %in% c("factor", "character")) {
-        adf <- as.data.frame(table(data[, var]))
-        cbind(var = var, adf, pos = 1:nrow(adf))
-      }
-      else if (terms[i] == "numeric") {
-        data.frame(var = var, Var1 = "", Freq = nrow(data), 
-                   pos = 1)
-      }
-      else {
-        vars = grep(paste0("^", var, "*."), coef$term, 
-                    value = TRUE)
-        data.frame(var = vars, Var1 = "", Freq = nrow(data), 
-                   pos = seq_along(vars))
-      }
-    } else {
-      message(var, "is not found in data columns, and will be skipped.")
-    }    
-  })
-  allTermsDF <- do.call(rbind, allTerms)
-  colnames(allTermsDF) <- c("var", "level", "N", "pos")
-  inds <- apply(allTermsDF[, 1:2], 1, paste0, collapse = "")
-  rownames(coef) <- gsub(coef$term, pattern = "`", replacement = "")
-  toShow <- cbind(allTermsDF, coef[inds, ])[, c("var", "level", 
-                                                "N", "p.value", "estimate", "conf.low", "conf.high", 
-                                                "pos")]
-  toShowExp <- toShow[, 5:7]
-  toShowExp[is.na(toShowExp)] <- 0
-  toShowExp <- format(exp(toShowExp), digits = noDigits)
-  toShowExpClean <- data.frame(toShow, pvalue = signif(toShow[, 
-                                                              4], noDigits + 1), toShowExp)
-  toShowExpClean$stars <- paste0(round(toShowExpClean$p.value, 
-                                       noDigits + 1), " ", ifelse(toShowExpClean$p.value < 0.05, 
-                                                                  "*", ""), ifelse(toShowExpClean$p.value < 0.01, "*", 
-                                                                                   ""), ifelse(toShowExpClean$p.value < 0.001, "*", ""))
-  toShowExpClean$ci <- paste0("(", toShowExpClean[, "conf.low.1"], 
-                              " - ", toShowExpClean[, "conf.high.1"], ")")
-  toShowExpClean$estimate.1[is.na(toShowExpClean$estimate)] = refLabel
-  toShowExpClean$stars[which(toShowExpClean$p.value < 0.001)] = "<0.001 ***"
-  toShowExpClean$stars[is.na(toShowExpClean$estimate)] = ""
-  toShowExpClean$ci[is.na(toShowExpClean$estimate)] = ""
-  toShowExpClean$estimate[is.na(toShowExpClean$estimate)] = 0
-  toShowExpClean$var = as.character(toShowExpClean$var)
-  toShowExpClean$var[duplicated(toShowExpClean$var)] = ""
-  toShowExpClean$N <- paste0("(N=", toShowExpClean$N, ")")
-  toShowExpClean <- toShowExpClean[nrow(toShowExpClean):1, 
-  ]
-  rangeb <- range(toShowExpClean$conf.low, toShowExpClean$conf.high, 
-                  na.rm = TRUE)
-  breaks <- axisTicks(rangeb/2, log = TRUE, nint = 7)
-  rangeplot <- rangeb
-  rangeplot[1] <- rangeplot[1] - diff(rangeb)
-  rangeplot[2] <- rangeplot[2] + 0.15 * diff(rangeb)
-  width <- diff(rangeplot)
-  y_variable <- rangeplot[1] + cpositions[1] * width
-  y_nlevel <- rangeplot[1] + cpositions[2] * width
-  y_cistring <- rangeplot[1] + cpositions[3] * width
-  y_stars <- rangeb[2]
-  x_annotate <- seq_len(nrow(toShowExpClean))
-  annot_size_mm <- fontsize * as.numeric(grid::convertX(unit(theme_get()$text$size, 
-                                                             "pt"), "mm"))
-  p <- ggplot(toShowExpClean, aes(seq_along(var), exp(estimate))) + 
-    geom_rect(aes(xmin = seq_along(var) - 0.5, xmax = seq_along(var) + 
-                    0.5, ymin = exp(rangeplot[1]), ymax = exp(rangeplot[2]), 
-                  fill = ordered(seq_along(var)%%2 + 1))) + scale_fill_manual(values = c("#FFFFFF33", 
-                                                                                         "#00000033"), guide = "none") + geom_point(pch = 15, 
-                                                                                                                                    size = 4) + geom_errorbar(aes(ymin = exp(conf.low), ymax = exp(conf.high)), 
-                                                                                                                                                              width = 0.15) + geom_hline(yintercept = 1, linetype = 3) + 
-    coord_flip(ylim = exp(rangeplot)) + ggtitle(main) + scale_y_log10(name = "", 
-                                                                      labels = sprintf("%g", breaks), expand = c(0.02, 0.02), 
-                                                                      breaks = breaks) + theme_light() + theme(panel.grid.minor.y = element_blank(), 
-                                                                                                               panel.grid.minor.x = element_blank(), panel.grid.major.y = element_blank(), 
-                                                                                                               legend.position = "none", panel.border = element_blank(), 
-                                                                                                               axis.title.y = element_blank(), axis.text.y = element_blank(), 
-                                                                                                               axis.ticks.y = element_blank(), plot.title = element_text(hjust = 0.5)) + 
-    xlab("") + annotate(geom = "text", x = x_annotate, y = exp(y_variable), 
-                        label = toShowExpClean$var, fontface = "bold", hjust = 0, 
-                        size = annot_size_mm) + annotate(geom = "text", x = x_annotate, 
-                                                         y = exp(y_nlevel), hjust = 0, label = toShowExpClean$level, 
-                                                         vjust = -0.1, size = annot_size_mm) + annotate(geom = "text", 
-                                                                                                        x = x_annotate, y = exp(y_nlevel), label = toShowExpClean$N, 
-                                                                                                        fontface = "italic", hjust = 0, vjust = ifelse(toShowExpClean$level == 
-                                                                                                                                                         "", 0.5, 1.1), size = annot_size_mm) + annotate(geom = "text", 
-                                                                                                                                                                                                         x = x_annotate, y = exp(y_cistring), label = toShowExpClean$estimate.1, 
-                                                                                                                                                                                                         size = annot_size_mm, vjust = ifelse(toShowExpClean$estimate.1 == 
-                                                                                                                                                                                                                                                "reference", 0.5, -0.1)) + annotate(geom = "text", 
-                                                                                                                                                                                                                                                                                    x = x_annotate, y = exp(y_cistring), label = toShowExpClean$ci, 
-                                                                                                                                                                                                                                                                                    size = annot_size_mm, vjust = 1.1, fontface = "italic") + 
-    annotate(geom = "text", x = x_annotate, y = exp(y_stars), 
-             label = toShowExpClean$stars, size = annot_size_mm, 
-             hjust = -0.2, fontface = "italic") + annotate(geom = "text", 
-                                                           x = 0.5, y = exp(y_variable), label = paste0("# Events: ", 
-                                                                                                        gmodel$nevent, "; Global p-value (Log-Rank): ", format.pval(gmodel$p.value.log, 
-                                                                                                                                                                    eps = ".001"), " \nAIC: ", round(gmodel$AIC, 
-                                                                                                                                                                                                     2), "; Concordance Index: ", round(gmodel$concordance, 
-                                                                                                                                                                                                                                        2)), size = annot_size_mm, hjust = 0, vjust = 1.2, 
-                                                           fontface = "italic")
-  gt <- ggplot_gtable(ggplot_build(p))
-  gt$layout$clip[gt$layout$name == "panel"] <- "off"
-  ggpubr::as_ggplot(gt)
-}
 
 ## Import processed data
 data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
@@ -148,15 +36,81 @@ data_cox <- data_tte %>%
     )
   )
 
-
 ## Stratified Cox PH model
 mod.strat.coxph.adj <- read_rds(here::here("output", "models", "final", "mod_strat_coxph_adj.rds"))
 
 
+forest_from_gt <- function(gt_obj){
+  
+  #extract model information from tbl_regression object
+  
+  
+  plot_data <- gt_obj %>%
+    as_gt() %>%
+    .$`_data` %>%
+    filter(
+      !is.na(term)
+    ) %>%
+    mutate(
+      var_label = if_else(row_type=="label", "", var_label),
+      label = if_else(reference_row %in% TRUE, paste0(label, " (ref)"),label),
+      estimate = if_else(reference_row %in% TRUE, 1, estimate),
+      variable = fct_inorder(variable),
+      variable_card = as.numeric(variable)%%2,
+    ) %>%
+    group_by(variable) %>%
+    mutate(
+      variable_card = if_else(row_number()!=1, 0, variable_card),
+      level = fct_rev(fct_inorder(paste(variable, label, sep="__"))),
+      level_label = label
+    ) %>%
+    ungroup() %>%
+    droplevels()
+  
+  var_lookup <- plot_data$var_label
+  names(var_lookup) <- plot_data$variable
+  
+  level_lookup <- plot_data$level
+  names(level_lookup) <- plot_data$level_label
+  
+  ggplot(plot_data) +
+    geom_point(aes(x=estimate, y=level)) +
+    geom_linerange(aes(xmin=conf.low, xmax=conf.high, y=level)) +
+    geom_vline(aes(xintercept=1), colour='black', alpha=0.8)+
+    facet_grid(rows=vars(variable), scales="free_y", switch="y", space="free_y", labeller = labeller(variable = var_lookup))+
+    scale_x_log10()+
+    scale_y_discrete(breaks=level_lookup, labels=names(level_lookup))+
+    geom_rect(aes(alpha = variable_card), xmin = -Inf,xmax = Inf, ymin = -Inf, ymax = Inf, fill='grey', colour="transparent") +
+    scale_alpha_continuous(range=c(0,0.3), guide=FALSE)+
+    labs(
+      y="",
+      x="Hazard ratio",
+      colour=NULL
+    ) +
+    theme_minimal() +
+    theme(
+      strip.placement = "outside",
+      strip.background = element_rect(fill="transparent", colour="transparent"),
+      strip.text.y.left = element_text(angle = 0, hjust=1),
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor.y = element_blank(),
+      panel.spacing = unit(0, "lines")
+    )
+}
+
+
+tbl_summary <- tbl_regression(
+  x = mod.strat.coxph.adj,
+  pvalue_fun = ~style_pvalue(.x, digits=3),
+  exponentiate= TRUE
+)
+
+forest_from_gt(tbl_summary)
+
 # Output model coefficients ----
 
 ## Forest plot
-plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
+plot_coxph <- forest_from_gt(tbl_summary)
 ggsave(
   here::here("output", "models", "final", "plot_strat_coxph.svg"),
   plot_coxph,
