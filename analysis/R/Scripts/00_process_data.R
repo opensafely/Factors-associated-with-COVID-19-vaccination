@@ -213,7 +213,7 @@ data_processed <- data_extract %>%
     sev_mental_ill = ifelse(is.na(sev_mental_ill), FALSE, TRUE),
     
     # Learning disability
-    learning_disability = ifelse(is.na(learning_disability), FALSE, TRUE),
+    #learning_disability = ifelse(is.na(learning_disability), FALSE, TRUE),
     
     # CND inc LD
     chronic_neuro_dis_inc_sig_learn_dis = ifelse(is.na(chronic_neuro_dis_inc_sig_learn_dis), FALSE, TRUE),
@@ -289,7 +289,7 @@ data_processed <- data_extract %>%
   select(patient_id, covid_vax, follow_up_time, practice_id_at_start, practice_id_latest_active_registration, stp, 
          age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease, diabetes, 
          chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_3_5,
-         sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
+         sev_mental_ill, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
          chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
          prior_covid, flu_vaccine, shielded, shielded_since_feb_15)
 
