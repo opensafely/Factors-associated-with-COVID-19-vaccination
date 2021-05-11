@@ -295,7 +295,7 @@ data_processed <- data_extract %>%
          sev_mental_ill, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
          chronis_respiratory_disease, immunosuppression,
          imd, region, rural_urban, 
-         prior_covid, flu_vaccine, shielded, shielded_since_feb_15)
+         prior_covid, flu_vaccine)
 
 # Data for modelling
 data_processed_modelling <- data_processed %>%
