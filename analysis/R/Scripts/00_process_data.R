@@ -224,6 +224,7 @@ data_processed <- data_extract %>%
     # Immunosuppression
     immunosuppression_diagnosis = ifelse(is.na(immunosuppression_diagnosis), FALSE, TRUE),
     immunosuppression_medication = ifelse(is.na(immunosuppression_medication), FALSE, TRUE),
+    immunosuppression = ifelse(immunosuppression_diagnosis == TRUE, immunosuppression_diagnosis, immunosuppression_medication),
     
     # IMD
     imd = na_if(imd, "0"),
@@ -290,7 +291,8 @@ data_processed <- data_extract %>%
          age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease, diabetes, 
          chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_3_5,
          sev_mental_ill, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
-         chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
+         chronis_respiratory_disease, immunosuppression,
+         imd, region, rural_urban, 
          prior_covid, flu_vaccine, shielded, shielded_since_feb_15)
 
 # Data for modelling
