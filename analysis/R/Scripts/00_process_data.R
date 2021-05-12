@@ -81,15 +81,15 @@ data_extract0 <- read_csv(
     sev_obesity = col_date(format="%Y-%m-%d"),
     chronic_heart_disease = col_logical(),
     diabetes = col_logical(),
-    chronic_kidney_disease_diagnostic = col_logical(),
-    chronic_kidney_disease_all_stages = col_logical(),
-    chronic_kidney_disease_all_stages_3_5 = col_logical(),
+    chronic_kidney_disease_diagnostic = col_date(format="%Y-%m-%d"),
+    chronic_kidney_disease_all_stages = col_date(format="%Y-%m-%d"),
+    chronic_kidney_disease_all_stages_3_5 = col_date(format="%Y-%m-%d"),
     sev_mental_ill = col_date(format="%Y-%m-%d"),
     learning_disability = col_date(format="%Y-%m-%d"),
     chronic_neuro_dis_inc_sig_learn_dis = col_date(format="%Y-%m-%d"),
     asplenia = col_logical(),
     chronic_liver_disease = col_logical(),
-    chronis_respiratory_disease = col_date(format="%Y-%m-%d"),
+    chronic_respiratory_disease = col_date(format="%Y-%m-%d"),
     immunosuppression_diagnosis = col_date(format="%Y-%m-%d"),
     immunosuppression_medication = col_date(format="%Y-%m-%d"),
     
@@ -144,7 +144,7 @@ data_processed <- data_extract %>%
     # Censoring
     censor_date = pmin(death_date, 
                        dereg_date, 
-                       as.Date("2021-04-01", format = "%Y-%m-%d"), 
+                       as.Date("2021-03-17", format = "%Y-%m-%d"), 
                        na.rm=TRUE),
     
     # Follow-up time
@@ -209,21 +209,31 @@ data_processed <- data_extract %>%
     morbid_obesity = ifelse(morbid_obesity_date == 1 & morbid_obesity_bmi == 0, 1, morbid_obesity_bmi),
     morbid_obesity = ifelse(is.na(morbid_obesity), 0, morbid_obesity),
     
+    # ckd
+    ckd = case_when(
+      !is.na(chronic_kidney_disease_diagnostic) ~ TRUE,
+      is.na(chronic_kidney_disease_all_stages) ~ FALSE,
+      !is.na(chronic_kidney_disease_all_stages_3_5) & (chronic_kidney_disease_all_stages_3_5 >= chronic_kidney_disease_all_stages) ~ TRUE,
+      TRUE ~ FALSE
+    ),
+    
     # Mental illness
-    sev_mental_ill = ifelse(is.na(sev_mental_ill), FALSE, TRUE),
+    sev_mental_ill = !is.na(sev_mental_ill),
     
     # Learning disability
-    learning_disability = ifelse(is.na(learning_disability), FALSE, TRUE),
+    learning_disability = !is.na(learning_disability),
     
     # CND inc LD
-    chronic_neuro_dis_inc_sig_learn_dis = ifelse(is.na(chronic_neuro_dis_inc_sig_learn_dis), FALSE, TRUE),
+    chronic_neuro_dis_inc_sig_learn_dis = !is.na(chronic_neuro_dis_inc_sig_learn_dis),
+    chronic_neuro_dis_inc_sig_learn_dis = chronic_neuro_dis_inc_sig_learn_dis | learning_disability,
     
     # CRD
-    chronis_respiratory_disease = ifelse(is.na(chronis_respiratory_disease), FALSE, TRUE),
+    chronic_respiratory_disease = !is.na(chronic_respiratory_disease),
     
     # Immunosuppression
-    immunosuppression_diagnosis = ifelse(is.na(immunosuppression_diagnosis), FALSE, TRUE),
-    immunosuppression_medication = ifelse(is.na(immunosuppression_medication), FALSE, TRUE),
+    immunosuppression_diagnosis = !is.na(immunosuppression_diagnosis),
+    immunosuppression_medication = !is.na(immunosuppression_medication),
+    immunosuppression = immunosuppression_diagnosis | immunosuppression_medication,
     
     # IMD
     imd = na_if(imd, "0"),
@@ -238,66 +248,67 @@ data_processed <- data_extract %>%
     ),
     
     # Practice id at death, dereg or end
-    practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death, 
+    practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death,
                                                     ifelse(!is.na(dereg_date) & dereg_date < end_date,
                                                            practice_id_at_dereg, practice_id_at_end)),
+
+    # # Region
+    # region = fct_case_when(
+    #   region == "London" ~ "London",
+    #   region == "East" ~ "East of England",
+    #   region == "East Midlands" ~ "East Midlands",
+    #   region == "North East" ~ "North East",
+    #   region == "North West" ~ "North West",
+    #   region == "South East" ~ "South East",
+    #   region == "South West" ~ "South West",
+    #   region == "West Midlands" ~ "West Midlands",
+    #   region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
+    #   #TRUE ~ "Unknown",
+    #   TRUE ~ NA_character_
+    # ),
+    # 
+    # # stp
+    # stp = as.factor(stp),
     
+    # # Rural/urban
+    # rural_urban = fct_case_when(
+    #   rural_urban == 1 ~ "Urban - major conurbation",
+    #   rural_urban == 2 ~ "Urban - minor conurbation",
+    #   rural_urban == 3 ~ "Urban - city and town",
+    #   rural_urban == 4 ~ "Urban - city and town in a sparse setting",
+    #   rural_urban == 5 ~ "Rural - town and fringe",
+    #   rural_urban == 6 ~ "Rural - town and fringe in a sparse setting",
+    #   rural_urban == 7 ~ "Rural village and dispersed",
+    #   rural_urban == 8 ~ "Rural village and dispersed in a sparse setting",
+    #   #TRUE ~ "Unknown",
+    #   TRUE ~ NA_character_
+    # ),
     
-    # Region
-    region = fct_case_when(
-      region == "London" ~ "London",
-      region == "East" ~ "East of England",
-      region == "East Midlands" ~ "East Midlands",
-      region == "North East" ~ "North East",
-      region == "North West" ~ "North West",
-      region == "South East" ~ "South East",
-      region == "South West" ~ "South West",
-      region == "West Midlands" ~ "West Midlands",
-      region == "Yorkshire and The Humber" ~ "Yorkshire and the Humber",
-      #TRUE ~ "Unknown",
-      TRUE ~ NA_character_
-    ),
-    
-    # stp
-    stp = as.factor(stp),
-    
-    # Rural/urban
-    rural_urban = fct_case_when(
-      rural_urban == 1 ~ "Urban - major conurbation",
-      rural_urban == 2 ~ "Urban - minor conurbation",
-      rural_urban == 3 ~ "Urban - city and town",
-      rural_urban == 4 ~ "Urban - city and town in a sparse setting",
-      rural_urban == 5 ~ "Rural - town and fringe",
-      rural_urban == 6 ~ "Rural - town and fringe in a sparse setting",
-      rural_urban == 7 ~ "Rural village and dispersed",
-      rural_urban == 8 ~ "Rural village and dispersed in a sparse setting",
-      #TRUE ~ "Unknown",
-      TRUE ~ NA_character_
-    ),
-    
-    # Prior covid
-    prior_covid = as.integer(ifelse(is.na(prior_covid_date), 0, 1))
+    # # Prior covid
+    # prior_covid = as.integer(ifelse(is.na(prior_covid_date), 0, 1))
     
   ) %>%
   filter(age >= 70,
          sex %in% c("Male", "Female"),
          !is.na(imd),
          !is.na(ethnicity),
-         !is.na(region),
          !is.na(rural_urban),
   ) %>%
-  select(patient_id, covid_vax, follow_up_time, practice_id_at_start, practice_id_latest_active_registration, stp, 
-         age, ageband, sex, ethnicity, morbid_obesity, chronic_heart_disease, diabetes, 
-         chronic_kidney_disease_diagnostic, chronic_kidney_disease_all_stages, chronic_kidney_disease_all_stages_3_5,
-         sev_mental_ill, learning_disability, chronic_neuro_dis_inc_sig_learn_dis, asplenia, chronic_liver_disease, 
-         chronis_respiratory_disease, immunosuppression_diagnosis, immunosuppression_medication, imd, region, rural_urban, 
-         prior_covid, flu_vaccine, shielded, shielded_since_feb_15)
+  select(patient_id, covid_vax, follow_up_time,
+         ageband, sex, ethnicity, imd, immunosuppression, ckd, chronic_respiratory_disease,
+         diabetes, chronic_liver_disease, chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease,
+         asplenia, sev_mental_ill, morbid_obesity, practice_id_latest_active_registration)
 
 # Data for modelling
 data_processed_modelling <- data_processed %>%
-  select(-practice_id_at_start) %>%
   mutate(practice_id_latest_active_registration = as.factor(practice_id_latest_active_registration)) %>%
-  droplevels()
+  droplevels() %>%
+  mutate(
+    across(
+      where(is.logical),
+      ~.x*1L
+    )
+  )
 
 # Save dataset as .rds files ----
 write_rds(data_processed, here::here("output", "data", "data_all.rds"), compress="gz")

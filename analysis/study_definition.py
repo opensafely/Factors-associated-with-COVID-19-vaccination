@@ -21,7 +21,7 @@ from cohortextractor import (
 ## Import codelists from codelist.py (which pulls them from the codelist folder)
 from codelists import *
   
-  
+
 # --- DEFINE STUDY POPULATION ---
   
 ## Define study start and end variables explicitly
@@ -57,12 +57,6 @@ study = StudyDefinition(
         (sex = "M" OR sex = "F")
         AND
         imd > 0
-        AND
-        region
-        AND
-        rural_urban > 0
-        AND
-        stp
         """,
     
     has_died = patients.died_from_any_cause(
@@ -262,28 +256,31 @@ study = StudyDefinition(
     return_expectations = {"incidence": 0.01},
   ),
   
-  ### Chronic kidney disease diagnostic codes
+  ### Chronic kidney disease diagnostic
   chronic_kidney_disease_diagnostic = patients.with_these_clinical_events(
     chronic_kidney_disease_diagnostic_codes,
+    returning = "date",
+    find_first_match_in_period = True,
     on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.01},
+    date_format = "YYYY-MM-DD",
   ),
   
   ### Chronic kidney disease codes - all stages
   chronic_kidney_disease_all_stages = patients.with_these_clinical_events(
-    chronic_kidney_disease_codes_all_stages,
+    chronic_kidney_disease_all_stages_codes,
+    returning = "date",
+    find_last_match_in_period = True,
     on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.01},
+    date_format = "YYYY-MM-DD",
   ),
   
   ### Chronic kidney disease codes-stages 3 - 5
   chronic_kidney_disease_all_stages_3_5 = patients.with_these_clinical_events(
-    chronic_kidney_disease_codes_all_stages_3_5,
+    chronic_kidney_disease_all_stages_3_5_codes,
+    returning = "date",
+    find_last_match_in_period = True,
     on_or_before = "index_date",
-    returning = "binary_flag",
-    return_expectations = {"incidence": 0.01},
+    date_format = "YYYY-MM-DD",
   ),
   
   ### Severe mental illness
@@ -313,8 +310,6 @@ study = StudyDefinition(
     date_format = "YYYY-MM-DD",
   ),
   
-  
-  
   ### Asplenia or Dysfunction of the Spleen codes
   asplenia = patients.with_these_clinical_events(
     asplenia_codes,
@@ -332,7 +327,7 @@ study = StudyDefinition(
   ),
   
   ### Chronic respiratory disease
-  chronis_respiratory_disease = patients.with_these_clinical_events(
+  chronic_respiratory_disease = patients.with_these_clinical_events(
     chronis_respiratory_disease_codes,
     returning = "date",
     find_first_match_in_period = True,
@@ -502,15 +497,15 @@ study = StudyDefinition(
     
     flu_vaccine_imm_table = patients.with_vaccination_record(
       tpp={
-          "target_disease_matches": "INFLUENZA",
+        "target_disease_matches": "INFLUENZA",
       },
       emis={
-          "procedure_codes": flu_clinical_given_codes,
+        "procedure_codes": flu_clinical_given_codes,
       },
       between = ["2015-04-01", "2020-03-31"], 
       returning = "binary_flag",
     ),
-
+    
     flu_vaccine_med = patients.with_these_medications(
       flu_med_codes,
       between = ["2015-04-01", "2020-03-31"], 
