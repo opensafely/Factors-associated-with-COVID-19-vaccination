@@ -341,8 +341,8 @@ ggsave(
 
 
 plot_strata_combined <- ggplot()+
-  geom_step(data = strata_estimates, aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=strata), alpha=0.1)+
-  geom_step(data = strata_quantiles, aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=cml.haz_q), alpha=0.9, colour='darkred', size=1)+
+  geom_step(data = strata_estimates, aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=strata), alpha=0.05)+
+  geom_step(data = strata_quantiles, aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=cml.haz_q), alpha=0.95, colour='blue', size=1)+
   scale_x_date(date_breaks = "1 month", labels = scales::date_format("%Y-%m"), limits = c(as.Date("2020-12-01"), "2021-03-17"))+
   labs(
     x="Date", y="Cumulative hazard"
