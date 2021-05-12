@@ -1,38 +1,30 @@
-2021-05-07T16:05:44.736872700Z -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
-2021-05-07T16:05:44.745687600Z v ggplot2 3.3.2     v purrr   0.3.4
-2021-05-07T16:05:44.745714800Z v tibble  3.0.3     v dplyr   1.0.2
-2021-05-07T16:05:44.745723300Z v tidyr   1.1.2     v stringr 1.4.0
-2021-05-07T16:05:44.745730500Z v readr   1.3.1     v forcats 0.5.0
-2021-05-07T16:05:44.918017200Z -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-2021-05-07T16:05:44.918083600Z x dplyr::filter() masks stats::filter()
-2021-05-07T16:05:44.918092400Z x dplyr::lag()    masks stats::lag()
-2021-05-07T16:05:44.933658000Z 
-2021-05-07T16:05:44.933685400Z Attaching package: 'lubridate'
-2021-05-07T16:05:44.933694800Z 
-2021-05-07T16:05:44.935117300Z The following objects are masked from 'package:base':
-2021-05-07T16:05:44.935136600Z 
-2021-05-07T16:05:44.935144300Z     date, intersect, setdiff, union
-2021-05-07T16:05:44.935151500Z 
-2021-05-07T16:05:46.761094600Z Loading required package: bdsmatrix
-2021-05-07T16:05:47.118366100Z 
-2021-05-07T16:05:47.118445700Z Attaching package: 'bdsmatrix'
-2021-05-07T16:05:47.118454300Z 
-2021-05-07T16:05:47.118868300Z The following object is masked from 'package:base':
-2021-05-07T16:05:47.118891300Z 
-2021-05-07T16:05:47.118900100Z     backsolve
-2021-05-07T16:05:47.118907600Z 
-2021-05-07T16:05:47.556226600Z Loading required package: ggpubr
+2021-05-12T09:20:26.271611700Z -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+2021-05-12T09:20:26.280664800Z v ggplot2 3.3.2     v purrr   0.3.4
+2021-05-12T09:20:26.280685400Z v tibble  3.0.3     v dplyr   1.0.2
+2021-05-12T09:20:26.280693900Z v tidyr   1.1.2     v stringr 1.4.0
+2021-05-12T09:20:26.280701300Z v readr   1.3.1     v forcats 0.5.0
+2021-05-12T09:20:26.448406300Z -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+2021-05-12T09:20:26.448429400Z x dplyr::filter() masks stats::filter()
+2021-05-12T09:20:26.448438500Z x dplyr::lag()    masks stats::lag()
+2021-05-12T09:20:26.464481700Z 
+2021-05-12T09:20:26.464510400Z Attaching package: 'lubridate'
+2021-05-12T09:20:26.464519100Z 
+2021-05-12T09:20:26.465912800Z The following objects are masked from 'package:base':
+2021-05-12T09:20:26.465930100Z 
+2021-05-12T09:20:26.465937800Z     date, intersect, setdiff, union
+2021-05-12T09:20:26.465944800Z 
+2021-05-12T09:20:28.511351100Z Loading required package: ggpubr
 
 
 state: succeeded
-commit: b1fd7b9983ab5703d40a936121200db75c4a9178
+commit: 0ea6a14353fba2d7e912a44b58c85b5b5de68f6e
 docker_image_id: sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981
 exit_code: 0
-job_id: gvxwsukbwwjcgvel
+job_id: 52vof6uienvvu34g
 run_by_user: acagreen17
-created_at: 2021-05-07T16:05:21Z
-started_at: 2021-05-07T16:05:42Z
-completed_at: 2021-05-07T16:13:22Z
+created_at: 2021-05-12T08:22:57Z
+started_at: 2021-05-12T09:20:23Z
+completed_at: 2021-05-12T09:38:26Z
 
 Completed successfully
 

@@ -28,11 +28,13 @@
   * [output/Data_summaries.html](output/Data_summaries.html)
   * output/models
     * output/models/final
+      * [output/models/final/cmlhaz_quantiles.csv](output/models/final/cmlhaz_quantiles.csv)
       * [output/models/final/plot_strat_coxph.svg](output/models/final/plot_strat_coxph.svg)
       * [output/models/final/plot_strata_cmlhaz.svg](output/models/final/plot_strata_cmlhaz.svg)
       * [output/models/final/plot_strata_cmlhaz28.svg](output/models/final/plot_strata_cmlhaz28.svg)
       * [output/models/final/plot_strata_cmlhaz30.svg](output/models/final/plot_strata_cmlhaz30.svg)
       * [output/models/final/plot_strata_cmlhaz56.svg](output/models/final/plot_strata_cmlhaz56.svg)
+      * [output/models/final/plot_strata_combined.svg](output/models/final/plot_strata_combined.svg)
       * [output/models/final/plot_strata_deciles.svg](output/models/final/plot_strata_deciles.svg)
       * [output/models/final/plot_strata_llsurv.svg](output/models/final/plot_strata_llsurv.svg)
       * [output/models/final/plot_strata_snapshots.svg](output/models/final/plot_strata_snapshots.svg)

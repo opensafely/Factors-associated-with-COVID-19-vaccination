@@ -1,68 +1,68 @@
-2021-05-07T13:57:17.163581700Z -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
-2021-05-07T13:57:17.172245800Z v ggplot2 3.3.2     v purrr   0.3.4
-2021-05-07T13:57:17.172306000Z v tibble  3.0.3     v dplyr   1.0.2
-2021-05-07T13:57:17.172314700Z v tidyr   1.1.2     v stringr 1.4.0
-2021-05-07T13:57:17.172322200Z v readr   1.3.1     v forcats 0.5.0
-2021-05-07T13:57:17.345228900Z -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-2021-05-07T13:57:17.345302600Z x dplyr::filter() masks stats::filter()
-2021-05-07T13:57:17.345312700Z x dplyr::lag()    masks stats::lag()
-2021-05-07T13:57:17.360567100Z 
-2021-05-07T13:57:17.360591000Z Attaching package: 'lubridate'
-2021-05-07T13:57:17.360599700Z 
-2021-05-07T13:57:17.362151200Z The following objects are masked from 'package:base':
-2021-05-07T13:57:17.362170400Z 
-2021-05-07T13:57:17.362178400Z     date, intersect, setdiff, union
-2021-05-07T13:57:17.362186000Z 
-2021-05-07T13:57:17.481614700Z  [1] "patient_id"                           
-2021-05-07T13:57:17.481676800Z  [2] "covid_vax_1_date"                     
-2021-05-07T13:57:17.481686000Z  [3] "death_date"                           
-2021-05-07T13:57:17.481693500Z  [4] "dereg_date"                           
-2021-05-07T13:57:17.481701300Z  [5] "age"                                  
-2021-05-07T13:57:17.481708600Z  [6] "sex"                                  
-2021-05-07T13:57:17.481716700Z  [7] "ethnicity"                            
-2021-05-07T13:57:17.481724600Z  [8] "ethnicity_other"                      
-2021-05-07T13:57:17.481735300Z  [9] "ethnicity_not_given"                  
-2021-05-07T13:57:17.481743200Z [10] "ethnicity_not_stated"                 
-2021-05-07T13:57:17.481751800Z [11] "ethnicity_no_record"                  
-2021-05-07T13:57:17.481759100Z [12] "bmi"                                  
-2021-05-07T13:57:17.481766100Z [13] "bmi_stage_date"                       
-2021-05-07T13:57:17.481773500Z [14] "sev_obesity"                          
-2021-05-07T13:57:17.481780800Z [15] "chronic_heart_disease"                
-2021-05-07T13:57:17.481789300Z [16] "diabetes"                             
-2021-05-07T13:57:17.481796400Z [17] "chronic_kidney_disease_diagnostic"    
-2021-05-07T13:57:17.481804300Z [18] "chronic_kidney_disease_all_stages"    
-2021-05-07T13:57:17.481811300Z [19] "chronic_kidney_disease_all_stages_3_5"
-2021-05-07T13:57:17.481818300Z [20] "sev_mental_ill"                       
-2021-05-07T13:57:17.481825100Z [21] "learning_disability"                  
-2021-05-07T13:57:17.481832300Z [22] "chronic_neuro_dis_inc_sig_learn_dis"  
-2021-05-07T13:57:17.481839700Z [23] "asplenia"                             
-2021-05-07T13:57:17.481878000Z [24] "chronic_liver_disease"                
-2021-05-07T13:57:17.481886900Z [25] "chronis_respiratory_disease"          
-2021-05-07T13:57:17.481894800Z [26] "immunosuppression_diagnosis"          
-2021-05-07T13:57:17.481902100Z [27] "immunosuppression_medication"         
-2021-05-07T13:57:17.481909600Z [28] "practice_id_at_start"                 
-2021-05-07T13:57:17.481917100Z [29] "practice_id_at_end"                   
-2021-05-07T13:57:17.481924800Z [30] "practice_id_at_death"                 
-2021-05-07T13:57:17.481932200Z [31] "practice_id_at_dereg"                 
-2021-05-07T13:57:17.481939700Z [32] "imd"                                  
-2021-05-07T13:57:17.481946800Z [33] "region"                               
-2021-05-07T13:57:17.481954700Z [34] "stp"                                  
-2021-05-07T13:57:17.481962300Z [35] "rural_urban"                          
-2021-05-07T13:57:17.481969800Z [36] "flu_vaccine"                          
-2021-05-07T13:57:17.481977300Z [37] "prior_covid_date"                     
-2021-05-07T13:57:17.481984600Z [38] "shielded"                             
-2021-05-07T13:57:17.481991900Z [39] "shielded_since_feb_15"                
+2021-05-12T09:18:42.071788600Z -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+2021-05-12T09:18:42.080583200Z v ggplot2 3.3.2     v purrr   0.3.4
+2021-05-12T09:18:42.080600000Z v tibble  3.0.3     v dplyr   1.0.2
+2021-05-12T09:18:42.080612900Z v tidyr   1.1.2     v stringr 1.4.0
+2021-05-12T09:18:42.080620300Z v readr   1.3.1     v forcats 0.5.0
+2021-05-12T09:18:42.243978700Z -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+2021-05-12T09:18:42.244007000Z x dplyr::filter() masks stats::filter()
+2021-05-12T09:18:42.244015700Z x dplyr::lag()    masks stats::lag()
+2021-05-12T09:18:42.258642700Z 
+2021-05-12T09:18:42.258662500Z Attaching package: 'lubridate'
+2021-05-12T09:18:42.258671200Z 
+2021-05-12T09:18:42.260037000Z The following objects are masked from 'package:base':
+2021-05-12T09:18:42.260054300Z 
+2021-05-12T09:18:42.260062000Z     date, intersect, setdiff, union
+2021-05-12T09:18:42.260069000Z 
+2021-05-12T09:18:42.316704900Z  [1] "patient_id"                           
+2021-05-12T09:18:42.316725400Z  [2] "covid_vax_1_date"                     
+2021-05-12T09:18:42.316733900Z  [3] "death_date"                           
+2021-05-12T09:18:42.316741600Z  [4] "dereg_date"                           
+2021-05-12T09:18:42.316748700Z  [5] "age"                                  
+2021-05-12T09:18:42.316755800Z  [6] "sex"                                  
+2021-05-12T09:18:42.316762800Z  [7] "ethnicity"                            
+2021-05-12T09:18:42.316769900Z  [8] "ethnicity_other"                      
+2021-05-12T09:18:42.316776800Z  [9] "ethnicity_not_given"                  
+2021-05-12T09:18:42.316784000Z [10] "ethnicity_not_stated"                 
+2021-05-12T09:18:42.316791100Z [11] "ethnicity_no_record"                  
+2021-05-12T09:18:42.316798100Z [12] "bmi"                                  
+2021-05-12T09:18:42.316805200Z [13] "bmi_stage_date"                       
+2021-05-12T09:18:42.316812200Z [14] "sev_obesity"                          
+2021-05-12T09:18:42.316819200Z [15] "chronic_heart_disease"                
+2021-05-12T09:18:42.316826200Z [16] "diabetes"                             
+2021-05-12T09:18:42.316833100Z [17] "chronic_kidney_disease_diagnostic"    
+2021-05-12T09:18:42.316840100Z [18] "chronic_kidney_disease_all_stages"    
+2021-05-12T09:18:42.316847100Z [19] "chronic_kidney_disease_all_stages_3_5"
+2021-05-12T09:18:42.316854100Z [20] "sev_mental_ill"                       
+2021-05-12T09:18:42.316861200Z [21] "learning_disability"                  
+2021-05-12T09:18:42.316868300Z [22] "chronic_neuro_dis_inc_sig_learn_dis"  
+2021-05-12T09:18:42.316875400Z [23] "asplenia"                             
+2021-05-12T09:18:42.316901200Z [24] "chronic_liver_disease"                
+2021-05-12T09:18:42.316909500Z [25] "chronic_respiratory_disease"          
+2021-05-12T09:18:42.316916600Z [26] "immunosuppression_diagnosis"          
+2021-05-12T09:18:42.316923500Z [27] "immunosuppression_medication"         
+2021-05-12T09:18:42.316930400Z [28] "practice_id_at_start"                 
+2021-05-12T09:18:42.316937400Z [29] "practice_id_at_end"                   
+2021-05-12T09:18:42.316944500Z [30] "practice_id_at_death"                 
+2021-05-12T09:18:42.316951800Z [31] "practice_id_at_dereg"                 
+2021-05-12T09:18:42.316961300Z [32] "imd"                                  
+2021-05-12T09:18:42.316968700Z [33] "region"                               
+2021-05-12T09:18:42.316978600Z [34] "stp"                                  
+2021-05-12T09:18:42.316986300Z [35] "rural_urban"                          
+2021-05-12T09:18:42.316993500Z [36] "flu_vaccine"                          
+2021-05-12T09:18:42.317000500Z [37] "prior_covid_date"                     
+2021-05-12T09:18:42.317007500Z [38] "shielded"                             
+2021-05-12T09:18:42.317014400Z [39] "shielded_since_feb_15"                
 
 
 state: succeeded
-commit: f4af36d4580608a5531576bef1b550a6a0ad14e9
+commit: 0ea6a14353fba2d7e912a44b58c85b5b5de68f6e
 docker_image_id: sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981
 exit_code: 0
-job_id: jtjakj2dzbmjqbu4
+job_id: wpbjx74fhxg6e6cr
 run_by_user: acagreen17
-created_at: 2021-05-07T13:04:46Z
-started_at: 2021-05-07T13:57:14Z
-completed_at: 2021-05-07T13:58:55Z
+created_at: 2021-05-12T08:22:57Z
+started_at: 2021-05-12T09:18:39Z
+completed_at: 2021-05-12T09:20:02Z
 
 Completed successfully
 
