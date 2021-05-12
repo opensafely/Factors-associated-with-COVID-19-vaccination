@@ -312,7 +312,7 @@ strata_quantiles <- strata_estimates %>%
     date = as.Date("2020-12-08")+time
   )
 
-write_rds(strata_quantiles, here::here("output", "models", "final", "cmlhaz_quantiles.csv"))
+write_csv(strata_quantiles, here::here("output", "models", "final", "cmlhaz_quantiles.csv"))
 
 CHdeciles <- ggplot(strata_quantiles)+
   geom_line(aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=cml.haz_q), alpha=0.2, colour='blue', size=0.25)+
