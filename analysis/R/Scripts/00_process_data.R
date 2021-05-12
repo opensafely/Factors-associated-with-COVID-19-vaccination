@@ -213,28 +213,27 @@ data_processed <- data_extract %>%
     ckd = case_when(
       !is.na(chronic_kidney_disease_diagnostic) ~ TRUE,
       is.na(chronic_kidney_disease_all_stages) ~ FALSE,
-      chronic_kidney_disease_all_stages_3_5 >= chronic_kidney_disease_all_stages ~ TRUE,
-      TRUE ~ NA
+      !is.na(chronic_kidney_disease_all_stages_3_5) & (chronic_kidney_disease_all_stages_3_5 >= chronic_kidney_disease_all_stages) ~ TRUE,
+      TRUE ~ FALSE
     ),
     
     # Mental illness
-    sev_mental_ill = ifelse(is.na(sev_mental_ill), FALSE, TRUE),
+    sev_mental_ill = !is.na(sev_mental_ill),
     
     # Learning disability
-    learning_disability = ifelse(is.na(learning_disability), FALSE, TRUE),
+    learning_disability = !is.na(learning_disability),
     
     # CND inc LD
-    chronic_neuro_dis_inc_sig_learn_dis = ifelse(is.na(chronic_neuro_dis_inc_sig_learn_dis), FALSE, TRUE),
-    chronic_neuro_dis_inc_sig_learn_dis = ifelse(chronic_neuro_dis_inc_sig_learn_dis == FALSE, learning_disability,
-                                                 chronic_neuro_dis_inc_sig_learn_dis),
+    chronic_neuro_dis_inc_sig_learn_dis = !is.na(chronic_neuro_dis_inc_sig_learn_dis),
+    chronic_neuro_dis_inc_sig_learn_dis = chronic_neuro_dis_inc_sig_learn_dis | learning_disability,
     
     # CRD
-    chronic_respiratory_disease = ifelse(is.na(chronic_respiratory_disease), FALSE, TRUE),
+    chronic_respiratory_disease = !is.na(chronic_respiratory_disease),
     
     # Immunosuppression
-    immunosuppression_diagnosis = ifelse(is.na(immunosuppression_diagnosis), FALSE, TRUE),
-    immunosuppression_medication = ifelse(is.na(immunosuppression_medication), FALSE, TRUE),
-    immunosuppression = ifelse(immunosuppression_diagnosis == TRUE, immunosuppression_diagnosis, immunosuppression_medication),
+    immunosuppression_diagnosis = !is.na(immunosuppression_diagnosis),
+    immunosuppression_medication = !is.na(immunosuppression_medication),
+    immunosuppression = immunosuppression_diagnosis | immunosuppression_medication,
     
     # IMD
     imd = na_if(imd, "0"),
