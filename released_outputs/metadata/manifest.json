@@ -373,15 +373,6 @@
       "created_at": "2021-05-12T08:22:57Z",
       "completed_at": "2021-05-12T09:38:26Z"
     },
-    "strata_summary": {
-      "state": "succeeded",
-      "commit": "2fc05ac36b88ca2df4086d5c4bc9310e3c79349b",
-      "docker_image_id": "sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981",
-      "job_id": "nvcevftvjji773h7",
-      "run_by_user": "acagreen17",
-      "created_at": "2021-05-12T09:46:33Z",
-      "completed_at": "2021-05-12T09:51:30Z"
-    },
     "table_and_figure": {
       "state": "succeeded",
       "commit": "f347569be33110e26c906599ee73ae0bdc23e338",
@@ -390,6 +381,15 @@
       "run_by_user": "wjchulme",
       "created_at": "2021-05-12T13:43:48Z",
       "completed_at": "2021-05-12T15:05:14Z"
+    },
+    "strata_summary": {
+      "state": "succeeded",
+      "commit": "d075ec06c0418f4cf9ed6e5009e55f269058f64e",
+      "docker_image_id": "sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981",
+      "job_id": "2phlk7a5ppi6qsme",
+      "run_by_user": "wjchulme",
+      "created_at": "2021-05-12T15:45:31Z",
+      "completed_at": "2021-05-12T15:48:42Z"
     }
   },
   "workspace": "factors-associated-with-covid-19-vaccination",
