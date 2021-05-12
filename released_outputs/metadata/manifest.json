@@ -84,6 +84,10 @@
       "created_by_action": "model_final",
       "privacy_level": "highly_sensitive"
     },
+    "output/models/final/plot_strat_coxph.svg": {
+      "created_by_action": "table_and_figure",
+      "privacy_level": "moderately_sensitive"
+    },
     "output/models/final/plot_strata_cmlhaz.svg": {
       "created_by_action": "strata_summary",
       "privacy_level": "moderately_sensitive"
@@ -379,13 +383,13 @@
       "completed_at": "2021-05-12T09:51:30Z"
     },
     "table_and_figure": {
-      "state": "failed",
-      "commit": "3aa0eb0a7b647404f9561a2213ebb1abfd542066",
+      "state": "succeeded",
+      "commit": "f347569be33110e26c906599ee73ae0bdc23e338",
       "docker_image_id": "sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981",
-      "job_id": "72mex4ugeznmbw5z",
-      "run_by_user": "acagreen17",
-      "created_at": "2021-05-12T10:26:53Z",
-      "completed_at": "2021-05-12T10:42:57Z"
+      "job_id": "ltxxwg3ullbsfl4d",
+      "run_by_user": "wjchulme",
+      "created_at": "2021-05-12T13:43:48Z",
+      "completed_at": "2021-05-12T15:05:14Z"
     }
   },
   "workspace": "factors-associated-with-covid-19-vaccination",
