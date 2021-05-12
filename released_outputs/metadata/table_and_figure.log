@@ -1,40 +1,36 @@
-2021-05-10T13:12:40.186100900Z -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
-2021-05-10T13:12:40.195218700Z v ggplot2 3.3.2     v purrr   0.3.4
-2021-05-10T13:12:40.195239700Z v tibble  3.0.3     v dplyr   1.0.2
-2021-05-10T13:12:40.195247800Z v tidyr   1.1.2     v stringr 1.4.0
-2021-05-10T13:12:40.195254600Z v readr   1.3.1     v forcats 0.5.0
-2021-05-10T13:12:40.375923600Z -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-2021-05-10T13:12:40.375987100Z x dplyr::filter() masks stats::filter()
-2021-05-10T13:12:40.375995500Z x dplyr::lag()    masks stats::lag()
-2021-05-10T13:12:40.390450200Z 
-2021-05-10T13:12:40.390500300Z Attaching package: 'lubridate'
-2021-05-10T13:12:40.390509700Z 
-2021-05-10T13:12:40.391959600Z The following objects are masked from 'package:base':
-2021-05-10T13:12:40.391985100Z 
-2021-05-10T13:12:40.391993600Z     date, intersect, setdiff, union
-2021-05-10T13:12:40.392000900Z 
-2021-05-10T13:12:42.195648900Z Loading required package: bdsmatrix
-2021-05-10T13:12:42.551756000Z 
-2021-05-10T13:12:42.551782400Z Attaching package: 'bdsmatrix'
-2021-05-10T13:12:42.551791000Z 
-2021-05-10T13:12:42.552473000Z The following object is masked from 'package:base':
-2021-05-10T13:12:42.552529100Z 
-2021-05-10T13:12:42.552537600Z     backsolve
-2021-05-10T13:12:42.552544600Z 
-2021-05-10T13:12:42.966451500Z #Uighur
-2021-05-10T13:12:42.993072100Z Loading required package: ggpubr
-2021-05-10T13:12:58.389586500Z strata(practice_id_latest_active_registration)is not found in data columns, and will be skipped.
+2021-05-12T14:43:48.149854600Z -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+2021-05-12T14:43:48.158797800Z v ggplot2 3.3.2     v purrr   0.3.4
+2021-05-12T14:43:48.158820900Z v tibble  3.0.3     v dplyr   1.0.2
+2021-05-12T14:43:48.158829000Z v tidyr   1.1.2     v stringr 1.4.0
+2021-05-12T14:43:48.158836100Z v readr   1.3.1     v forcats 0.5.0
+2021-05-12T14:43:48.328901000Z -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+2021-05-12T14:43:48.328929000Z x dplyr::filter() masks stats::filter()
+2021-05-12T14:43:48.328937400Z x dplyr::lag()    masks stats::lag()
+2021-05-12T14:43:48.343807900Z 
+2021-05-12T14:43:48.343825800Z Attaching package: 'lubridate'
+2021-05-12T14:43:48.343833400Z 
+2021-05-12T14:43:48.345213700Z The following objects are masked from 'package:base':
+2021-05-12T14:43:48.345234900Z 
+2021-05-12T14:43:48.345243100Z     date, intersect, setdiff, union
+2021-05-12T14:43:48.345250400Z 
+2021-05-12T14:43:50.355673400Z #BlackLivesMatter
+2021-05-12T14:43:50.392185300Z Loading required package: ggpubr
+2021-05-12T15:04:51.273549600Z Warning messages:
+2021-05-12T15:04:51.274241200Z 1: Removed 1 rows containing missing values (geom_segment). 
+2021-05-12T15:04:51.274259200Z 2: Removed 1 rows containing missing values (geom_segment). 
+2021-05-12T15:04:51.274267800Z 3: Removed 1 rows containing missing values (geom_segment). 
+2021-05-12T15:04:51.274275500Z 4: Removed 1 rows containing missing values (geom_segment). 
 
 
 state: succeeded
-commit: b67da4956f27037f6e12268e8dc7343d5e2a1b5d
+commit: f347569be33110e26c906599ee73ae0bdc23e338
 docker_image_id: sha256:c2fc5042bf86134947d83ad8e70bd926e2c1f91a263c6bfe87438ad783bec981
 exit_code: 0
-job_id: ytnxetx6ai5foi2n
-run_by_user: acagreen17
-created_at: 2021-05-10T13:12:13Z
-started_at: 2021-05-10T13:12:37Z
-completed_at: 2021-05-10T13:13:03Z
+job_id: ltxxwg3ullbsfl4d
+run_by_user: wjchulme
+created_at: 2021-05-12T13:43:48Z
+started_at: 2021-05-12T14:43:45Z
+completed_at: 2021-05-12T15:05:14Z
 
 Completed successfully
 
