@@ -50,11 +50,7 @@ forest_from_gt <- function(gt_obj){
       level_label = label
     ) %>%
     ungroup() %>%
-    droplevels() %>%
-    mutate(variable = ifelse(variable == "Imd", "IMD", variable),
-           variable = ifelse(variable == "Ckd", "Chronic Kidney Disease", variable),
-           variable = ifelse(variable == "Chronic Neuro Dis Inc Sig Learn Dis", "CNS (including learning disablilty)", variable),
-           variable = ifelse(variable == "Sev Mental Ill", "Sev Mental Health", variable))
+    droplevels()
   
   var_lookup <- plot_data$var_label
   var_lookup[36] <- "Clinical Risk Groups"
@@ -117,7 +113,7 @@ plot_coxph <- forest_from_gt(tbl_summary)
 ggsave(
   here::here("output", "models", "final", "plot_strat_coxph.svg"),
   plot_coxph,
-  units = "cm", width = 35, height = 40
+  units = "cm", width = 25, height = 20
 )
 
 ## Summary table
