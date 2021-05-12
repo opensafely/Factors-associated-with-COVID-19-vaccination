@@ -139,16 +139,6 @@ ggforest2 <-  function (model, data = NULL, main = "Hazard ratio", cpositions = 
 ## Import processed data
 data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
 
-## Converts logical to integer so that model coefficients print nicely in gtsummary methods
-data_cox <- data_tte %>%
-  mutate(
-    across(
-      where(is.logical),
-      ~.x*1L
-    )
-  )
-
-
 ## Stratified Cox PH model
 mod.strat.coxph.adj <- read_rds(here::here("output", "models", "final", "mod_strat_coxph_adj.rds"))
 
@@ -156,7 +146,7 @@ mod.strat.coxph.adj <- read_rds(here::here("output", "models", "final", "mod_str
 # Output model coefficients ----
 
 ## Forest plot
-plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_cox)
+plot_coxph <- ggforest2(mod.strat.coxph.adj, data = data_tte)
 ggsave(
   here::here("output", "models", "final", "plot_strat_coxph.svg"),
   plot_coxph,

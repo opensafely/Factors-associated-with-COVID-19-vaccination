@@ -110,14 +110,14 @@ chronic_kidney_disease_diagnostic_codes = codelist_from_csv(
 )
 
 ## Chronic kidney disease codes - all stages
-chronic_kidney_disease_codes_all_stages = codelist_from_csv(
+chronic_kidney_disease_all_stages_codes = codelist_from_csv(
   "codelists/primis-covid19-vacc-uptake-ckd15.csv",
   system = "snomed",
   column = "code",
 )
 
 # Chronic kidney disease codes-stages 3 - 5
-chronic_kidney_disease_codes_all_stages_3_5 = codelist_from_csv(
+chronic_kidney_disease_all_stages_3_5_codes = codelist_from_csv(
   "codelists/primis-covid19-vacc-uptake-ckd35.csv",
   system = "snomed",
   column = "code",
