@@ -13,38 +13,23 @@
 library('tidyverse')
 library('lubridate')
 library('survival')
-library('coxme')
 library('gtsummary')
 library('gt')
 library('survminer')
-#library('ehahelper')
 
 ## Create output directory
 dir.create(here::here("output", "models", "final"), showWarnings = FALSE, recursive=TRUE)
 
-## Function to plot stratified cox model
-
 ## Import processed data
 data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
 
-## Converts logical to integer so that model coefficients print nicely in gtsummary methods
-data_cox <- data_tte %>%
-  mutate(
-    across(
-      where(is.logical),
-      ~.x*1L
-    )
-  )
-
-## Stratified Cox PH model
+## Import model Stratified Cox PH model
 mod.strat.coxph.adj <- read_rds(here::here("output", "models", "final", "mod_strat_coxph_adj.rds"))
 
-
+## Function to plot stratified cox model
 forest_from_gt <- function(gt_obj){
   
-  #extract model information from tbl_regression object
-  
-  
+  # Extract model information from tbl_regression object
   plot_data <- gt_obj %>%
     as_gt() %>%
     .$`_data` %>%
@@ -65,14 +50,29 @@ forest_from_gt <- function(gt_obj){
       level_label = label
     ) %>%
     ungroup() %>%
-    droplevels()
+    droplevels() %>%
+    mutate(variable = ifelse(variable == "Imd", "IMD", variable),
+           variable = ifelse(variable == "Ckd", "Chronic Kidney Disease", variable),
+           variable = ifelse(variable == "Chronic Neuro Dis Inc Sig Learn Dis", "CNS (including learning disablilty)", variable),
+           variable = ifelse(variable == "Sev Mental Ill", "Sev Mental Health", variable))
   
   var_lookup <- plot_data$var_label
+  var_lookup[36] <- "Clinical Risk Groups"
+  var_lookup[42] <- "Other Groups"
   names(var_lookup) <- plot_data$variable
   
   level_lookup <- plot_data$level
-  names(level_lookup) <- plot_data$level_label
+  names(level_lookup) <- str_to_title(gsub("_", " ", plot_data$level_label))
+  names(level_lookup)[1] <- "70-74 (ref)"
+  names(level_lookup)[7] <- "Female (ref)"
+  names(level_lookup)[9] <- "White - British (ref)"
+  names(level_lookup)[28] <- "1 (most deprived) (ref)"
+  names(level_lookup)[32] <- "5 (least deprived)"
+  names(level_lookup)[34] <- "Chronic Kidney Disease"
+  names(level_lookup)[38] <- "Chronic Neurological Disease (including learning disablilty)"
+  names(level_lookup)[41] <- "Sev Mental Illness"
   
+  # Plot
   ggplot(plot_data) +
     geom_point(aes(x=estimate, y=level)) +
     geom_linerange(aes(xmin=conf.low, xmax=conf.high, y=level)) +
@@ -99,15 +99,18 @@ forest_from_gt <- function(gt_obj){
 }
 
 
+# Output model results ----
+
+## Summary table
 tbl_summary <- tbl_regression(
   x = mod.strat.coxph.adj,
   pvalue_fun = ~style_pvalue(.x, digits=3),
-  exponentiate= TRUE
+  exponentiate= TRUE,
+  label = list(ageband = "Age Band", sex = "Sex", ethnicity = "Ethnicity", 
+               imd = "IMD")
 )
 
-forest_from_gt(tbl_summary)
-
-# Output model coefficients ----
+tbl_summary$table_body$variable <- str_to_title(gsub("_", " ", tbl_summary$table_body$variable))
 
 ## Forest plot
 plot_coxph <- forest_from_gt(tbl_summary)
