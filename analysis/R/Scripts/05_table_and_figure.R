@@ -115,10 +115,27 @@ tab_mod1  <- summary(mod.strat.coxph.adj)$coefficients  %>%
 
 write_csv(tab_mod1, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
 
+
+tidy_coxph <- function(x, conf.int = FALSE, conf.level = .95, exponentiate = TRUE, ...) {
+  
+  # to use Wald CIs instead of profile CIs.
+  ret <- broom::tidy(x, conf.int = FALSE, conf.level = conf.level, exponentiate = exponentiate)
+  
+  ci <- confint.default(x, level = conf.level)
+  if(exponentiate){ci = exp(ci)}
+  ci <- as_tibble(ci, rownames = "term")
+  names(ci) <- c("term", "conf.low", "conf.high")
+  
+  ret <- dplyr::left_join(ret, ci, by = "term")
+  ret
+}
+
+
 ## Summary table for plot
 tbl_summary <- tbl_regression(
   x = mod.strat.coxph.adj,
   pvalue_fun = ~style_pvalue(.x, digits=3),
+  tidy_fun = tidy_coxph,
   exponentiate= TRUE,
   label = list(ageband = "Age Band", sex = "Sex", ethnicity = "Ethnicity", 
                imd = "IMD")
