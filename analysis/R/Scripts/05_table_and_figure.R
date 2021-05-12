@@ -98,6 +98,24 @@ forest_from_gt <- function(gt_obj){
 # Output model results ----
 
 ## Summary table
+#tab_mod1 <- gtsummary::tbl_regression(mod.strat.coxph.adj, exp = TRUE)
+#head(tab_mod1$table_body)
+#gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_coxph.html"))
+#write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
+
+tab_mod1  <- summary(mod.strat.coxph.adj)$coefficients  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(LCI = round(exp(coef - 1.96*`se(coef)`), digits = 2),
+         UCI = round(exp(coef + 1.96*`se(coef)`), digits = 2),
+         HR = round(`exp(coef)`, digits = 2),
+         `95% CI` = paste(" (", LCI, " - ", UCI, ")", sep = ""),
+         `p-value` = round(`Pr(>|z|)`, digits = 4)) %>%
+  select(Variable, HR, `95% CI`, `p-value`)
+
+write_csv(tab_mod1, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
+
+## Summary table for plot
 tbl_summary <- tbl_regression(
   x = mod.strat.coxph.adj,
   pvalue_fun = ~style_pvalue(.x, digits=3),
@@ -116,23 +134,7 @@ ggsave(
   units = "cm", width = 25, height = 20
 )
 
-## Summary table
-#tab_mod1 <- gtsummary::tbl_regression(mod.strat.coxph.adj, exp = TRUE)
-#head(tab_mod1$table_body)
-#gtsave(tab_mod1 %>% as_gt(), here::here("output", "models", "final", "tab_strat_coxph.html"))
-#write_csv(tab_mod1$table_body, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
 
-tab_mod1  <- summary(mod.strat.coxph.adj)$coefficients  %>% 
-  as.data.frame() %>%
-  rownames_to_column(var = "Variable") %>%
-  mutate(LCI = round(exp(coef - 1.96*`se(coef)`), digits = 2),
-         UCI = round(exp(coef + 1.96*`se(coef)`), digits = 2),
-         HR = round(`exp(coef)`, digits = 2),
-         `95% CI` = paste(" (", LCI, " - ", UCI, ")", sep = ""),
-         `p-value` = round(`Pr(>|z|)`, digits = 4)) %>%
-  select(Variable, HR, `95% CI`, `p-value`)
-
-write_csv(tab_mod1, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
 
 
 
