@@ -150,7 +150,7 @@ plot_coxph <- forest_from_gt(tbl_summary)
 ggsave(
   here::here("output", "models", "final", "plot_strat_coxph.svg"),
   plot_coxph,
-  units = "cm", width = 25, height = 20
+  units = "cm", width = 40, height = 20
 )
 
 
