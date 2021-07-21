@@ -60,7 +60,7 @@ study = StudyDefinition(
         """,
     
     has_died = patients.died_from_any_cause(
-      on_or_before="index_date",
+      on_or_before = "index_date",
       returning="binary_flag",
     ),
     
@@ -425,115 +425,115 @@ study = StudyDefinition(
     },
   ),
   
-  ### Region - NHS England 9 regions
-  region = patients.registered_practice_as_of(
-    "index_date",
-    returning = "nuts1_region_name",
-    return_expectations = {
-      "rate": "universal",
-      "category": {
-        "ratios": {
-          "North East": 0.1,
-          "North West": 0.1,
-          "Yorkshire and The Humber": 0.1,
-          "East Midlands": 0.1,
-          "West Midlands": 0.1,
-          "East": 0.1,
-          "London": 0.2,
-          "South West": 0.1,
-          "South East": 0.1,},},
-    },
-  ),
-  
-  ### STP (regional grouping of practices)
-  stp = patients.registered_practice_as_of("index_date",
-                                           returning = "stp_code",
-                                           return_expectations = {
-                                             "rate": "universal",
-                                             "category": {
-                                               "ratios": {
-                                                 "STP1": 0.1,
-                                                 "STP2": 0.1,
-                                                 "STP3": 0.1,
-                                                 "STP4": 0.1,
-                                                 "STP5": 0.1,
-                                                 "STP6": 0.1,
-                                                 "STP7": 0.1,
-                                                 "STP8": 0.1,
-                                                 "STP9": 0.1,
-                                                 "STP10": 0.1,}},
-                                           },
-  ),
-  
-  ### Urban vs rural
-  rural_urban = patients.address_as_of(
-    "index_date",
-    returning = "rural_urban_classification",
-    return_expectations = {
-      "rate": "universal",
-      "category": {"ratios": {
-        1: 0.125, 
-        2: 0.125, 
-        3: 0.125, 
-        4: 0.125, 
-        5: 0.125, 
-        6: 0.125, 
-        7: 0.125, 
-        8: 0.125}
-      },
-    },
-  ),
+  # ### Region - NHS England 9 regions
+  # region = patients.registered_practice_as_of(
+  #   "index_date",
+  #   returning = "nuts1_region_name",
+  #   return_expectations = {
+  #     "rate": "universal",
+  #     "category": {
+  #       "ratios": {
+  #         "North East": 0.1,
+  #         "North West": 0.1,
+  #         "Yorkshire and The Humber": 0.1,
+  #         "East Midlands": 0.1,
+  #         "West Midlands": 0.1,
+  #         "East": 0.1,
+  #         "London": 0.2,
+  #         "South West": 0.1,
+  #         "South East": 0.1,},},
+  #   },
+  # ),
+  # 
+  # ### STP (regional grouping of practices)
+  # stp = patients.registered_practice_as_of("index_date",
+  #                                          returning = "stp_code",
+  #                                          return_expectations = {
+  #                                            "rate": "universal",
+  #                                            "category": {
+  #                                              "ratios": {
+  #                                                "STP1": 0.1,
+  #                                                "STP2": 0.1,
+  #                                                "STP3": 0.1,
+  #                                                "STP4": 0.1,
+  #                                                "STP5": 0.1,
+  #                                                "STP6": 0.1,
+  #                                                "STP7": 0.1,
+  #                                                "STP8": 0.1,
+  #                                                "STP9": 0.1,
+  #                                                "STP10": 0.1,}},
+  #                                          },
+  # ),
+  # 
+  # ### Urban vs rural
+  # rural_urban = patients.address_as_of(
+  #   "index_date",
+  #   returning = "rural_urban_classification",
+  #   return_expectations = {
+  #     "rate": "universal",
+  #     "category": {"ratios": {
+  #       1: 0.125, 
+  #       2: 0.125, 
+  #       3: 0.125, 
+  #       4: 0.125, 
+  #       5: 0.125, 
+  #       6: 0.125, 
+  #       7: 0.125, 
+  #       8: 0.125}
+  #     },
+  #   },
+  # ),
   
   
   ## OTHER FACTORS
   
-  ### Flu Vaccine: Last 5 years prior to march 31st 2020
-  flu_vaccine = patients.satisfying(
-    """
-        flu_vaccine_imm_table>0 OR
-        flu_vaccine_med>0 OR
-        flu_vaccine_clinical>0
-        """,
-    
-    flu_vaccine_imm_table = patients.with_vaccination_record(
-      tpp={
-        "target_disease_matches": "INFLUENZA",
-      },
-      emis={
-        "procedure_codes": flu_clinical_given_codes,
-      },
-      between = ["2015-04-01", "2020-03-31"], 
-      returning = "binary_flag",
-    ),
-    
-    flu_vaccine_med = patients.with_these_medications(
-      flu_med_codes,
-      between = ["2015-04-01", "2020-03-31"], 
-      returning = "binary_flag",
-    ),
-    flu_vaccine_clinical = patients.with_these_clinical_events(
-      flu_clinical_given_codes,
-      ignore_days_where_these_codes_occur = flu_clinical_not_given_codes,
-      between = ["2015-04-01", "2020-03-31"], 
-      returning = "binary_flag",
-    ),
-    
-    return_expectations = {"incidence": 0.5, },
-  ),
-  
-  ### History of covid
-  prior_covid_date = patients.with_these_clinical_events(
-    combine_codelists(
-      covid_primary_care_code,
-      covid_primary_care_positive_test,
-      covid_primary_care_sequalae,
-    ),
-    returning = "date",
-    date_format = "YYYY-MM-DD",
-    on_or_before = "index_date",
-    find_first_match_in_period = True,
-    return_expectations = {"rate": "exponential_increase"},
-  ),
+  # ### Flu Vaccine: Last 5 years prior to march 31st 2020
+  # flu_vaccine = patients.satisfying(
+  #   """
+  #       flu_vaccine_imm_table>0 OR
+  #       flu_vaccine_med>0 OR
+  #       flu_vaccine_clinical>0
+  #       """,
+  #   
+  #   flu_vaccine_imm_table = patients.with_vaccination_record(
+  #     tpp={
+  #       "target_disease_matches": "INFLUENZA",
+  #     },
+  #     emis={
+  #       "procedure_codes": flu_clinical_given_codes,
+  #     },
+  #     between = ["2015-04-01", "2020-03-31"], 
+  #     returning = "binary_flag",
+  #   ),
+  #   
+  #   flu_vaccine_med = patients.with_these_medications(
+  #     flu_med_codes,
+  #     between = ["2015-04-01", "2020-03-31"], 
+  #     returning = "binary_flag",
+  #   ),
+  #   flu_vaccine_clinical = patients.with_these_clinical_events(
+  #     flu_clinical_given_codes,
+  #     ignore_days_where_these_codes_occur = flu_clinical_not_given_codes,
+  #     between = ["2015-04-01", "2020-03-31"], 
+  #     returning = "binary_flag",
+  #   ),
+  #   
+  #   return_expectations = {"incidence": 0.5, },
+  # ),
+  # 
+  # ### History of covid
+  # prior_covid_date = patients.with_these_clinical_events(
+  #   combine_codelists(
+  #     covid_primary_care_code,
+  #     covid_primary_care_positive_test,
+  #     covid_primary_care_sequalae,
+  #   ),
+  #   returning = "date",
+  #   date_format = "YYYY-MM-DD",
+  #   on_or_before = "index_date",
+  #   find_first_match_in_period = True,
+  #   return_expectations = {"rate": "exponential_increase"},
+  # ),
   
   ### PRIMIS overall flag for shielded group
   shielded = patients.satisfying(
