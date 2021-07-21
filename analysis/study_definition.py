@@ -56,7 +56,7 @@ study = StudyDefinition(
         AND
         (sex = "M" OR sex = "F")
         AND
-        imd > 0
+        imd != "0"
         """,
     
     has_died = patients.died_from_any_cause(
