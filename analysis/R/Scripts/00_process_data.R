@@ -98,16 +98,16 @@ data_extract0 <- read_csv(
     practice_id_at_end = col_integer(),
     practice_id_at_death = col_integer(),
     practice_id_at_dereg = col_integer(),
-    imd = col_character(),
-    region = col_character(),
-    stp = col_character(),
-    rural_urban = col_character(),
+    imd = col_character()
+    # region = col_character(),
+    # stp = col_character(),
+    # rural_urban = col_character(),
     
     # Other
-    flu_vaccine = col_logical(),
-    shielded = col_logical(),
-    shielded_since_feb_15 = col_logical(),
-    prior_covid_date = col_date(format="%Y-%m-%d")
+    # flu_vaccine = col_logical(),
+    # shielded = col_logical(),
+    # shielded_since_feb_15 = col_logical()
+    # prior_covid_date = col_date(format="%Y-%m-%d")
   
   ),
   na = character() # more stable to convert to missing later
@@ -291,8 +291,8 @@ data_processed <- data_extract %>%
   filter(age >= 70,
          sex %in% c("Male", "Female"),
          !is.na(imd),
-         !is.na(ethnicity),
-         !is.na(rural_urban),
+         !is.na(ethnicity)
+         # !is.na(rural_urban),
   ) %>%
   select(patient_id, covid_vax, follow_up_time,
          ageband, sex, ethnicity, imd, immunosuppression, ckd, chronic_respiratory_disease,
