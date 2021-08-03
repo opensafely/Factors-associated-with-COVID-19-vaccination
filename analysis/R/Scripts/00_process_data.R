@@ -251,7 +251,7 @@ data_processed <- data_extract %>%
     practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death,
                                                     ifelse(!is.na(dereg_date) & dereg_date < end_date,
                                                            practice_id_at_dereg, practice_id_at_end)),
-
+    
     # # Region
     # region = fct_case_when(
     #   region == "London" ~ "London",
@@ -297,7 +297,8 @@ data_processed <- data_extract %>%
   select(patient_id, covid_vax, follow_up_time,
          ageband, sex, ethnicity, imd, immunosuppression, ckd, chronic_respiratory_disease,
          diabetes, chronic_liver_disease, chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease,
-         asplenia, sev_mental_ill, morbid_obesity, practice_id_latest_active_registration)
+         asplenia, sev_mental_ill, morbid_obesity, 
+         practice_id_latest_active_registration, practice_id_at_death, practice_id_at_dereg, practice_id_at_end)
 
 # Data for modelling
 data_processed_modelling <- data_processed %>%
