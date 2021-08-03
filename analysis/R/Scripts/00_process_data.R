@@ -94,10 +94,10 @@ data_extract0 <- read_csv(
     immunosuppression_medication = col_date(format="%Y-%m-%d"),
     
     # Geographical
-    practice_id_at_start = col_double(),
-    practice_id_at_end = col_double(),
-    practice_id_at_death = col_double(),
-    practice_id_at_dereg = col_double(),
+    practice_id_at_start = col_character(),
+    practice_id_at_end = col_character(),
+    practice_id_at_death = col_character(),
+    practice_id_at_dereg = col_character(),
     imd = col_character()
     # region = col_character(),
     # stp = col_character(),
