@@ -10,6 +10,7 @@
 
 ## Import libraries ----
 library('here')
+library('readr')
 library('glue')
 library('fs')
 
