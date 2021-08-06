@@ -144,10 +144,10 @@ actions:
         tables: output/models/final/tab*.csv
         plots: output/models/final/plot*.svg
 
-
+  # Tidy outputted model coefficients from each backend
   outputs_for_ma:
     run: r:latest analysis/R/Scripts/98_moveoutputs.R
-    needs: [model_final]
+    needs: [data_process, model_final]
     outputs:
       moderately_sensitive:
         csv: output/combined/tidy_*.csv

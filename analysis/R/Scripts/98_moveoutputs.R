@@ -7,21 +7,22 @@
 ######################################
 
 
-
 ## Import libraries ----
 library('here')
 library('readr')
+library('survival')
+library('tidyr')
 library('glue')
 library('fs')
 
-## create output directory ----
+## Create output directory ----
 dir_create(here("output", "combined"))
 
-## custom functions ----
+## Custom function ----
 tidy_wald <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE, ...) {
   
   # to use Wald CIs instead of profile CIs.
-  ret <- broom::tidy(x, conf.int = FALSE, conf.level = conf.level, exponentiate = exponentiate)
+  ret <- broom::tidy(x, conf.int = FALSE, conf.level = conf.level, exponentiate = TRUE)
   
   if(conf.int){
     ci <- confint.default(x, level = conf.level)
@@ -39,7 +40,7 @@ tidy_wald <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE,
 
 data_tte <- read_rds(here("output", "data", "data_modelling.rds"))
 model <- read_rds(here("output", "models", "final", "mod_strat_coxph_adj.rds"))
-tidy_model <- broom.helpers::tidy_plus_plus(model, tidy_fun=tidy_wald, exponentiate=FALSE)
+tidy_model <- broom.helpers::tidy_plus_plus(model, tidy_fun = tidy_wald, exponentiate = FALSE)
 
 if(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations")){
   for(backend in c("tpp", "emis")){
