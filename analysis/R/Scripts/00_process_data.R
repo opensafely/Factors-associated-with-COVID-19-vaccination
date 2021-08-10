@@ -94,20 +94,20 @@ data_extract0 <- read_csv(
     immunosuppression_medication = col_date(format="%Y-%m-%d"),
     
     # Geographical
-    practice_id_at_start = col_integer(),
-    practice_id_at_end = col_integer(),
-    practice_id_at_death = col_integer(),
-    practice_id_at_dereg = col_integer(),
-    imd = col_character(),
-    region = col_character(),
-    stp = col_character(),
-    rural_urban = col_character(),
+    practice_id_at_start = col_character(),
+    practice_id_at_end = col_character(),
+    practice_id_at_death = col_character(),
+    practice_id_at_dereg = col_character(),
+    imd = col_character()
+    # region = col_character(),
+    # stp = col_character(),
+    # rural_urban = col_character(),
     
     # Other
-    flu_vaccine = col_logical(),
-    shielded = col_logical(),
-    shielded_since_feb_15 = col_logical(),
-    prior_covid_date = col_date(format="%Y-%m-%d")
+    # flu_vaccine = col_logical(),
+    # shielded = col_logical(),
+    # shielded_since_feb_15 = col_logical()
+    # prior_covid_date = col_date(format="%Y-%m-%d")
   
   ),
   na = character() # more stable to convert to missing later
@@ -251,7 +251,7 @@ data_processed <- data_extract %>%
     practice_id_latest_active_registration = ifelse(!is.na(death_date) & death_date < end_date, practice_id_at_death,
                                                     ifelse(!is.na(dereg_date) & dereg_date < end_date,
                                                            practice_id_at_dereg, practice_id_at_end)),
-
+    
     # # Region
     # region = fct_case_when(
     #   region == "London" ~ "London",
@@ -291,13 +291,14 @@ data_processed <- data_extract %>%
   filter(age >= 70,
          sex %in% c("Male", "Female"),
          !is.na(imd),
-         !is.na(ethnicity),
-         !is.na(rural_urban),
+         !is.na(ethnicity)
+         # !is.na(rural_urban),
   ) %>%
   select(patient_id, covid_vax, follow_up_time,
          ageband, sex, ethnicity, imd, immunosuppression, ckd, chronic_respiratory_disease,
          diabetes, chronic_liver_disease, chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease,
-         asplenia, sev_mental_ill, morbid_obesity, practice_id_latest_active_registration)
+         asplenia, sev_mental_ill, morbid_obesity, 
+         practice_id_latest_active_registration, practice_id_at_death, practice_id_at_dereg, practice_id_at_end)
 
 # Data for modelling
 data_processed_modelling <- data_processed %>%
