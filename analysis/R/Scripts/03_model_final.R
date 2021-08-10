@@ -11,22 +11,42 @@
 # Preliminaries ----
 
 ## Import libraries
+library('here')
+library('readr')
+library('tidyr')
 library('tidyverse')
 library('lubridate')
 library('survival')
 library('gtsummary')
 library('gt')
 library('survminer')
-#library('ehahelper')
+library('glue')
+library('fs')
 
 ## Create output directory
-dir.create(here::here("output", "models", "final"), showWarnings = FALSE, recursive=TRUE)
+dir.create(here::here("output", "model"), showWarnings = FALSE, recursive=TRUE)
 
+## Custom function ----
+tidy_wald <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE, ...) {
+  
+  # to use Wald CIs instead of profile CIs.
+  ret <- broom::tidy(x, conf.int = FALSE, conf.level = conf.level, exponentiate = TRUE)
+  
+  if(conf.int){
+    ci <- confint.default(x, level = conf.level)
+    if(exponentiate){ci = exp(ci)}
+    ci <- as_tibble(ci, rownames = "term")
+    names(ci) <- c("term", "conf.low", "conf.high")
+    
+    ret <- dplyr::left_join(ret, ci, by = "term")
+  }
+  ret
+}
 ## Import processed data
 data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
 
 
-# MODELS ----
+# MODEL ----
 
 ## Stratified Cox PH model - adjusted; baseline demographics + comorbs, 
 mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
@@ -36,5 +56,21 @@ mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                              sev_mental_ill + morbid_obesity + strata(practice_id_latest_active_registration),
                              data = data_tte)
 
-write_rds(mod.strat.coxph.adj, here::here("output", "models", "final", "mod_strat_coxph_adj.rds"), compress="gz")
 
+# Create tidy summary
+tidy_model <- broom.helpers::tidy_plus_plus(mod.strat.coxph.adj, tidy_fun = tidy_wald, exponentiate = FALSE)
+
+
+# Save outputs ----
+
+## Save a "tidy" copy of each model output. Create "dummy" emis/tpp outputs (identical) for use with combine script
+if(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations")){
+  for(backend in c("tpp", "emis")){
+    write_csv(tidy_model, here("output", "model", glue("tidy_{backend}.csv")))
+  }
+} else {
+  write_csv(tidy_model, here("output", "model", glue("tidy_{Sys.getenv('OPENSAFELY_BACKEND')}.csv")))
+}
+
+## Save model
+write_rds(mod.strat.coxph.adj, here::here("output", "model", "mod_strat_coxph_adj.rds"), compress="gz")
