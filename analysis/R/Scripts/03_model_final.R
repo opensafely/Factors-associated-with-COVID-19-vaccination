@@ -42,6 +42,7 @@ tidy_wald <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE,
   }
   ret
 }
+
 ## Import processed data
 data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
 
@@ -64,8 +65,10 @@ write_rds(mod.strat.coxph.adj, here::here("output", "model", "mod_strat_coxph_ad
 
 ## Save a "tidy" copy of each model output. Create "dummy" emis/tpp outputs (identical) for use with combine script
 tidy_model <- broom.helpers::tidy_plus_plus(mod.strat.coxph.adj, tidy_fun = tidy_wald, exponentiate = FALSE)
+class(mod.strat.coxph.adj)
+class(tidy_model)
 
-dim(tidy_model)
+write_csv(tidy_model, here("output", "model", "tidy_outputs.csv"))
 
 if(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations")){
   for(backend in c("tpp", "emis")){
