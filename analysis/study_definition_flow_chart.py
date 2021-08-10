@@ -25,7 +25,7 @@ from codelists import *
   
 ## Define study start and end variables explicitly
 start_date = "2020-12-07"
-end_date = "2021-04-01"
+end_date = "2021-03-17"
 
 ## Define study population and variables
 study = StudyDefinition(
@@ -43,33 +43,25 @@ study = StudyDefinition(
   # Define the study population
   population = patients.all(
     # """
-    #     NOT has_died
-    #     AND
-    #     registered
-    #     AND
-    #     age >= 80
-    #     AND
-    #     has_follow_up_previous_year
-    #     AND
-    #     NOT nursing_residential_care
-    #     AND
-    #     (sex = "M" OR sex = "F")
-    #     AND
-    #     imd > 0
-    #     AND
-    #     region
-    #     AND
-    #     rural_urban > 0
-    #     AND
-    #     (ethnicity OR ethnicity_other OR ethnicity_not_given OR ethnicity_not_stated OR ethnicity_no_record)
-    #     AND
-    #     stp
+       #  NOT has_died
+       #  AND
+       #  registered
+       #  AND
+       #  age >= 70
+       #  AND
+       #  has_follow_up_previous_year
+       #  AND
+       #  NOT nursing_residential_care
+       #  AND
+       #  (sex = "M" OR sex = "F")
+       #  AND
+       #  imd != "0"
     #     """,
   ),
   
   # Outcome
   
-  ## Any COVID vaccination (first dose)
+  ### Any COVID vaccination (first dose)
   covid_vax_1_date = patients.with_vaccination_record(
     returning = "date",
     tpp = {"target_disease_matches": "SARS-2 CORONAVIRUS",},
@@ -163,101 +155,6 @@ study = StudyDefinition(
     on_or_after = "index_date + 1 day",
     returning = "date_of_death",
     date_format = "YYYY-MM-DD",
-  ),
-  
-  ### Practice id
-  practice_id = patients.registered_practice_as_of(
-    "index_date",  # day before vaccine campaign start
-    returning = "pseudo_id",
-    return_expectations = {
-      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
-      "incidence": 1,
-    },
-  ),
-  
-  ### Practice id at end (to check people moving practices during study)
-  practice_id_at_end = patients.registered_practice_as_of(
-    end_date,
-    returning = "pseudo_id",
-    return_expectations = {
-      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
-      "incidence": 1,
-    },
-  ),
-  
-  ### Practice id at death (to check people moving practices during study)
-  practice_id_at_death = patients.registered_practice_as_of(
-    "death_date",
-    returning = "pseudo_id",
-    return_expectations = {
-      "int": {"distribution": "normal", "mean": 10, "stddev": 1},
-      "incidence": 1,
-    },
-  ),
-  
-  ### Same practice
-  practice_id_same = patients.registered_with_one_practice_between(
-      start_date = "index_date",
-      end_date = end_date,
-      return_expectations = {"incidence": 0.95},
-    ),
-  
-  ## Region - NHS England 9 regions
-  region = patients.registered_practice_as_of(
-    "index_date",
-    returning = "nuts1_region_name",
-    return_expectations = {
-      "rate": "universal",
-      "category": {
-        "ratios": {
-          "North East": 0.1,
-          "North West": 0.1,
-          "Yorkshire and The Humber": 0.1,
-          "East Midlands": 0.2,
-          "West Midlands": 0.1,
-          "East": 0.1,
-          "London": 0.2,
-          "South East": 0.1,},},
-    },
-  ),
-  
-  ## STP (regional grouping of practices)
-  stp = patients.registered_practice_as_of("index_date",
-                                           returning = "stp_code",
-                                           return_expectations = {
-                                             "rate": "universal",
-                                             "category": {
-                                               "ratios": {
-                                                 "STP1": 0.1,
-                                                 "STP2": 0.1,
-                                                 "STP3": 0.1,
-                                                 "STP4": 0.1,
-                                                 "STP5": 0.1,
-                                                 "STP6": 0.1,
-                                                 "STP7": 0.1,
-                                                 "STP8": 0.1,
-                                                 "STP9": 0.1,
-                                                 "STP10": 0.1,}},
-                                           },
-  ),
-  
-  ### Urban vs rural
-  rural_urban = patients.address_as_of(
-    "index_date",
-    returning = "rural_urban_classification",
-    return_expectations = {
-      "rate": "universal",
-      "category": {"ratios": {
-        1: 0.125, 
-        2: 0.125, 
-        3: 0.125, 
-        4: 0.125, 
-        5: 0.125, 
-        6: 0.125, 
-        7: 0.125, 
-        8: 0.125}
-      },
-    },
   ),
   
 )
