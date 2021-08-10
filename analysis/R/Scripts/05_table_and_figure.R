@@ -108,7 +108,7 @@ tab_mod1  <- summary(mod.strat.coxph.adj)$coefficients  %>%
   rownames_to_column(var = "Variable") %>%
   mutate(LCI = round(exp(coef - 1.96*`se(coef)`), digits = 2),
          UCI = round(exp(coef + 1.96*`se(coef)`), digits = 2),
-         HR = round(`exp(coef)`, digits = 2),
+         HR = round(exp(coef), digits = 2),
          `95% CI` = paste(" (", LCI, " - ", UCI, ")", sep = ""),
          `p-value` = round(`Pr(>|z|)`, digits = 4)) %>%
   select(Variable, HR, `95% CI`, `p-value`)
