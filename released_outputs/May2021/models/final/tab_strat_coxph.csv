@@ -1,0 +1,39 @@
+Variable,HR,95% CI,p-value
+ageband75-79,1.97, (1.97 - 1.98),0
+ageband80-84,3.74, (3.72 - 3.75),0
+ageband85-89,3.18, (3.17 - 3.2),0
+ageband90-94,2.46, (2.44 - 2.47),0
+ageband95+,1.74, (1.72 - 1.77),0
+sexMale,1.03, (1.03 - 1.03),0
+ethnicityWhite - Irish,0.94, (0.92 - 0.96),0
+ethnicityWhite - Any other White background,0.65, (0.65 - 0.66),0
+ethnicityMixed - White and Black Caribbean,0.44, (0.42 - 0.46),0
+ethnicityMixed - White and Black African,0.46, (0.43 - 0.49),0
+ethnicityMixed - White and Asian,0.73, (0.69 - 0.77),0
+ethnicityMixed - Any other mixed background,0.62, (0.59 - 0.65),0
+ethnicityAsian or Asian British - Indian,0.87, (0.86 - 0.88),0
+ethnicityAsian or Asian British - Pakistani,0.48, (0.47 - 0.49),0
+ethnicityAsian or Asian British - Bangladeshi,0.51, (0.48 - 0.53),0
+ethnicityAsian or Asian British - Any other Asian background,0.64, (0.63 - 0.66),0
+ethnicityBlack or Black British - Caribbean,0.43, (0.42 - 0.44),0
+ethnicityBlack or Black British - African,0.36, (0.35 - 0.38),0
+ethnicityBlack or Black British - Any other Black background,0.45, (0.42 - 0.47),0
+ethnicityOther ethnic groups - Chinese,0.5, (0.48 - 0.52),0
+ethnicityOther ethnic groups - Any other ethnic group,0.58, (0.56 - 0.59),0
+ethnicityPatients with any other ethnicity code,0.95, (0.95 - 0.96),0
+ethnicityEthnicity not stated,0.8, (0.79 - 0.82),0
+ethnicityEthnicity not recorded,0.84, (0.83 - 0.84),0
+imd2,1.12, (1.11 - 1.12),0
+imd3,1.2, (1.2 - 1.21),0
+imd4,1.26, (1.26 - 1.27),0
+imd5 least deprived,1.33, (1.33 - 1.34),0
+immunosuppression,1.09, (1.08 - 1.09),0
+ckd,1.07, (1.06 - 1.07),0
+chronic_respiratory_disease,1.02, (1.02 - 1.03),0
+diabetes,1.02, (1.02 - 1.02),0
+chronic_liver_disease,1.02, (1.01 - 1.03),0
+chronic_neuro_dis_inc_sig_learn_dis,0.93, (0.93 - 0.93),0
+chronic_heart_disease,1.06, (1.06 - 1.07),0
+asplenia,1.08, (1.07 - 1.1),0
+sev_mental_ill,0.73, (0.72 - 0.74),0
+morbid_obesity,0.88, (0.87 - 0.88),0
