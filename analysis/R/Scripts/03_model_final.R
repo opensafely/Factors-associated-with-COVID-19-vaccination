@@ -30,7 +30,7 @@ dir.create(here::here("output", "model"), showWarnings = FALSE, recursive=TRUE)
 tidy_wald <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE, ...) {
   
   # to use Wald CIs instead of profile CIs.
-  ret <- broom::tidy(x, conf.int = FALSE, conf.level = conf.level, exponentiate = TRUE)
+  ret <- broom::tidy(x, conf.int = FALSE, conf.level = conf.level, exponentiate = exponentiate)
   
   if(conf.int){
     ci <- confint.default(x, level = conf.level)
@@ -64,8 +64,7 @@ mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
 write_rds(mod.strat.coxph.adj, here::here("output", "model", "mod_strat_coxph_adj.rds"), compress="gz")
 
 ## Save a "tidy" copy of each model output. Create "dummy" emis/tpp outputs (identical) for use with combine script
-#tidy_model <- broom.helpers::tidy_plus_plus(mod.strat.coxph.adj, tidy_fun = tidy_wald, exponentiate = FALSE)
-tidy_model <- tidy_wald(mod.strat.coxph.adj, conf.int = TRUE, conf.level = .95, exponentiate = TRUE)
+tidy_model <- broom.helpers::tidy_plus_plus(mod.strat.coxph.adj, tidy_fun = tidy_wald, exponentiate = FALSE)
 
 
 if(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations")){
