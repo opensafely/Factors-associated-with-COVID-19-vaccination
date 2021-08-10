@@ -18,13 +18,13 @@ library('gt')
 library('survminer')
 
 ## Create output directory
-dir.create(here::here("output", "models", "final"), showWarnings = FALSE, recursive=TRUE)
+dir.create(here::here("output", "model"), showWarnings = FALSE, recursive=TRUE)
 
 ## Import processed data
 data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
 
 ## Import model Stratified Cox PH model
-mod.strat.coxph.adj <- read_rds(here::here("output", "models", "final", "mod_strat_coxph_adj.rds"))
+mod.strat.coxph.adj <- read_rds(here::here("output", "model", "mod_strat_coxph_adj.rds"))
 
 ## Function to plot stratified cox model
 forest_from_gt <- function(gt_obj){
@@ -113,7 +113,7 @@ tab_mod1  <- summary(mod.strat.coxph.adj)$coefficients  %>%
          `p-value` = round(`Pr(>|z|)`, digits = 4)) %>%
   select(Variable, HR, `95% CI`, `p-value`)
 
-write_csv(tab_mod1, here::here("output",  "models", "final", "tab_strat_coxph.csv"))
+write_csv(tab_mod1, here::here("output",  "model", "tab_strat_coxph.csv"))
 
 
 tidy_coxph <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE, ...) {
@@ -148,7 +148,7 @@ tbl_summary$table_body$variable <- str_to_title(gsub("_", " ", tbl_summary$table
 ## Forest plot
 plot_coxph <- forest_from_gt(tbl_summary)
 ggsave(
-  here::here("output", "models", "final", "plot_strat_coxph.svg"),
+  here::here("output", "model", "plot_strat_coxph.svg"),
   plot_coxph,
   units = "cm", width = 40, height = 20
 )

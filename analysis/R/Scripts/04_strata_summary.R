@@ -13,7 +13,7 @@ library('survival')
 
 
 ## Create output directory
-dir.create(here::here("output", "models", "final"), showWarnings = FALSE, recursive=TRUE)
+dir.create(here::here("output", "model"), showWarnings = FALSE, recursive=TRUE)
 
 
 # function to get survival estimates for each strata over time
@@ -128,7 +128,7 @@ data_cox <- data_tte %>%
   )
 
 
-mod.strat.coxph.adj <- read_rds(here::here("output", "models", "final", "mod_strat_coxph_adj.rds"))
+mod.strat.coxph.adj <- read_rds(here::here("output", "model", "mod_strat_coxph_adj.rds"))
 
 
 # get strata-specific estimates based on mean-centered covariates 
@@ -151,7 +151,7 @@ plot_strata_cmlhaz <- ggplot(strata_estimates)+
 
 
 ggsave(
-  here::here("output", "models", "final", "plot_strata_cmlhaz.svg"),
+  here::here("output", "model", "plot_strata_cmlhaz.svg"),
   plot_strata_cmlhaz,
   units = "cm", width = 20, height = 20
 )
@@ -167,7 +167,7 @@ plot_strata_llsurv <- ggplot(strata_estimates)+
   )
 
 ggsave(
-  here::here("output", "models", "final", "plot_strata_llsurv.svg"),
+  here::here("output", "model", "plot_strata_llsurv.svg"),
   plot_strata_llsurv,
   units = "cm", width = 20, height = 20
 )
@@ -180,7 +180,7 @@ plot_strata_cmlhaz28 <- ggplot(strata_estimates %>% filter(time==28))+
   theme_bw()
 
 ggsave(
-  here::here("output", "models", "final", "plot_strata_cmlhaz28.svg"),
+  here::here("output", "model", "plot_strata_cmlhaz28.svg"),
   plot_strata_cmlhaz28,
   units = "cm", width = 20, height = 20
 )
@@ -191,7 +191,7 @@ plot_strata_cmlhaz56 <- ggplot(strata_estimates %>% filter(time==56))+
   theme_bw()
 
 ggsave(
-  here::here("output", "models", "final", "plot_strata_cmlhaz56.svg"),
+  here::here("output", "model", "plot_strata_cmlhaz56.svg"),
   plot_strata_cmlhaz56,
   units = "cm", width = 20, height = 20
 )
@@ -294,7 +294,7 @@ plotfacethist <- function(data, catvar, contvar, contname, subtitle=NULL,
 CHsnapshots <- plotfacethist(strata_estimates_snapshots, "time_cat", "cml.haz", "Cumul. hazard", breakint=50, ylim_upper=1000)
 
 ggsave(
-  here::here("output", "models", "final", "plot_strata_snapshots.svg"),
+  here::here("output", "model", "plot_strata_snapshots.svg"),
   CHsnapshots,
   units = "cm", width = 20, height = 20
 )
@@ -312,7 +312,7 @@ strata_quantiles <- strata_estimates %>%
     date = as.Date("2020-12-08")+time
   )
 
-write_csv(strata_quantiles, here::here("output", "models", "final", "cmlhaz_quantiles.csv"))
+write_csv(strata_quantiles, here::here("output", "model", "cmlhaz_quantiles.csv"))
 
 CHdeciles <- ggplot(strata_quantiles)+
   geom_line(aes(x=as.Date("2020-12-08")+time, y=cml.haz, group=cml.haz_q), alpha=0.2, colour='blue', size=0.25)+
@@ -330,7 +330,7 @@ CHdeciles <- ggplot(strata_quantiles)+
   )
 
 ggsave(
-  here::here("output", "models", "final", "plot_strata_deciles.svg"),
+  here::here("output", "model", "plot_strata_deciles.svg"),
   CHdeciles,
   units = "cm", width = 20, height = 20
 )
@@ -358,7 +358,7 @@ plot_strata_combined <- ggplot()+
 
 
 ggsave(
-  here::here("output", "models", "final", "plot_strata_combined.svg"),
+  here::here("output", "model", "plot_strata_combined.svg"),
   plot_strata_combined,
   units = "cm", width = 20, height = 20
 )
