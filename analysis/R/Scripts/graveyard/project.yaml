@@ -45,11 +45,11 @@ actions:
         
   # Summarise data
   data_properties:
-    run: r:latest analysis/R/Scripts/01_data_properties.R output/data/data_all.rds output/data_properties
+    run: r:latest analysis/R/Scripts/01_data_properties.R output/data/data_all.rds
     needs: [generate_study_population, data_process]
     outputs:
       moderately_sensitive:
-        datasummary: output/data_properties/data_all*.txt
+        datasummary: output/*/data_properties/data_modelling*.txt
         
   # # More data summaries
   # data_summaries:
@@ -116,7 +116,7 @@ actions:
     needs: [generate_study_population, data_process]
     outputs:
       highly_sensitive :
-        models: output/models/final/mod*.rds
+        models: output/*/models/final/mod*.rds
  
   # Strata summaries
   strata_summary:
