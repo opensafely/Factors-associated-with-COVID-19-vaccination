@@ -57,13 +57,16 @@ mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                              data = data_tte)
 
 
-# Create tidy summary
-tidy_model <- broom.helpers::tidy_plus_plus(mod.strat.coxph.adj, tidy_fun = tidy_wald, exponentiate = FALSE)
-
-
 # Save outputs ----
 
+## Save model
+write_rds(mod.strat.coxph.adj, here::here("output", "model", "mod_strat_coxph_adj.rds"), compress="gz")
+
 ## Save a "tidy" copy of each model output. Create "dummy" emis/tpp outputs (identical) for use with combine script
+tidy_model <- broom.helpers::tidy_plus_plus(mod.strat.coxph.adj, tidy_fun = tidy_wald, exponentiate = FALSE)
+
+dim(tidy_model)
+
 if(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations")){
   for(backend in c("tpp", "emis")){
     write_csv(tidy_model, here("output", "model", glue("tidy_{backend}.csv")))
@@ -72,5 +75,3 @@ if(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations")){
   write_csv(tidy_model, here("output", "model", glue("tidy_{Sys.getenv('OPENSAFELY_BACKEND')}.csv")))
 }
 
-## Save model
-write_rds(mod.strat.coxph.adj, here::here("output", "model", "mod_strat_coxph_adj.rds"), compress="gz")
