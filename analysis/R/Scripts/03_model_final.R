@@ -26,11 +26,11 @@ library('fs')
 ## Create output directory
 dir.create(here::here("output", "model"), showWarnings = FALSE, recursive=TRUE)
 
-## Custom function ----
+## Custom function
 tidy_wald <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE, ...) {
   
   # to use Wald CIs instead of profile CIs.
-  ret <- broom::tidy(x, conf.int = FALSE, conf.level = conf.level, exponentiate = TRUE)
+  ret <- broom::tidy(x, conf.int = FALSE, conf.level = conf.level, exponentiate = exponentiate)
   
   if(conf.int){
     ci <- confint.default(x, level = conf.level)
@@ -42,6 +42,7 @@ tidy_wald <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE,
   }
   ret
 }
+
 ## Import processed data
 data_tte <- read_rds(here::here("output", "data", "data_modelling.rds"))
 
@@ -57,13 +58,15 @@ mod.strat.coxph.adj <- coxph(Surv(follow_up_time, covid_vax) ~
                              data = data_tte)
 
 
-# Create tidy summary
+# Save outputs ----
+
+## Save model
+write_rds(mod.strat.coxph.adj, here::here("output", "model", "mod_strat_coxph_adj.rds"), compress="gz")
+
+## Save a "tidy" copy of each model output. Create "dummy" emis/tpp outputs (identical) for use with combine script
 tidy_model <- broom.helpers::tidy_plus_plus(mod.strat.coxph.adj, tidy_fun = tidy_wald, exponentiate = FALSE)
 
 
-# Save outputs ----
-
-## Save a "tidy" copy of each model output. Create "dummy" emis/tpp outputs (identical) for use with combine script
 if(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations")){
   for(backend in c("tpp", "emis")){
     write_csv(tidy_model, here("output", "model", glue("tidy_{backend}.csv")))
@@ -72,5 +75,3 @@ if(Sys.getenv("OPENSAFELY_BACKEND") %in% c("", "expectations")){
   write_csv(tidy_model, here("output", "model", glue("tidy_{Sys.getenv('OPENSAFELY_BACKEND')}.csv")))
 }
 
-## Save model
-write_rds(mod.strat.coxph.adj, here::here("output", "model", "mod_strat_coxph_adj.rds"), compress="gz")
