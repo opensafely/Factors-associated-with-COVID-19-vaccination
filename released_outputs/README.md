@@ -1,0 +1,37 @@
+# Table of contents
+
+* May2021
+  * [May2021/.DS_Store](May2021/.DS_Store)
+  * [May2021/Cox_vs_aft_model_comparison.html](May2021/Cox_vs_aft_model_comparison.html)
+  * May2021/data_properties
+    * [May2021/data_properties/data_all_coltypes.txt](May2021/data_properties/data_all_coltypes.txt)
+    * [May2021/data_properties/data_all_skim.txt](May2021/data_properties/data_all_skim.txt)
+    * [May2021/data_properties/data_all_tabulate.txt](May2021/data_properties/data_all_tabulate.txt)
+  * [May2021/Data_summaries.html](May2021/Data_summaries.html)
+  * May2021/models
+    * [May2021/models/.DS_Store](May2021/models/.DS_Store)
+    * May2021/models/final
+      * [May2021/models/final/cmlhaz_quantiles.csv](May2021/models/final/cmlhaz_quantiles.csv)
+      * [May2021/models/final/plot_strat_coxph.svg](May2021/models/final/plot_strat_coxph.svg)
+      * [May2021/models/final/plot_strata_cmlhaz.svg](May2021/models/final/plot_strata_cmlhaz.svg)
+      * [May2021/models/final/plot_strata_cmlhaz28.svg](May2021/models/final/plot_strata_cmlhaz28.svg)
+      * [May2021/models/final/plot_strata_cmlhaz30.svg](May2021/models/final/plot_strata_cmlhaz30.svg)
+      * [May2021/models/final/plot_strata_cmlhaz56.svg](May2021/models/final/plot_strata_cmlhaz56.svg)
+      * [May2021/models/final/plot_strata_combined.svg](May2021/models/final/plot_strata_combined.svg)
+      * [May2021/models/final/plot_strata_deciles.svg](May2021/models/final/plot_strata_deciles.svg)
+      * [May2021/models/final/plot_strata_llsurv.svg](May2021/models/final/plot_strata_llsurv.svg)
+      * [May2021/models/final/plot_strata_snapshots.svg](May2021/models/final/plot_strata_snapshots.svg)
+      * [May2021/models/final/tab_strat_coxph.csv](May2021/models/final/tab_strat_coxph.csv)
+    * May2021/models/testing
+      * [May2021/models/testing/.DS_Store](May2021/models/testing/.DS_Store)
+      * May2021/models/testing/cox_vs_aft
+        * [May2021/models/testing/cox_vs_aft/plot_models_fit_time.svg](May2021/models/testing/cox_vs_aft/plot_models_fit_time.svg)
+        * [May2021/models/testing/cox_vs_aft/table_results_10.csv](May2021/models/testing/cox_vs_aft/table_results_10.csv)
+        * [May2021/models/testing/cox_vs_aft/table_results_100.csv](May2021/models/testing/cox_vs_aft/table_results_100.csv)
+        * [May2021/models/testing/cox_vs_aft/table_results_250.csv](May2021/models/testing/cox_vs_aft/table_results_250.csv)
+        * [May2021/models/testing/cox_vs_aft/table_results_50.csv](May2021/models/testing/cox_vs_aft/table_results_50.csv)
+  * [May2021/Results_summary.html](May2021/Results_summary.html)
+  * [May2021/Study_definition_flow_chart.html](May2021/Study_definition_flow_chart.html)
+* output
+  * output/model
+    * [output/model/tidy_tpp.csv](output/model/tidy_tpp.csv)
