@@ -26,7 +26,7 @@ library('fs')
 ## Create output directory
 dir.create(here::here("output", "model"), showWarnings = FALSE, recursive=TRUE)
 
-## Custom function ----
+## Custom function
 tidy_wald <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE, ...) {
   
   # to use Wald CIs instead of profile CIs.

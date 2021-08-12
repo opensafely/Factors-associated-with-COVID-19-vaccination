@@ -21,11 +21,11 @@ actions:
 
   # Calculate numbers for study population flow chart
   flow_chart:
-    run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Study_definition_flow_chart.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output")'
+    run: r:latest -e 'rmarkdown::render("analysis/R/Markdown/Study_definition_flow_chart.Rmd", knit_root_dir = "/workspace", output_dir="/workspace/output/flow_chart")'
     needs: [generate_study_population_flow_chart_data]
     outputs:
       moderately_sensitive:
-        html: output/Study_definition_flow_chart.html
+        html: output/flow_chart/Study_definition_flow_chart.html
         
   # Extract study data
   generate_study_population:
