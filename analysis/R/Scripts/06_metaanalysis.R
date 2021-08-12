@@ -77,9 +77,9 @@ write_csv(tab_mod1, here::here("released_outputs",  "combined", "tab_strat_coxph
 ## Forest plot
 plot_data <- tidy_combined %>%
   mutate(order = factor(variable, levels = c("ageband", "sex", "ethnicity", "imd", "immunosuppression", "ckd",
-                                                "chronic_respiratory_disease", "diabetes", "chronic_liver_disease",
-                                                "chronic_neuro_dis_inc_sig_learn_dis", "chronic_heart_disease", "asplenia",
-                                                "sev_mental_ill", "morbid_obesity"))) %>%
+                                             "chronic_respiratory_disease", "diabetes", "chronic_liver_disease",
+                                             "chronic_neuro_dis_inc_sig_learn_dis", "chronic_heart_disease", "asplenia",
+                                             "sev_mental_ill", "morbid_obesity"))) %>%
   filter(!is.na(term)) %>%
   arrange(order) %>%
   mutate(
