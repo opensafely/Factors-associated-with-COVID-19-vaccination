@@ -18,6 +18,7 @@ library('tidyverse')
 library('lubridate')
 library('survival')
 library('fs')
+library('readxl')
 
 ## Create output directory
 dir_create(here("released_outputs", "combined"))
@@ -42,11 +43,12 @@ tidy_stack <-
   ) 
 
 tidy_combined <- tidy_stack %>%
-  group_by(term, variable, var_label, var_class, var_type, var_nlevels, contrasts, contrasts_type, reference_row, label) %>% 
+  #group_by(term, variable, var_label, var_class, var_type, var_nlevels, contrasts, contrasts_type, reference_row, label) %>% 
+  group_by(term) %>% 
   summarise(
-    n_obs = sum(n_obs),
-    n_event = sum(n_event),
-    exposure = sum(exposure),
+    #n_obs = sum(n_obs),
+    #n_event = sum(n_event),
+    #exposure = sum(exposure),
     estimate = weighted.mean(estimate, std.error^-2),
     std.error = sqrt(1/sum(std.error^-2)),
     statistic = estimate/std.error,
@@ -61,8 +63,11 @@ write_csv(tidy_combined, here("released_outputs", "combined", "meta_estimates.cs
 
 # Results ----
 
+## Table names
+meta_data <- read_excel(fs::path(here("released_outputs", "combined", "labels.xlsx")))
+
 ## Table
-tab_mod1  <- tidy_combined  %>% 
+tab_mod1  <- left_join(meta_data, tidy_combined, by = "term")  %>% 
   as.data.frame() %>%
   rownames_to_column(var = "Variable") %>%
   mutate(LCI = round(exp(conf.low), digits = 2),
@@ -75,7 +80,7 @@ tab_mod1  <- tidy_combined  %>%
 write_csv(tab_mod1, here::here("released_outputs",  "combined", "tab_strat_coxph.csv"))
 
 ## Forest plot
-plot_data <- tidy_combined %>%
+plot_data <- left_join(meta_data, tidy_combined, by = "term")  %>%
   mutate(order = factor(variable, levels = c("ageband", "sex", "ethnicity", "imd", "immunosuppression", "ckd",
                                              "chronic_respiratory_disease", "diabetes", "chronic_liver_disease",
                                              "chronic_neuro_dis_inc_sig_learn_dis", "chronic_heart_disease", "asplenia",
@@ -83,6 +88,7 @@ plot_data <- tidy_combined %>%
   filter(!is.na(term)) %>%
   arrange(order) %>%
   mutate(
+    reference_row = ifelse(term %in% c("ageband70-74", "sexFemale", "ethnicityWhite - British", "imd1 most deprived"), TRUE, FALSE),
     label = if_else(reference_row %in% TRUE, paste0(label, " (ref)"),label),
     estimate = if_else(reference_row %in% TRUE, 1, estimate),
     variable = fct_inorder(variable),
