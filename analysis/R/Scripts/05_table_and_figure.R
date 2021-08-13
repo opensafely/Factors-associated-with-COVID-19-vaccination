@@ -97,7 +97,7 @@ forest_from_gt <- function(gt_obj){
 
 # Counts ----
 obs <- data_tte %>%
-  select(-patient_id, -covid_vax, - follow_up_time, -practice_id_latest_active_registration) %>%
+  select(-patient_id, -covid_vax, - follow_up_time, -practice_id_latest_active_registration, -practice_id_at_death) %>%
   tbl_summary()
 
 obs$inputs$data <- NULL
@@ -112,7 +112,7 @@ obs <- obs$table_body %>%
 
 events <- data_tte %>%
   filter(covid_vax == 1) %>%
-  select(-patient_id, -covid_vax, - follow_up_time, -practice_id_latest_active_registration) %>%
+  select(-patient_id, -covid_vax, - follow_up_time, -practice_id_latest_active_registration, -practice_id_at_death) %>%
   tbl_summary()
 
 events$inputs$data <- NULL
