@@ -129,7 +129,7 @@ obs_events <- left_join(obs, events) %>%
   mutate(n_obs = ifelse(n_obs < 5, "[redacted]", n_obs),
          n_events = ifelse(n_events < 5, "[redacted]", n_events))
 
-head(obs_events)
+print(obs_events)
 
 write_csv(obs_events, here::here("output",  "model", "counts_redacted.csv"))
 
@@ -172,28 +172,28 @@ tidy_coxph <- function(x, conf.int = TRUE, conf.level = .95, exponentiate = TRUE
 }
 
 
-## Summary table for plot
-tbl_summary <- tbl_regression(
-  x = mod.strat.coxph.adj,
-  pvalue_fun = ~style_pvalue(.x, digits=3),
-  tidy_fun = tidy_coxph,
-  exponentiate= TRUE,
-  label = list(ageband = "Age Band", sex = "Sex", ethnicity = "Ethnicity", 
-               imd = "IMD")
-)
-
-tbl_summary$table_body$variable <- str_to_title(gsub("_", " ", tbl_summary$table_body$variable))
-
-## Forest plot
-plot_coxph <- forest_from_gt(tbl_summary)
-ggsave(
-  here::here("output", "model", "plot_strat_coxph.svg"),
-  plot_coxph,
-  units = "cm", width = 40, height = 20
-)
-
-
-
-
-
-
+# ## Summary table for plot
+# tbl_summary <- tbl_regression(
+#   x = mod.strat.coxph.adj,
+#   pvalue_fun = ~style_pvalue(.x, digits=3),
+#   tidy_fun = tidy_coxph,
+#   exponentiate= TRUE,
+#   label = list(ageband = "Age Band", sex = "Sex", ethnicity = "Ethnicity", 
+#                imd = "IMD")
+# )
+# 
+# tbl_summary$table_body$variable <- str_to_title(gsub("_", " ", tbl_summary$table_body$variable))
+# 
+# ## Forest plot
+# plot_coxph <- forest_from_gt(tbl_summary)
+# ggsave(
+#   here::here("output", "model", "plot_strat_coxph.svg"),
+#   plot_coxph,
+#   units = "cm", width = 40, height = 20
+# )
+# 
+# 
+# 
+# 
+# 
+# 

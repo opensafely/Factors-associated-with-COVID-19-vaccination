@@ -143,6 +143,6 @@ actions:
     needs: [generate_study_population, data_process, model_final]
     outputs:
       moderately_sensitive:
-        tables: output/model/tab*.csv
-        plots: output/model/plot*.svg
-        
+        table1: output/model/tab*.csv
+        table2: output/model/counts_redacted.csv
+
