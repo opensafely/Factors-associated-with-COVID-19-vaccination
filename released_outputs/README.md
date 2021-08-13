@@ -9,6 +9,7 @@
   * output/flow_chart
     * [output/flow_chart/Study_definition_flow_chart.html](output/flow_chart/Study_definition_flow_chart.html)
   * output/model
+    * [output/model/plot_strata_deciles.svg](output/model/plot_strata_deciles.svg)
     * [output/model/tidy_emis.csv](output/model/tidy_emis.csv)
 * tpp
   * [tpp/.DS_Store](tpp/.DS_Store)
