@@ -100,7 +100,7 @@ obs <- data_tte %>%
   select(ageband, sex, ethnicity, imd, immunosuppression, ckd, 
   chronic_respiratory_disease, diabetes, chronic_liver_disease,
   chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease, asplenia,
-  ev_mental_ill, morbid_obesity) %>%
+  sev_mental_ill, morbid_obesity) %>%
   tbl_summary()
 
 obs$inputs$data <- NULL
@@ -118,7 +118,7 @@ events <- data_tte %>%
   select(ageband, sex, ethnicity, imd, immunosuppression, ckd, 
          chronic_respiratory_disease, diabetes, chronic_liver_disease,
          chronic_neuro_dis_inc_sig_learn_dis, chronic_heart_disease, asplenia,
-         ev_mental_ill, morbid_obesity) %>%
+         sev_mental_ill, morbid_obesity) %>%
   tbl_summary()
 
 events$inputs$data <- NULL
