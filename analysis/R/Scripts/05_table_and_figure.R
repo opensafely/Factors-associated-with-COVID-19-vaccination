@@ -129,6 +129,8 @@ obs_events <- left_join(obs, events) %>%
   mutate(n_obs = ifelse(n_obs < 5, "[redacted]", n_obs),
          n_events = ifelse(n_events < 5, "[redacted]", n_events))
 
+head(obs_events)
+
 write_csv(obs_events, here::here("output",  "model", "counts_redacted.csv"))
 
 
