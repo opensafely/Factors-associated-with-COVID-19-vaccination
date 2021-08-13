@@ -24,14 +24,14 @@ library('readxl')
 dir_create(here("released_outputs", "combined"))
 
 # Import models
-dummy_data <- TRUE
+dummy_data <- FALSE
 
 if(dummy_data){
   tidy_tpp <- read_csv(fs::path(here("output", "model"), "tidy_tpp.csv"))
   tidy_emis <- read_csv(fs::path(here("output", "model"), "tidy_emis.csv"))
 } else{
-  tidy_tpp <- read_csv(fs::path(here("released_output", "tpp", "model"), "tidy_tpp.csv"))
-  tidy_emis <- read_csv(fs::path(here("released_output", "emis", "model"), "tidy_emis.csv"))
+  tidy_tpp <- read_csv(fs::path(here("released_outputs", "tpp", "model"), "tidy_tpp.csv"))
+  tidy_emis <- read_csv(fs::path(here("released_outputs", "emis", "model"), "tidy_emis.csv"))
 }
 
 
@@ -80,7 +80,12 @@ tab_mod1  <- left_join(meta_data, tidy_combined, by = "term")  %>%
 write_csv(tab_mod1, here::here("released_outputs",  "combined", "tab_strat_coxph.csv"))
 
 ## Forest plot
-plot_data <- left_join(meta_data, tidy_combined, by = "term")  %>%
+plot_data <- left_join(meta_data, tidy_combined, by = "term")  %>% 
+  as.data.frame() %>%
+  rownames_to_column(var = "Variable") %>%
+  mutate(conf.low = exp(conf.low),
+         conf.high = exp(conf.high),
+         estimate = exp(estimate)) %>%
   mutate(order = factor(variable, levels = c("ageband", "sex", "ethnicity", "imd", "immunosuppression", "ckd",
                                              "chronic_respiratory_disease", "diabetes", "chronic_liver_disease",
                                              "chronic_neuro_dis_inc_sig_learn_dis", "chronic_heart_disease", "asplenia",
@@ -151,7 +156,7 @@ plot_coxph <- ggplot(plot_data) +
 ggsave(
   here::here("released_outputs", "combined", "plot_strat_coxph.svg"),
   plot_coxph,
-  units = "cm", width = 40, height = 20
+  units = "cm", width = 30, height = 20
 )
 
 
