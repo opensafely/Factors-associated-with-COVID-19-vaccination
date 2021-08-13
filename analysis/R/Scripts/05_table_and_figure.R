@@ -95,6 +95,43 @@ forest_from_gt <- function(gt_obj){
 }
 
 
+# Counts ----
+obs <- data_tte %>%
+  select(-patient_id, -covid_vax, - follow_up_time, -practice_id_latest_active_registration) %>%
+  tbl_summary()
+
+obs$inputs$data <- NULL
+
+obs <- obs$table_body %>%
+  select(group = variable, variable = label, n_obs = stat_0) %>%
+  separate(n_obs, c("n_obs","perc"), sep = "([(])") %>%
+  mutate(n_obs = gsub(" ", "", n_obs),
+         n_obs = as.numeric(gsub(",", "", n_obs))) %>%
+  filter(!(is.na(n_obs))) %>%
+  select(-perc)
+
+events <- data_tte %>%
+  filter(covid_vax == 1) %>%
+  select(-patient_id, -covid_vax, - follow_up_time, -practice_id_latest_active_registration) %>%
+  tbl_summary()
+
+events$inputs$data <- NULL
+
+events <- events$table_body %>%
+  select(group = variable, variable = label, n_events = stat_0) %>%
+  separate(n_events, c("n_events","perc"), sep = "([(])") %>%
+  mutate(n_events = gsub(" ", "", n_events),
+         n_events = as.numeric(gsub(",", "", n_events))) %>%
+  filter(!(is.na(n_events))) %>%
+  select(-perc)
+
+obs_events <- left_join(obs, events) %>%
+  mutate(n_obs = ifelse(n_obs < 5, "[redacted]", n_obs),
+         n_events = ifelse(n_events < 5, "[redacted]", n_events))
+
+write_csv(obs_events, here::here("output",  "model", "counts_redacted.csv"))
+
+
 # Output model results ----
 
 ## Summary table
