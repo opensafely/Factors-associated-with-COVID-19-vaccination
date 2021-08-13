@@ -1,0 +1,43 @@
+group,variable,n_obs,n_events
+ageband,70-74,1127345,1066386
+ageband,75-79,785581,747518
+ageband,80-84,544247,515813
+ageband,85-89,305271,285417
+ageband,90-94,115521,105028
+ageband,95+,26763,22619
+sex,Female,1579223,1495161
+sex,Male,1325505,1247620
+ethnicity,White - British,1533464,1475206
+ethnicity,White - Irish,15638,14433
+ethnicity,White - Any other White background,48845,39153
+ethnicity,Mixed - White and Black Caribbean,2362,1810
+ethnicity,Mixed - White and Black African,1194,857
+ethnicity,Mixed - White and Asian,1373,1172
+ethnicity,Mixed - Any other mixed background,2088,1655
+ethnicity,Asian or Asian British - Indian,31952,28325
+ethnicity,Asian or Asian British - Pakistani,14163,11020
+ethnicity,Asian or Asian British - Bangladeshi,2145,1708
+ethnicity,Asian or Asian British - Any other Asian background,10866,8697
+ethnicity,Black or Black British - Caribbean,9614,7167
+ethnicity,Black or Black British - African,5377,3309
+ethnicity,Black or Black British - Any other Black background,1641,1199
+ethnicity,Other ethnic groups - Chinese,3640,2729
+ethnicity,Other ethnic groups - Any other ethnic group,8270,6361
+ethnicity,Patients with any other ethnicity code,518343,492928
+ethnicity,Ethnicity not stated,18121,16557
+ethnicity,Ethnicity not recorded,675632,628495
+imd,1 most deprived,386389,351878
+imd,2,498628,464407
+imd,3,659560,624390
+imd,4,682702,650771
+imd,5 least deprived,677449,651335
+immunosuppression,immunosuppression,119905,114634
+ckd,ckd,564827,537864
+chronic_respiratory_disease,chronic_respiratory_disease,306946,290781
+diabetes,diabetes,545089,516385
+chronic_liver_disease,chronic_liver_disease,70421,66951
+chronic_neuro_dis_inc_sig_learn_dis,chronic_neuro_dis_inc_sig_learn_dis,359653,339306
+chronic_heart_disease,chronic_heart_disease,944419,900247
+asplenia,asplenia,24729,23778
+sev_mental_ill,sev_mental_ill,27487,24678
+morbid_obesity,morbid_obesity,64195,60511
