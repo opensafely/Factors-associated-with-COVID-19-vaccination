@@ -130,11 +130,12 @@ names(level_lookup)[41] <- "Sev Mental Illness"
 
 # Plot
 plot_coxph <- ggplot(plot_data) +
-  geom_point(aes(x=estimate, y=level)) +
-  geom_linerange(aes(xmin=conf.low, xmax=conf.high, y=level)) +
-  geom_vline(aes(xintercept=1), colour='black', alpha=0.8)+
-  facet_grid(rows=vars(variable), scales="free_y", switch="y", space="free_y", labeller = labeller(variable = var_lookup))+
-  scale_x_log10()+
+  geom_point(aes(x = estimate, y = level)) +
+  geom_linerange(aes(xmin = conf.low, xmax = conf.high, y = level)) +
+  geom_vline(aes(xintercept = 1), colour = 'black', alpha = 0.8) +
+  facet_grid(rows=vars(variable), scales = "free_y", switch = "y", space = "free_y", labeller = labeller(variable = var_lookup)) +
+  #scale_x_continuous(breaks = c(0.5,1,2,3)) +
+  scale_x_log10(breaks = c(0.5, 0.75, 1, 2, 3), labels = c(0.5, 0.75, 1, 2, 3), minor_breaks = NULL) +
   scale_y_discrete(breaks=level_lookup, labels=names(level_lookup)) +
   geom_rect(aes(alpha = variable_card), xmin = -Inf,xmax = Inf, ymin = -Inf, ymax = Inf, fill='grey', colour="transparent") +
   scale_alpha_continuous(range=c(0,0.3), guide="none")+
@@ -154,7 +155,7 @@ plot_coxph <- ggplot(plot_data) +
   )
 
 ggsave(
-  here::here("released_outputs", "combined", "plot_strat_coxph.svg"),
+  here::here("released_outputs", "combined", "plot_strat_coxph_revised.svg"),
   plot_coxph,
   units = "cm", width = 30, height = 20
 )
