@@ -150,12 +150,11 @@ plot_coxph <- ggplot(plot_data) +
     strip.background = element_rect(fill="transparent", colour="transparent"),
     strip.text.y.left = element_text(angle = 0, hjust=1),
     panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    panel.spacing = unit(0, "lines")
+    panel.grid.minor.y = element_blank()
   )
 
 ggsave(
-  here::here("released_outputs", "combined", "plot_strat_coxph_revised.svg"),
+  here::here("released_outputs", "combined", "plot_strat_coxph_revised.jpg"),
   plot_coxph,
   units = "cm", width = 30, height = 20
 )
